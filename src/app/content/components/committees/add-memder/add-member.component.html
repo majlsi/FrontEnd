@@ -1,0 +1,124 @@
+<ng-template #content let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{ "COMMITTEES.ADD.COMMITTEEMEMBER" | translate }}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="close(); d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<form name="memberForm" #memberForm="ngForm" (ngSubmit)="save(memberForm); memberForm.valid && !this.isDateError && c('Save click')" novalidate>
+		<div class="modal-body">
+			<div class="form-group m-form__group">
+				<div class="m-input-icon m-input-icon--left" *ngIf="isFirstStep">
+					<input type="text" name="username" #username="ngModel" placeholder="{{ 'COMMITTEES.ADD.SEARCBYNAME' | translate }}" class="form-control" [(ngModel)]="user" (ngModelChange)="getSearchForUsers($event)" />
+					<span class="m-input-icon__icon m-input-icon__icon--left">
+						<span>
+							<i class="la la-search"></i>
+						</span>
+					</span>
+				</div>
+
+				<input type="checkbox" id="ischecked" name="ischecked" [(ngModel)]="atLeastOneSelected" #ischecked="ngModel" hidden required />
+			</div>
+			<div class="form-group row" *ngIf="!isFirstStep">
+				<div class="col-6">
+					<label>{{ "COMMITTEES.ADD.START_DATE" | translate }}</label>
+					<div class="input-group">
+						<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()" />
+						<div class="input-group-append position-relative">
+							<span class="clear-input" (click)="clearDate('startDate')">
+								<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+							</span>
+							<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle(); endDate.close(); $event.stopPropagation()" (dateSelect)="startDate.close()" (document:click)="decideClosure($event, startDate)" type="button">
+								<i class="fa fa-calendar-alt"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-6">
+					<label>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</label>
+					<div class="input-group">
+						<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" />
+						<div class="input-group-append position-relative">
+							<span class="clear-input" (click)="clearDate('endDate')">
+								<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+							</span>
+							<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle(); startDate.close(); $event.stopPropagation()" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)" type="button">
+								<i class="fa fa-calendar-alt"></i>
+							</button>
+						</div>
+					</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!isDateError">
+						{{ "COMMITTEES.VALIDATION.DATES" | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="form-group row" *ngIf="!isFirstStep && customSetting && editMode">
+				<div class="col-12">
+					<label>{{ "COMMITTEES.ADD.EVIDENCE_DOCUMENT" | translate }} &nbsp;<span class="MandatoryAsterisk"></span> </label>
+					<div class="input-group mr-3">
+						<label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" for="adduserfile">
+							<input type="file" class="d-none" id="adduserfile" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt" (change)="fileEvidenceUrlChangeEvent($event)" #attachmentEvidence="ngModel" name="attachmentEvidence" (ngModel)="(attachmentEvidenceUrl)" />
+							<span id="fileName2" *ngIf="!attachmentEvidenceUrl">{{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}</span>
+							<span id="fileName2" *ngIf="attachmentEvidenceUrl">{{ attachmentEvidenceUrl }}</span>
+							<span class="btn btn-default px-0 mx-0">{{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}</span>
+						</label>
+					</div>
+
+					<div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+						{{ "COMMITTEES.VALIDATION.GOVERNANCE_REGULATION_UPLOAD_FILE_TYPE" | translate }}
+					</div>
+					<div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+						{{ attachmentSizeError }}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group scrollable-list" *ngIf="isFirstStep">
+				<div class="mat-table__wrapper">
+					<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="users" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+						<ng-container matColumnDef="select">
+							<th *matHeaderCellDef>
+								<mat-checkbox [(ngModel)]="selectedAll" (change)="selectAll()" name="selectall" #selectall="ngModel"> </mat-checkbox>
+							</th>
+							<td *matCellDef="let user">
+								<mat-checkbox [(ngModel)]="user.is_selected" (change)="selectUser(user)" name="isselected" #isselected="ngModel"> </mat-checkbox>
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="name">
+							<th *matHeaderCellDef mat-sort-header>
+								{{ "COMMITTEES.ADD.USERNAME" | translate }}
+							</th>
+							<td *matCellDef="let user">
+								{{ isArabic ? (user.name_ar ? user.name_ar : user.name) : user.name ? user.name : user.name_ar }}
+							</td>
+						</ng-container>
+						<ng-container matColumnDef="email">
+							<th *matHeaderCellDef mat-sort-header>
+								{{ "COMMITTEES.ADD.EMAIL" | translate }}
+							</th>
+							<td *matCellDef="let user">
+								{{ user.email }}
+							</td>
+						</ng-container>
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+					</table>
+					<div class="error text-danger form-control-feedback" style="margin: 5px" [hidden]="!hasError(memberForm, 'ischecked', 'required')">{{ "COMMITTEES.VALIDATION.MEMBERUSERS" | translate }}</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<button class="btn btn-primary" mat-button type="button" cdkFocusInitial *ngIf="isFirstStep" (click)="nextStep()">{{ "GENERAL.NEXT" | translate }}</button>
+			<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial *ngIf="!isFirstStep">
+				{{ "COMMITTEES.ADD.ADD" | translate }}
+				<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+			</button>
+			<button class="btn btn-secondary" mat-button (click)="close(); d('Cross click')">{{ "BUTTON.CANCEL" | translate }}</button>&nbsp;
+		</div>
+	</form>
+</ng-template>
+
+<button *ngIf="!isFreezed" type="button" class="btn btn-secondary btn-link" (click)="open(content)">
+	<i class="fa fa-plus pb-1"></i><span> {{ "COMMITTEES.ADD.ADDMEMBER" | translate }}</span>
+</button>

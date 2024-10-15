@@ -1,0 +1,227 @@
+<div class="main-portlet">
+	<div class="m-subheader">
+		<div class="d-flex align-items-center">
+			<div class="mr-auto" *ngIf="!meetingId">
+				<h3 class="m-subheader__title">{{ "MEETINGS.GENERAL.SCHEDULENEWMEETING" | translate }}</h3>
+			</div>
+			<div class="mr-auto" *ngIf="meetingId">
+				<h3>
+					{{ "MEETINGS.GENERAL.MEETING" | translate }}<span style="font-size: smaller; color: #6f727d; margin: 0 10px"> {{ meetingData.meeting_code }}</span>
+				</h3>
+			</div>
+		</div>
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.DRAFT" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.UNPUBLISHED" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="publishMeeting()" [disabled]="meetingData.meeting_status_id != meetingStatus.DRAFT || submitted">
+					{{ "MEETINGS.INFO.STATUS.PUBLISHMEETING" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+				<button type="reset" (click)="cancelMeeting()" class="btn btn-secondary">
+					{{ "MEETINGS.INFO.STATUS.CANCELMEETING" | translate }}
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.PUBLISHED" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.PUBLISHED" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="publishAgendaMeeting()" [disabled]="meetingData.meeting_status_id != meetingStatus.PUBLISHED || submitted">
+					{{ "MEETINGS.INFO.STATUS.PUBLISHAGENDAITEM" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+				<button type="button" class="btn btn-primary" (click)="publishMeetingChanges()" *ngIf="!meetingData.is_changed_publish" [disabled]="publishChanges">
+					{{ "MEETINGS.INFO.STATUS.PUBLISH_CHANGES" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="publishChanges"></i>
+				</button>
+				<button type="reset" (click)="cancelMeeting()" class="btn btn-secondary" [disabled]="submitted">
+					{{ "MEETINGS.INFO.STATUS.CANCELMEETING" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusToCancelLoad"></i>
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.AGENDAPUBLISHED" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.PUBLISHEDITEMS" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="startMeeting()" [disabled]="meetingData.meeting_status_id != meetingStatus.AGENDAPUBLISHED || submitted">
+					{{ "MEETINGS.INFO.STATUS.STARTMEETING" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+				<button type="button" class="btn btn-primary" (click)="publishMeetingChanges()" *ngIf="!meetingData.is_changed_publish" [disabled]="publishChanges">
+					{{ "MEETINGS.INFO.STATUS.PUBLISH_CHANGES" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="publishChanges"></i>
+				</button>
+				<button type="reset" (click)="cancelMeeting()" class="btn btn-secondary" [disabled]="submitted">
+					{{ "MEETINGS.INFO.STATUS.CANCELMEETING" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusToCancelLoad"></i>
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.STARTED" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.STARTED" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="endMeeting()" [disabled]="meetingData.meeting_status_id != meetingStatus.STARTED || submitted">
+					{{ "MEETINGS.INFO.STATUS.ENDMEETING" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+				<button type="button" class="btn btn-primary" (click)="publishMeetingChanges()" *ngIf="!meetingData.is_changed_publish" [disabled]="publishChanges">
+					{{ "MEETINGS.INFO.STATUS.PUBLISH_CHANGES" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="publishChanges"></i>
+				</button>
+				<button type="reset" (click)="cancelMeeting()" class="btn btn-secondary">
+					{{ "MEETINGS.INFO.STATUS.CANCELMEETING" | translate }}
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.ENDED" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.ENDED" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="sendRecommend()" [disabled]="meetingData.meeting_status_id != meetingStatus.ENDED || submitted">
+					{{ "MEETINGS.INFO.STATUS.RECOMMENDATION_SEND" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.RECOMMENDATION_SEND" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.RECOMMENDATION_SEND" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="goToMom()"
+					[hidden]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || !canManageMom">
+					<span [hidden]="!meetingData.is_mom_sent">{{ "MEETINGS.INFO.STATUS.VIEWMOM" | translate }}</span>
+					<span [hidden]="meetingData.is_mom_sent">{{ "MEETINGS.INFO.STATUS.ADDMOM" | translate }}</span>
+				</button>
+				<button type="submit" [hidden]="meetingData.is_mom_sent" class="btn btn-primary" (click)="sendMom()"
+					[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted">
+					{{ "MEETINGS.INFO.STATUS.SENDEMAIL" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+				<button type="submit" class="btn btn-primary" (click)="viewMom()" [hidden]="meetingData.is_signature_sent"
+					[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted">
+					{{ "MEETINGS.INFO.STATUS.VIEWMOMBEFORESEND" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+
+				<button type="submit" class="btn btn-primary" (click)="sendSignEmail()"
+					[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted"
+					[hidden]="!meetingData.is_mom_sent || meetingData.is_signature_sent">
+					<i class="fas fa-file-signature" *ngIf="changeStatusLoad"></i>&nbsp;
+					{{ "MEETINGS.PARTICIPANTS.SIGNATURE.SEND_SIGNATURE_ALL" | translate }}
+				</button>
+			</div>
+		</div>
+
+		<div *ngIf="meetingData.meeting_status_id == meetingStatus.CANCELED" class="m-status m-alert m-alert--icon m-alert--air alert alert-dismissible m--border-radius-15" role="alert">
+			<div class="m-alert__icon">
+				<i class="flaticon-exclamation m--font-brand"></i>
+			</div>
+			<div class="m-alert__text">
+				<h4>{{ "MEETINGS.INFO.STATUS.CANCELED" | translate }}</h4>
+			</div>
+			<div class="m-alert__text text-right">
+				<button type="submit" class="btn btn-primary" (click)="redraftMeeting()" [disabled]="meetingData.meeting_status_id != meetingStatus.CANCELED || submitted">
+					{{ "MEETINGS.INFO.STATUS.REDRAFT" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="changeStatusLoad"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<div class="tabsWrabber">
+		<ul ngbNav #nav="ngbNav" class="nav-pills" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+			<li ngbNavItem="meetingInfo">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.MEETINGINFO" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-meeting (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting" [meeting]="meetingData" (getMeetingEmitter)="getMeeting()" [allCommittees]="allCommittees" [proposals]="proposals" [reminders]="reminders" [momTemplates]="momTemplates" [selectedTimeZone]="selectedTimeZone" [userOnlineConfigurations]="userOnlineConfigurations"></m-meeting>
+				</ng-template>
+			</li>
+			<li ngbNavItem="organisers" [disabled]="addMode">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.ORGANISERS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-organisers (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting" [organisers]="meetingData.meeting_organisers" [users]="users" (getMeetingEmitter)="getMeeting()" [meetingStatusId]="meetingData.meeting_status_id"></m-organisers>
+				</ng-template>
+			</li>
+			<li ngbNavItem="participants" [disabled]="addMode">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.PARTICIPANTS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-participants (tabChanged)="changeTab($event)" [showSendSignButton]="meetingData.show_send_sign_button" [canEditMeeting]="meetingData.can_edit_meeting" [participants]="participants" [users]="users" (getMeetingEmitter)="getMeeting()" [meetingStatusId]="meetingData.meeting_status_id"></m-participants>
+				</ng-template>
+			</li>
+			<li ngbNavItem="attachments" [disabled]="addMode">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.ATTACHMENTS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-attachments (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting" [attachments]="meetingData.meeting_attachments" (getMeetingEmitter)="getMeeting()" [addRemoveLinkflag]="addRemoveLinkflag" [meetingStatusId]="meetingData.meeting_status_id"></m-attachments>
+				</ng-template>
+			</li>
+			<li ngbNavItem="agenda" [disabled]="addMode">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.AGENDA" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-agenda (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting" [agendas]="meetingData.meeting_agendas" [agendaPurposes]="agendaPurposes" [participants]="participants" [agendaTemplates]="agendaTemplates" (getMeetingEmitter)="getMeeting()" [meetingStatusId]="meetingData.meeting_status_id" (updateAgendaEmitter)="getSavedMeetingAgendas()"></m-agenda>
+				</ng-template>
+			</li>
+			<li ngbNavItem="vote" [disabled]="addMode" *ngIf="isVoteEnabled">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.VOTE" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-vote (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting" [vote_participants]="vote_participants" [votes]="meetingData.meeting_votes" [agendas]="agendas" [voteTypes]="voteTypes" (getMeetingEmitter)="getMeeting()" [meetingStatusId]="meetingData.meeting_status_id" [decisionTypes]="decisionTypes"></m-vote>
+				</ng-template>
+			</li>
+			<li ngbNavItem="approval" [disabled]="addMode">
+				<button ngbNavLink>{{ "APPROVAL.LIST.APPROVALS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-meeting-approval-tab (getMeetingEmitter)="getMeeting()" [organizers]="meetingData.meeting_participants"
+						[meetingCommitteeId]="meetingData.committee_id" [approvals]="meetingData.approvals"
+						[meetingId]="meetingData.id" [canEditMeeting]="meetingData.can_edit_meeting">
+					</m-meeting-approval-tab>
+				</ng-template>
+			</li>
+			<li ngbNavItem="recommendation" [disabled]="addMode" *ngIf="meetingRecommendationsFeature">
+				<button ngbNavLink>{{ "MEETINGS.GENERAL.RECOMMENDATION" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-meeting-recommendation [participants]="participants" (tabChanged)="changeTab($event)"
+						(getMeetingEmitter)="getMeeting(false, tab.TAB12)" [recommendations]="meetingData.meetingRecommendations"
+						[meetingId]="meetingData.id" [canEditMeeting]="meetingData.can_edit_recommendation_meeting"
+						(updateRecommendationsEmitter)="getSavedMeetingRecommendations()"
+						[meetingStatusId]="meetingData.meeting_status_id">
+					</m-meeting-recommendation>
+				</ng-template>
+			</li>
+		</ul>
+		<div [ngbNavOutlet]="nav" class="mt-2"></div>
+	</div>
+	<!-- end::Body -->
+</div>

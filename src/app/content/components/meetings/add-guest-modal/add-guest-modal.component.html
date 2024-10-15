@@ -1,0 +1,31 @@
+<div class="modal-header py-3 d-flex align-items-center">
+    <h2 class="modal-title font-size-24 font-weight-500 color-title-dark">
+        {{'MEETINGS.PARTICIPANTS.ADD.ADDGUEST'|translate}}</h2>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form novalidate #addForm="ngForm">
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label for="email" class="font-weight-500">{{'USERS.LIST.EMAIL' | translate}} <span class="text-danger">*</span></label>
+            <input matInput type="email" name="email" class="form-control m-input" autocomplete="off"
+                [(ngModel)]="guestEmail" #email="ngModel" email="true" required
+                pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$">
+            <div class="error text-danger form-control-feedback" [hidden]="!hasError(addForm,'email', 'required')">
+                {{ 'MEETINGS.PARTICIPANTS.VALIDATION.GUEST_EMAIL_REQUIRED' | translate }}</div>
+            <div class="error text-danger form-control-feedback" [hidden]="!hasError(addForm,'email', 'pattern')">
+                {{ 'MEETINGS.PARTICIPANTS.VALIDATION.GUEST_EMAIL_INVALID' | translate }}</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light-grey px-5" (click)="save(addForm)">
+            {{'MEETINGS.PARTICIPANTS.ADD.ADD' | translate}}
+        </button>
+        <button type="button" class="btn bg-secondary px-5" (click)="close()">
+            {{'MEETINGS.PARTICIPANTS.ADD.CANCEL' | translate}}
+        </button>
+    </div>
+
+</form>

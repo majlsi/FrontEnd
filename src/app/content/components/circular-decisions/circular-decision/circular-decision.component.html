@@ -1,0 +1,194 @@
+<m-portlet [options]="{headLarge: true}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ decisionId? ('CIRCULAR_DECISIONS.ADD.EDIT_DECISION' | translate) : ('CIRCULAR_DECISIONS.ADD.ADD_DECISION' | translate)}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate
+				#decisionForm="ngForm" (ngSubmit)="save(decisionForm)" mScrollInvalid [form]="decisionForm">
+				<div class="form-group m-form__group row" joyrideStep="addCircularDecisionData" [title]="'TUTORIALGUIDE.ADD_CIRCULAR_DECISION_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_CIRCULAR_DECISION_DATA_BODY' | translate" [stepPosition]="'bottom'">
+					<div class="col-lg-12 mb-3">
+						<label>{{'CIRCULAR_DECISIONS.ADD.SUBJECT' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<input type="text" class="form-control form-control-solid" id="decision_subject" name="subject" placeholder="{{'CIRCULAR_DECISIONS.ADD.SUBJECT' | translate}}"
+						 	#subject="ngModel" [(ngModel)]="decision.vote_subject_ar"required [disabled]="decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet"/>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'subject', 'required')">
+							{{'CIRCULAR_DECISIONS.VALIDATION.SUBJECT' | translate}}
+						</div>
+					</div>
+				</div>
+                <div class="form-group m-form__group row">
+					<div class="col-lg-12 mb-3">
+						<label>{{ 'REVIEWS_ROOM.ADD.DESCRIPTION' | translate }}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000"
+							placeholder="{{ 'REVIEWS_ROOM.ADD.DESCRIPTION' | translate }}" id="doc_description" name="description"
+							#description="ngModel" [(ngModel)]="decision.vote_description"
+							[disabled]="decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet"></textarea>
+
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'description', 'required')">
+							{{'CIRCULAR_DECISIONS.VALIDATION.DESCRIPTION' | translate}}
+						</div>
+					</div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-6 mb-3">
+						<label>{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+                        <div class="input-group">
+                            <ng-select class="bg-light w-100" [items]="decisionTypes"
+                                placeholder="{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}"
+                                [bindLabel]="decisionTypeBindLabel" bindValue="id" name="decision_type"
+								[searchable]="true" [clearable]="false" [(ngModel)]="decision.decision_type_id" required
+								[disabled]="decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet">
+                                <ng-template ng-label-tmp let-item="item">
+                                    {{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar : item.decision_type_name_en) : (item.decision_type_name_en? item.decision_type_name_en : item.decision_type_name_ar)}}
+                                </ng-template>
+                                <ng-template ng-option-tmp let-item="item">
+                                    <span [title]="item.name"
+                                        class="ng-option-label">{{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar : item.decision_type_name_en) : (item.decision_type_name_en? item.decision_type_name_en : item.decision_type_name_ar)}}</span>
+                                </ng-template>
+                            </ng-select>
+                        </div>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(decisionForm,'decision_type', 'required')">
+                            {{'MEETINGS.VOTE.VALIDATION.DECISION_TYPE' | translate}}
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-3 mt-5">
+                        <label  for="secretDecision" class="checkbox MandatoryAsterisk">
+                            <input class="mr-2" type="checkbox" [(ngModel)]="decision.is_secret" 
+                                [checked]="decision.is_secret" (change)="changeIsSecret()"
+								name="issecret" #issecret="ngModel"
+								[disabled]="decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet">
+                                <span></span>{{'CIRCULAR_DECISIONS.ADD.IS_SECRET' | translate }}&nbsp;
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+					<div class="col-lg-6 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.COMMITTEES' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" name="committee" #committee="ngModel"
+								placeholder="{{'REVIEWS_ROOM.ADD.SELECT_COMMITTEE' | translate}}" [(ngModel)]="decision.committee_id"
+								(change)="getCommitteeUsers(true)" required
+								[disabled]="decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet">
+								<ng-option *ngFor="let committee of committees" [value]="committee.id" [hidden]="true">
+									{{isArabic? committee.committee_name_ar : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'committee', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.COMMITTEE' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'REVIEWS_ROOM.ADD.ASSIGN_TO' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" [disabled]="committeeUsers.length == 0 || (decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet)" [multiple]="true" [hideSelected]="true" required
+								name="users" #users="ngModel" placeholder="{{'REVIEWS_ROOM.ADD.SELECT_ASSIGN_TO' | translate}}" [(ngModel)]="decision.vote_users_ids">
+								<ng-option *ngFor="let item of committeeUsers" [value]="item.id">
+									{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name : item.name_ar)}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'users', 'required') || !edit">
+							{{'REVIEWS_ROOM.VALIDATION.ASSIGN_TO' | translate}}
+						</div>
+					</div>
+                </div>
+                <div class="form-group m-form__group row">
+					<div class="col-lg-6 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.START_DATE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" required
+								   [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle();endDate.close();$event.stopPropagation();" (dateSelect)="startDate.close()" (document:click)="decideClosure($event,startDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="startTime" [(ngModel)]="startTimeModel"
+											(ngModelChange)="changeTime()" [meridian]="_startTimemeridian"
+											 class="time-picker-direction">
+							</ngb-timepicker>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'startDate', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.START_DATE' | translate}}
+                        </div>
+                        <div class="error text-danger form-control-feedback" *ngIf="timeToError">
+                            {{'CIRCULAR_DECISIONS.VALIDATION.SCHEDULEVALIDATION' | translate}}
+                        </div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'REVIEWS_ROOM.ADD.END_DATE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" required
+								   [(ngModel)]="endDateModel" ngbDatepicker #endDate="ngbDatepicker" [minDate]="startDateModel">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle();startDate.close();$event.stopPropagation();" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="endTime" [(ngModel)]="endTimeModel"
+											(ngModelChange)="changeTime()" [meridian]="_endTimemeridian"
+											class="time-picker-direction">
+							</ngb-timepicker>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(decisionForm,'endDate', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.END_DATE' | translate}}
+						</div>
+					</div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-12" style='min-height:225px;'>
+						<m-shared-add-section class="d-flex justify-content-center" [isEditable]="!(decision.vote_result_status_id && decision.vote_result_status_id != voteResultStatusesEnum.noVotesYet)" [attachments]="attachments"></m-shared-add-section>
+					</div>
+                </div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row mt-5">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" [disabled]="submitted" joyrideStep="saveCircularDecision" [title]="'TUTORIALGUIDE.SAVE_CIRCULAR_DECISION_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_CIRCULAR_DECISION_BODY' | translate" [stepPosition]="isArabic?'left': 'right'">
+								{{'BUTTON.SAVE' | translate}} <i class="fa fa-check" aria-hidden="true"></i>
+								<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+							</button>
+							<button type="reset" (click)="redirect()"
+								class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</ng-container>
+
+</m-portlet>

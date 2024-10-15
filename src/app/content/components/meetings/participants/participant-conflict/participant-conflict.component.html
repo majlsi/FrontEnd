@@ -1,0 +1,60 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{'MEETINGS.PARTICIPANTS.CONFLICTS.CHECKCONFLICTS' | translate}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div>
+        <div class="form-group m-form__group">
+            <div class="mat-table__wrapper">
+                <table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="meetingParticipants" matSort matSortActive="id" matSortDirection="desc"
+                    matSortDisableClear *ngIf="meetingParticipants.length > 0">
+                    <ng-container matColumnDef="name">
+                        <th *matHeaderCellDef mat-sort-header>
+                            {{'MEETINGS.PARTICIPANTS.CONFLICTS.USERNAME' |translate}}
+                        </th>
+                        <td *matCellDef="let meetingParticipant">
+                            {{isArabic? (meetingParticipant.name_ar? meetingParticipant.name_ar : meetingParticipant.name) : (meetingParticipant.name? meetingParticipant.name : meetingParticipant.name_ar)}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="meeting_title">
+                        <th *matHeaderCellDef mat-sort-header>
+                            {{'MEETINGS.PARTICIPANTS.CONFLICTS.MEETINGT_TILTLE' |translate}}
+                        </th>
+                        <td *matCellDef="let meetingParticipant">
+							{{isArabic? (meetingParticipant.meeting_title_ar? meetingParticipant.meeting_title_ar : meetingParticipant.meeting_title_en) : (meetingParticipant.meeting_title_en? meetingParticipant.meeting_title_en : meetingParticipant.meeting_title_ar)}}
+                        </td>
+					</ng-container>
+					<ng-container matColumnDef="meeting_schedule_from">
+						<th *matHeaderCellDef mat-sort-header>
+							{{'MEETINGS.PARTICIPANTS.CONFLICTS.SCHEDULEFROM' |translate}}
+						</th>
+						<td *matCellDef="let meetingParticipant">
+							{{meetingParticipant.meeting_schedule_from | date:'d-M-yy, h:mm a'}}
+						</td>
+					</ng-container>
+					<ng-container matColumnDef="meeting_schedule_to">
+						<th *matHeaderCellDef mat-sort-header>
+							{{'MEETINGS.PARTICIPANTS.CONFLICTS.SCHEDULETO' |translate}}
+						</th>
+						<td *matCellDef="let meetingParticipant">
+							{{meetingParticipant.meeting_schedule_to | date:'d-M-yy, h:mm a'}}
+						</td>
+					</ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+				</table>
+				<div class="mat-table__message" *ngIf="meetingParticipants.length == 0">
+						{{'MEETINGS.PARTICIPANTS.CONFLICTS.EMPTY' | translate}}
+				</div>
+
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<button class="btn btn-link" (click)="open(content)"[hidden]="!canEdit">
+<i class="la la-check"></i> &nbsp;{{'MEETINGS.PARTICIPANTS.CONFLICTS.CHECKCONFLICTS' | translate}}
+</button>

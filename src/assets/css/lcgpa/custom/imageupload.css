@@ -1,0 +1,45 @@
+
+.imgLogo {
+    background-color: white;
+    border-color: #34607B;
+}
+.imgLogo .fa-image {
+    color: #34607B;
+}
+
+.enz_editImg {
+    background-color: #000;
+    background-color: rgba(0, 0, 0, .7);
+    color: #fff;
+}
+
+.m-form__group--org_avtr p {
+    color: #555;
+}
+
+/*REGISTER */
+
+.m-login .imgLogo {
+    background-color: white;
+    border-color: #34607B;
+}
+
+.m-login .m-form__group--org_avtr h3 {
+    color: #fff;
+}
+
+.m-login .m-form__group--org_avtr p {
+    color: rgba(247, 246, 249, 0.5);
+}
+.m-login .imgLogo .fa-image {
+    color: #34607B;
+}
+
+
+.m-form__group--profile_img .org_avtr.profile-img--large.imgLogo .rounded {
+        background-color: #fff;
+}
+.m-form__group--profile_img.m-form__group--org_avtr p {
+
+    color: #bbb;
+}

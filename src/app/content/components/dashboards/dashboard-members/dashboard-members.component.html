@@ -1,0 +1,40 @@
+<div class="row mt-2">
+  <div class="col-12">
+    <div class="m-widget1 p-0">
+      <div class="m-widget1__item py-2" *ngFor="let stat of membersCount;let i = index">
+        <div class="row m-row--no-padding align-items-center">
+          <div class="col">
+            <h3 class="m-widget1__title">
+              {{isArabic? (stat.role_name_ar? stat.role_name_ar : stat.role_name) :
+              (stat.role_name? stat.role_name : stat.role_name_ar)}} </h3>
+          </div>
+          <div class="col m--align-right">
+            <span class="m-widget1__number "
+              [ngClass]="{'m--font-primary': i==0,'m--font-success':i ==1,'m--font-brand':i ==2,'m--font-danger':i == 3,'m--font-info-dark':i ==4}">
+              {{stat.count}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex justify-content-end" *ngIf="members.length && this.listFlag">
+  <div class="mt-1 m--font-bolder"><a class="m--font-info" [routerLink]="['/users']">{{'DASHBOARD.SHOW_ALL'|translate}}<i  class="align-middle la" [ngClass]="{'la-arrow-left ':isArabic,'la-arrow-right ': !isArabic}"></i></a>
+  </div>
+</div>
+<div class="bg-white--content m--border-radius-15 enz--relative mt-2" *ngFor="let member of members">
+  <div class="d-flex align-items-center justify-content-between  p-3">
+    <div class="d-flex align-items-center">
+      <span><i class="fa fa-user-circle align-middle font-32"></i></span>
+      <div class="mx-2">
+        <h5 class="m-0"> {{isArabic? (member.name_ar? member.name_ar : member.name) :
+          (member.name? member.name : member.name_ar)}}</h5>
+
+        <span class=" font-sm"> {{isArabic? (member.role_name_ar? member.role_name_ar : member.role_name) :
+          (member.role_name? member.role_name : member.role_name_ar)}}</span>
+
+      </div>
+    </div>
+  </div>
+</div>

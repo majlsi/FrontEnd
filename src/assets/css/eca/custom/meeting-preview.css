@@ -1,0 +1,31 @@
+.agenda-media {
+	background: #fdfcfa;
+    border: 1px solid #f5f4f1;
+}
+
+.agenda-media .m-demo .m-demo__preview {
+    background: #fdfcfa;
+    border-top: 1px solid #f5f4f1;
+}
+
+.more:first-of-type {
+    color: #aeaeae;
+    border-top: 1px dashed #d9d9d9;
+}
+
+.m-radio:hover>input:not([disabled]):checked ~ span,
+.m-radio>input:checked ~ span,
+.m-checkbox:hover>input:not([disabled]):checked ~ span,
+.m-checkbox>input:checked ~ span{
+    background: #005D88;
+    border-color: #005D88;
+    color: #fff;
+    box-shadow: 0 0 15px 5px rgba(0, 0, 0, 0.15) !important;
+}
+
+.m-radio:hover>input:not([disabled]):checked ~ span i,
+.m-radio>input:checked ~ span i,
+.m-checkbox:hover>input:not([disabled]):checked ~ span i,
+.m-checkbox>input:checked ~ span i {
+    color: #fff;
+}

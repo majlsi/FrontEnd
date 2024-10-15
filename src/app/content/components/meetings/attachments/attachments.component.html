@@ -1,0 +1,36 @@
+<div class="pb-3 px-3 pt-0">
+  <div class="row">
+    <div class="col-lg-12">
+      <!-- <h3>
+        {{'MEETINGS.ATTACHMENTS.ADD.ADDATTACHMENTS' | translate}}
+      </h3> -->
+    </div>
+  </div>
+  <m-shared-add-section class="d-flex justify-content-center" [isEditable]="canEditMeeting" [attachments]="attachments"></m-shared-add-section>
+
+  <!-- <div class="mat-table__wrapper mat-table__message" *ngIf="attachments.length == 0 && !canEditMeeting">{{'MEETINGS.ATTACHMENTS.VALIDATION.ATTACHMENTS_NOT_EXIST' | translate }}</div> -->
+
+  <form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate #attachmentForm="ngForm"
+    (ngSubmit)="save(attachmentForm)">
+
+    <div class="m-form__actions m-form__actions--solid">
+      <div class="row" style="margin-top: 40px;">
+        <div class="col-lg-12 m--align-left">
+          <button type="submit" class="btn btn-primary" [disabled]="submitted" *ngIf="canEditMeeting">
+              {{'BUTTON.SAVE' | translate}}
+              <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+          </button>
+          <button type="button" class="btn btn-primary" (click)="saveMeetingVersion(attachmentForm)" [disabled]="submitted"
+					*ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+            {{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+            <i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+					</button>
+          <button type="reset" (click)="redirect()" class="btn btn-secondary">
+              {{'BUTTON.CANCEL' | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>

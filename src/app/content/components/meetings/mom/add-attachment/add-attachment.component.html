@@ -1,0 +1,37 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{'MEETINGS.MOM.ADD.ATTACHMENTS' | translate}}
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+	<form novalidate #attachmentForm="ngForm" (ngSubmit)="save(attachmentForm); attachmentForm.valid && this.dropzone.files.length !== 0 && fileSizeError.length == 0 && c('Save click');">
+        <div class="modal-body py-3">
+            <div class="row">
+                <div class="col-lg-12" style='min-height:200px;'>
+					<dropzone *ngIf="type === 'component'" class="dropzone-container" [config]="config"   (init)="onUploadInit($event)"
+					[disabled]="disabled" message="{{'MEETINGS.MOM.ADD.MESSAGE' | translate}}"></dropzone>
+                    <div *ngIf="type === 'directive'" class="dropzone dropzone-container" [dropzone]="config"
+                        [disabled]="disabled" (init)="onUploadInit($event)"></div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+            <button class="btn btn-default" mat-button
+                (click)="close();d('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+            <button class="btn btn-primary" mat-button type="submit"
+                cdkFocusInitial>{{'BUTTON.UPLOAD' | translate}}</button>
+        </div>
+    </form>
+</ng-template>
+
+
+<span class="m-badge m-badge--btn editBadge" (click)="open(content)">
+        <i class="fa fa-file-upload"></i>
+</span>
+

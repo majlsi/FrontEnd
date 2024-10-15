@@ -1,0 +1,327 @@
+<!--Begin::Section-->
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ "DASHBOARD.COMMITTEESDASHBOARD" | translate }}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools> </ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="row">
+			<div class="col-12 col-lg-12">
+				<div class="row">
+					<div class="col-12 col-xl-12 pl-2">
+						<div class="row">
+							<div class="col-md-12 col-lg-6 col-xl-3 p-2">
+								<div class="bg-white--content h-100">
+									<!--begin::Total temporary committees-->
+									<div class="m-widget24 py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand simple-widget-circle-icon default">
+												<img src="assets/app/media/img/icons/clock.svg" alt="clock-icon" />
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column px-4 mt-3">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{ numOfTemporaryCommittiees?.num_of_temporary_committees }}
+											</h3>
+											<span class="m-widget24__title m-0">
+												{{ "COMMITTEES.LIST.TEMPORARYCOMMITTEESLIST" | translate }}
+											</span>
+										</div>
+									</div>
+									<!--end::Total temporary committees-->
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-3 p-2">
+								<div class="bg-white--content h-100">
+									<!--begin::Total temporary committees-->
+									<div class="m-widget24 py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand simple-widget-circle-icon default">
+												<img src="assets/app/media/img/icons/tick-circle.svg" alt="tick-circle-icon" />
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column px-4 mt-3">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{ numOfPermanentCommittiees?.num_of_permanent_committees }}
+											</h3>
+											<span class="m-widget24__title m-0">
+												{{ "COMMITTEES.LIST.PERMANENTCOMMITTEES" | translate }}
+											</span>
+										</div>
+									</div>
+									<!--end::Total temporary committees-->
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-3 p-2">
+								<div class="bg-white--content h-100">
+
+									<div class="m-widget24 py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand simple-widget-circle-icon default">
+												<img src="assets/app/media/img/icons/people.svg" alt="people-icon" />
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column px-4 mt-3">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{ numOfMembersOfStandingCommittiees?.num_of_standing_committee_member }}
+											</h3>
+											<span class="m-widget24__title m-0">
+												{{ "COMMITTEES.LIST.NUMBEROFMEMBERSINPERMANENTCOMMITTEES" | translate }}
+											</span>
+										</div>
+									</div>
+
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-3 p-2">
+								<div class="bg-white--content h-100">
+
+									<div class="m-widget24 py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand simple-widget-circle-icon default">
+												<img src="assets/app/media/img/icons/profile-remove.svg" alt="profile-remove-icon" />
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column px-4 mt-3">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{ numOfFreezedCommitteeMembers?.num_of_Freezed_committee_member }}
+											</h3>
+											<span class="m-widget24__title m-0">
+												{{ "COMMITTEES.LIST.NUMBEROFFREEZEDMEMBERS" | translate }}
+											</span>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<ng-container mPortletBody>
+		<div class="row">
+			<!--! committee days passed table  -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100">
+					<div class="d-flex justify-content-between">
+						<div class="flex-grow-1">
+							<h4 class="m-portlet__head-text mb-4">
+								{{ "COMMITTEES.LIST.STATISTICSFORPASSEDDAYS" | translate }}
+							</h4>
+						</div>
+						<div class="flex-shrink-0">
+							<a class="px-4 text-primary" (click)="redirectToDaysPassedStatistic()" >{{ "TASKS_MANAGEMENT.SHOW_ALL" | translate }}</a>
+						</div>
+					</div>
+
+					<div class="px-lg-0 px-3">
+						<div>
+							<table mat-table class="table m-table table-hover clickable mat-table table-offwhite-header" [dataSource]="passedDaysDatasource">
+								<ng-container matColumnDef="committee_name">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.COMMITTEENAME" | translate }}</th>
+									<td *matCellDef="let committee">{{ isArabic ? committee.committee_name_ar : committee.committee_name_en ? committee.committee_name_en : committee.committee_name_ar }}</td>
+								</ng-container>
+
+								<ng-container matColumnDef="passed_days">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.NUMBEROFPASSEDDAYS" | translate }}</th>
+									<td *matCellDef="let committee">{{ committee.days_passed }}</td>
+								</ng-container>
+
+								<tr mat-header-row *matHeaderRowDef="passedDaysDisplayedColumns"></tr>
+								<tr mat-row *matRowDef="let row; columns: passedDaysDisplayedColumns"></tr>
+							</table>
+							<div class="mat-table__message" *ngIf="passedDaysDatasourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+						</div>
+					</div>
+					<!-- start: BOTTOM -->
+					<!-- <div class="mat-table__bottom">
+			<mat-paginator [pageSize]="5"  ></mat-paginator>
+		</div> -->
+				</div>
+			</div>
+			<!--! committee remain percentage table  -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100">
+					<div class="d-flex justify-content-between">
+						<div class="flex-grow-1">
+							<h4 class="m-portlet__head-text mb-4">
+								{{ "COMMITTEES.LIST.COMPLETIONPERCENTAGE" | translate }}
+							</h4>
+						</div>
+						<div class="flex-shrink-0">
+							<a class="px-4 text-primary" (click)="redirectToCommitteeRemainPercentage()">{{ "TASKS_MANAGEMENT.SHOW_ALL" | translate }}</a>
+						</div>
+					</div>
+
+					<div class="px-lg-0 px-3">
+						<div>
+							<table mat-table class="table m-table table-hover clickable mat-table table-offwhite-header" [dataSource]="committeeRemainPercentageToFinishDatasource">
+								<ng-container matColumnDef="committee_name">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.COMMITTEEHASLESSTHAN20" | translate }}</th>
+									<td *matCellDef="let committee">{{ isArabic ? committee.committee_name_ar : committee.committee_name_en ? committee.committee_name_en : committee.committee_name_ar }}</td>
+								</ng-container>
+
+								<ng-container matColumnDef="percentage">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.PERCENTAGE" | translate }}</th>
+									<td *matCellDef="let committee">{{ committee.remain_to_finished }}</td>
+								</ng-container>
+
+								<tr mat-header-row *matHeaderRowDef="committeeRemainPercentageToFinishDisplayedColumns"></tr>
+								<tr mat-row *matRowDef="let row; columns: committeeRemainPercentageToFinishDisplayedColumns"></tr>
+							</table>
+							<div class="mat-table__message" *ngIf="committeeRemainPercentageToFinishDatasourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+						</div>
+					</div>
+					<!-- start: BOTTOM -->
+					<!-- <div class="mat-table__bottom">
+						<mat-paginator [pageSize]="5"  ></mat-paginator>
+					</div> -->
+				</div>
+			</div>
+			<!--! Most Member Participate table  -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100">
+					<div class="d-flex justify-content-between">
+						<div class="flex-grow-1">
+							<h4 class="m-portlet__head-text mb-4 ">
+								{{ "COMMITTEES.LIST.MOSTMEMBERSPARTICIPATEINCOMMITTEES" | translate }}
+							</h4>
+						</div>
+						<div class="flex-shrink-0">
+							<a class="px-4 text-primary" (click)="redirectToMostMemberParticipate()">{{ "TASKS_MANAGEMENT.SHOW_ALL" | translate }}</a>
+						</div>
+					</div>
+
+					<div class="px-lg-0 px-3">
+						<div>
+							<table mat-table class="table m-table table-hover clickable mat-table table-offwhite-header" [dataSource]="mostMemberParticipateDatasource">
+								<ng-container matColumnDef="member_name">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.MEMBERNAME" | translate }}</th>
+									<td *matCellDef="let member">{{ isArabic ? member.name_ar ? member.name_ar : member.name : member.name? member.name : member.name_ar }}</td>
+								</ng-container>
+
+								<ng-container matColumnDef="committee_number">
+									<th *matHeaderCellDef>{{ "DASHBOARD.COMMITTEES_NUMBER" | translate }}</th>
+									<td *matCellDef="let member">{{ member.number_of_committees }}</td>
+								</ng-container>
+
+								<tr mat-header-row *matHeaderRowDef="mostMemberParticipateDisplayedColumns"></tr>
+								<tr mat-row *matRowDef="let row; columns: mostMemberParticipateDisplayedColumns"></tr>
+							</table>
+							<div class="mat-table__message" *ngIf="mostMemberParticipateDatasourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<!--! number of committees according to approved to form committtee table  -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100">
+					<div class="d-flex justify-content-between">
+						<div class="flex-grow-1">
+							<h4 class="m-portlet__head-text mb-4">
+								{{ "COMMITTEES.LIST.NUMBEROFCOMMITTEESACCORDINGTOAPPROVEDTOFORMCOMMITTEE" | translate }}
+							</h4>
+						</div>
+						<div class="flex-shrink-0">
+							<a class="pr-4 text-primary" (click)="redirectToNumberOfCommitteesPerDecisionResponsible()">{{ "TASKS_MANAGEMENT.SHOW_ALL" | translate }}</a>
+						</div>
+					</div>
+
+					<div class="px-lg-0 px-3">
+						<div>
+							<table mat-table class="table m-table table-hover clickable mat-table table-offwhite-header" [dataSource]="numberOfCommitteesAccordingToCommitteeDecisionResponsibleDatasource">
+								<ng-container matColumnDef="member_name">
+									<th *matHeaderCellDef>{{ "COMMITTEES.LIST.MEMBERNAME" | translate }}</th>
+									<td *matCellDef="let member">{{ isArabic ? member.name_ar ? member.name_ar : member.name : member.name? member.name : member.name_ar }}</td>
+								</ng-container>
+
+								<ng-container matColumnDef="committee_number">
+									<th *matHeaderCellDef>{{ "DASHBOARD.COMMITTEES_NUMBER" | translate }}</th>
+									<td *matCellDef="let member">{{ member.number_of_committees }}</td>
+								</ng-container>
+
+								<tr mat-header-row *matHeaderRowDef="numberOfCommitteesAccordingToCommitteeDecisionResponsibleDisplayedColumns"></tr>
+								<tr mat-row *matRowDef="let row; columns: numberOfCommitteesAccordingToCommitteeDecisionResponsibleDisplayedColumns"></tr>
+							</table>
+							<div class="mat-table__message" *ngIf="numberOfCommitteesAccordingToCommitteeDecisionResponsibleDatasourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!--! Committees statistics -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100" style='direction:ltr;'>
+					<div >
+							<div>
+								<h4 class="m-portlet__head-text mb-4">
+									{{ "COMMITTEES.LIST.COMMITTEESTATISTICS" | translate }}
+								</h4>
+							</div>
+						<div class="row align-items-center m-widget14__chart">
+								<div class="col ngx-charts-advanced-pie-chart-col">
+									<ngx-charts-advanced-pie-chart [view]='view'
+									[results]="isArabic? committeesStatuses?.CommitteeStatisticsDataAr : committeesStatuses?.CommitteeStatisticsDataEn"
+									[scheme]="{ domain: [ '#30E07B', '#E75691', '#00C0FF', '#5D6A75' ,'#F19F00' ] }">
+									</ngx-charts-advanced-pie-chart>
+
+
+									<img *ngIf="committeesStatuses?.is_no_data" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;"  alt="Logo">
+
+
+								</div>
+
+							</div>
+					</div>
+			</div>
+			</div>
+
+			<!--! Committees Members Evaluations percentage -->
+			<div class="col-md-12 col-lg-6 col-xl-4 p-2">
+				<div class="bg-white--content m--padding-15 h-100" style='direction:ltr;'>
+					<div >
+							<div>
+								<h4 class="m-portlet__head-text mb-4">
+									{{ "COMMITTEES.LIST.MEMBEREVALATIONPERCENTAGES" | translate }}
+								</h4>
+							</div>
+						<div class="row align-items-center m-widget14__chart">
+								<div class="col ngx-charts-advanced-pie-chart-col">
+									<ngx-charts-advanced-pie-chart [view]='view'
+									[results]="isArabic? percentageOfEvaluation?.evaluationStatisticsDataAr : percentageOfEvaluation?.evaluationStatisticsDataEn"
+									[scheme]="{ domain: [ '#30E07B', '#E75691', '#00C0FF', '#5D6A75' ,'#F19F00' ] }">
+									</ngx-charts-advanced-pie-chart>
+
+
+									<img *ngIf="percentageOfEvaluation?.is_no_data" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;"  alt="Logo">
+
+
+								</div>
+
+							</div>
+					</div>
+			</div>
+			</div>
+
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>
+<!--End::Section-->

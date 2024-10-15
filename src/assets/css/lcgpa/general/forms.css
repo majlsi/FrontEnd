@@ -1,0 +1,37 @@
+.form-control.focus, .form-control:focus {
+	border-color: #cac6a1;
+}
+.m-form .m-form__actions{
+	border-top: 1px solid #ebedf2;
+	background-color:#fff;
+
+}
+.m-form .m-form__actions.m-form__actions--solid{
+	background-color:#fff;
+}
+ngb-typeahead-window a.active,
+ngb-typeahead-window .dropdown-item.active {
+    background: #ebedf2!important;
+    color: #121212!important;
+}
+
+.grey-sm {
+    color: #808080;
+}
+.ngb-dp-weekday{
+    color: #34607B;
+}
+
+.btn-link {
+	color: #343a40;
+}
+.btn-link:hover {
+	color: #121212;
+}
+
+
+.form-control[disabled] {
+    border-color: #dfdfdf;
+    color: #6f727d;
+	background-color: #f0f0f0;
+}

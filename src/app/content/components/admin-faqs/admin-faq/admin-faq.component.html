@@ -1,0 +1,90 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'FAQS.ADD.ADDNEW' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #faqForm="ngForm" (ngSubmit)="save(faqForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="faqquestionar">{{'FAQS.ADD.FAQ_QUESTION_AR' | translate}}</label>
+						<input type="text" placeholder="{{'FAQS.ADD.FAQQUESTIONAR' | translate}}" class="form-control" id="faqquestionar"
+						name="faqquestionar" [(ngModel)]="faq.faq_question_ar"	#faqquestionar="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(faqForm,'faqquestionar', 'required')">{{'FAQS.VALIDATION.FAQ_QUESTIONAR' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="faqquestionen">{{'FAQS.ADD.FAQ_QUESTION_EN' | translate}}</label>
+						<input type="text" class="form-control m-input" id="faqquestionen"
+						name="faqquestionen" placeholder="{{'FAQS.ADD.FAQ_QUESTION_EN' | translate}}" [(ngModel)]="faq.faq_question_en"
+						#faqquestionen="ngModel">
+					</div>
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12">
+						<label for="faqanswerar">{{'FAQS.ADD.FAQ_ANSWER_AR' | translate}}</label>
+						<textarea class="form-control  mb-2"  rows="3" [maxlength]="1000"
+							placeholder="{{'FAQS.ADD.FAQANSWERAR' | translate}}"  name="faqanswerar" [(ngModel)]="faq.faq_answer_ar" id="faqanswerar" #faqanswerar="ngModel" required></textarea>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(faqForm,'faqanswerar', 'required')">{{'FAQS.VALIDATION.FAQ_ANSWERAR' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12">
+						<label for="faqansweren">{{'FAQS.ADD.FAQANSWEREN' | translate}}</label>
+
+						<textarea class="form-control  mb-2"  rows="3" [maxlength]="1000"
+							placeholder="{{'FAQS.ADD.FAQANSWEREN' | translate}}"  name="faqansweren" [(ngModel)]="faq.faq_answer_en" id="faqansweren" #faqansweren="ngModel"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-9" >
+						<label for="faqen">{{'FAQS.ADD.FAQSECTION' | translate}}</label>
+						<ng-select class="custom"  id="faqsection" name="faqsection" [searchable]="true"
+						placeholder="{{'FAQS.ADD.FAQSECTION' | translate}}"
+							[(ngModel)]="faq.section_id" #faqsection="ngModel" required>
+									<ng-option *ngFor="let section of faqSections" [value]="section.id">
+										{{isArabic? section.faq_section_name_ar : section.faq_section_name_en}}
+									</ng-option>
+						</ng-select>
+
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(faqForm,'faqsection', 'required')">{{'FAQS.VALIDATION.FAQ_SECTION' | translate}}
+						</div>
+					</div>
+					<div class="col-3 d-flex">
+						<label for="isactive">{{'FAQS.LIST.IS_ACTIVE' | translate}}</label>
+						<input class="mr-2" type="checkbox" [(ngModel)]="faq.is_active"
+						[checked]="faq.is_active" style="margin-top: 50px;width: 20px;height: 20px;"
+						name="isactivet">
+					</div>
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted">{{'BUTTON.SAVE' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

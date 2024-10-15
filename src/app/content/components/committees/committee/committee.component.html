@@ -1,0 +1,618 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<!-- ! add new Committee btn-->
+	<ng-container mPortletHeadTitle>
+		<h3 class="m-portlet__head-text">
+			{{ "COMMITTEES.ADD.ADDNEWCOMMITTEE" | translate }}
+		</h3>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<div>
+			<button (click)="unfreeze()" *ngIf="committee.isFreezed && committee.canRequestUnfreeze" class="btn btn-primary">
+				{{ "COMMITTEES.ADD.UNFREEZE" | translate }}
+			</button>
+
+			<button type="button" (click)="exportCommittee()" class="btn btn-primary" *ngIf="committeeId && canExport">
+				<i class="fa fa-file-download"></i>
+				{{ "COMMITTEES.ADD.EXPORTCOMMITTEEDATA" | translate }}
+			</button>
+
+			<button type="button" (click)="reminderCommitteeMembers()" class="btn btn-primary" *ngIf="committeeId && committee.canSendReminder">
+				<i class="fa fa-file-download"></i>
+				{{ "COMMITTEES.ADD.REMINDER_BTN_COMMITTEE" | translate }}
+			</button>
+		</div>
+	</ng-container>
+
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+
+	<ng-container mPortletBody>
+		<!-- ! add commitee form-->
+		<div class="bg-white--content m--padding-15">
+			<div [hidden]="error.length == 0" *ngFor="let item of error" class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+				<span *ngFor="let field of item">
+					{{ isArabic ? field?.message_ar : field?.message ? field?.message : field?.message_ar }}
+				</span>
+			</div>
+			<form class="m-form m-form--fit m-form--label-align-right" novalidate #committeeForm="ngForm" (ngSubmit)="save(committeeForm)">
+				<div *ngIf="customSetting">
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "COMMITTEES.ADD.DECISION_NUMBER" | translate }}</label>
+							<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.DECISIONNUMBER' | translate }}" class="form-control" id="decisionNumber" name="decisionNumber" [(ngModel)]="committee.decision_number" #decisionNumber="ngModel" pattern="^\d+(\.\d+)?$" required />
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'decisionNumber', 'required')">
+								{{ "COMMITTEES.VALIDATION.DECISION_NUMBER" | translate }}
+							</div>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'decisionNumber', 'pattern')">
+								{{ "COMMITTEES.VALIDATION.DECISION_NUMBER_VALID" | translate }}
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<label>{{ "COMMITTEES.ADD.DECISION_DATE" | translate }}</label>
+							<div class="input-group">
+								<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="decisionDate" [(ngModel)]="decisionDateModel" ngbDatepicker #decisionDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" required />
+								<div *ngIf="!committee.isFreezed" class="input-group-append position-relative">
+									<span class="clear-input" (click)="clearDate('decisionDate')">
+										<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+									</span>
+									<button class="btn btn-outline-secondary calendar" (click)="decisionDate.toggle(); $event.stopPropagation()" (dateSelect)="decisionDate.close()" (document:click)="decideClosure($event, decisionDate)" type="button">
+										<i class="fa fa-calendar-alt"></i>
+									</button>
+								</div>
+							</div>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'decisionDate', 'required')">
+								{{ "COMMITTEES.VALIDATION.DECISION_DATE" | translate }}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.COMMITTEENAMEAR" | translate }}</label>
+						<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_NAME_AR' | translate }}" class="form-control" id="committeenameAR" name="committeenameAR" [(ngModel)]="committee.committee_name_ar" #committeenameAR="ngModel" required />
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeenameAR', 'required')">
+							{{ "COMMITTEES.VALIDATION.COMMITTEENAMEAR" | translate }}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.COMMITTEENAME" | translate }}</label>
+						<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEENAME' | translate }}" class="form-control" id="committeename" name="committeename" [(ngModel)]="committee.committee_name_en" #committeename="ngModel" />
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<ng-template #rt let-r="result" let-t="term">
+						<div>
+							<ngb-highlight *ngIf="isArabic || !r.name" [result]="r.name_ar" [term]="t"></ngb-highlight>
+							<ngb-highlight *ngIf="(!isArabic && r.name) || !r.name_ar" [result]="r.name" [term]="t"></ngb-highlight>
+						</div>
+						<div class="grey-sm" *ngIf="r.role">
+							<ngb-highlight *ngIf="isArabic || !r.role.role_name" [result]="r.role.role_name_ar" [term]="t"></ngb-highlight>
+							<ngb-highlight *ngIf="!isArabic && r.role.role_name" [result]="r.role.role_name" [term]="t"> </ngb-highlight>
+						</div>
+						<div class="grey-sm" *ngIf="!r.role">
+							<ngb-highlight [result]="'COMMITTEES.ADD.NEWMEMBER' | translate" [term]="t"></ngb-highlight>
+						</div>
+					</ng-template>
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.COMMITTEEHEAD" | translate }}</label>
+						<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_HEAD' | translate }}" class="form-control" id="committeehead" name="committeehead" [(ngModel)]="committee.committee_head" #committeehead="ngModel" [ngbTypeahead]="search" [inputFormatter]="formatter" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" #instance="ngbTypeahead" (ngModelChange)="getSearchForUsers($event)" [resultTemplate]="rt" (selectItem)="onSelectHead($event)" required />
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeehead', 'required')">
+							{{ "COMMITTEES.VALIDATION.COMMITTEEHEAD" | translate }}
+						</div>
+						<div class="error text-danger form-control-feedback" *ngIf="message.length > 0">{{ message }}</div>
+						<div class="error text-danger form-control-feedback" *ngIf="message.length > 0">{{ message }}</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.COMMITTEEORGANISER" | translate }}</label>
+						<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_ORGANISER' | translate }}" class="form-control" id="committeeOrganiser" name="committeeOrganiser" [(ngModel)]="committee.committee_organiser" #committeeOrganiser="ngModel" [ngbTypeahead]="search" [inputFormatter]="formatter" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" #instance="ngbTypeahead" (ngModelChange)="getSearchForCommitteeOrganisers($event)" (selectItem)="onSelectOrganizer($event)" [resultTemplate]="rt" required />
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeeOrganiser', 'required')">
+							{{ "COMMITTEES.VALIDATION.COMMITTEEORGANISER" | translate }}
+						</div>
+						<div class="error text-danger form-control-feedback" *ngIf="messageOrganiser.length > 0">
+							{{ messageOrganiser }}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row" *ngIf="!customSetting">
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.START_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()" />
+							<div *ngIf="!committee.isFreezed" class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('startDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle(); endDate.close(); $event.stopPropagation()" (dateSelect)="startDate.close()" (document:click)="decideClosure($event, startDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" />
+							<div *ngIf="!committee.isFreezed" class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('endDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle(); startDate.close(); $event.stopPropagation()" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!isDateError">
+							{{ "COMMITTEES.VALIDATION.DATES" | translate }}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6" *ngIf="!removeCommitteeCode">
+						<label>{{ "COMMITTEES.ADD.COMMITTEE_CODE" | translate }}</label>
+						<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEECODE' | translate }}" class="form-control" id="committeeCode" name="committeeCode" [(ngModel)]="committee.committee_code" #committeeCode="ngModel" required />
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeeCode', 'required')">
+							{{ "COMMITTEES.VALIDATION.COMMITTEE_CODE" | translate }}
+						</div>
+					</div>
+					<div class="col-lg-6" *ngIf="customSetting">
+						<label>{{ "COMMITTEES.ADD.COMMITTEETYPE" | translate }}</label>
+						<ng-select [readonly]="committee.isFreezed" id="committeeType" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_TYPE' | translate }}" name="committeeType" [searchable]="true" [(ngModel)]="committee.committee_type" [multiple]="false" [items]="committeeTypes" [bindLabel]="committeeTypesBindLabel" (ngModelChange)="onCommitteeTypeSelection()" required>
+							<ng-template ng-label-tmp let-item="item">
+								{{ isArabic ? (item.committee_type_name_ar ? item.committee_type_name_ar : item.committee_type_name_en) : item.committee_type_name_en ? item.committee_type_name_en : item.committee_type_name_ar }}
+							</ng-template>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name" class="ng-option-label">{{ isArabic ? (item.committee_type_name_ar ? item.committee_type_name_ar : item.committee_type_name_en) : item.committee_type_name_en ? item.committee_type_name_ar : item.committee_type_name_ar }}</span>
+							</ng-template>
+						</ng-select>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeeType', 'required')">
+							{{ "COMMITTEES.VALIDATION.COMMITTEETYPE" | translate }}
+						</div>
+					</div>
+					<div class="col-lg-6" *ngIf="committee?.committee_status_id == committeeStatusEnum.inProgress">
+						<label>{{ "COMMITTEES.LIST.COMMITTEESTATUS" | translate }}</label>
+						<input [readonly]="true" type="text" value="{{ committee?.committee_status?.committee_status_name_en}}" class="form-control"/>
+					</div>
+				</div>
+				<div class="form-group m-form__group row" *ngIf="customSetting && (showDatesFields || committee.committee_type_id == committeeTypeEnum.temporary)">
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.START_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()" required />
+							<div *ngIf="!committee.isFreezed" class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('startDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle(); endDate.close(); $event.stopPropagation()" (dateSelect)="startDate.close()" (document:click)="decideClosure($event, startDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'startDate', 'required')">
+							{{ "COMMITTEES.VALIDATION.STARTDATE" | translate }}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" required />
+							<div *ngIf="!committee.isFreezed" class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('endDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle(); startDate.close(); $event.stopPropagation()" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!isDateError">
+							{{ "COMMITTEES.VALIDATION.DATES" | translate }}
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'endDate', 'required')">
+							{{ "COMMITTEES.VALIDATION.ENDDATE" | translate }}
+						</div>
+					</div>
+				</div>
+
+				<div *ngIf="customSetting">
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "COMMITTEES.ADD.DECISIONRESPONSIBLE" | translate }}</label>
+							<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.DECISION_RESPONSIBLE' | translate }}" class="form-control" id="decisionResponsibleUser" name="decisionResponsibleUser" [(ngModel)]="committee.committee_responsible" #decisionResponsibleUser="ngModel" [ngbTypeahead]="search" [inputFormatter]="formatter" (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" #instance="ngbTypeahead" (ngModelChange)="getSearchForCommitteeResponsible($event)" [resultTemplate]="rt" (selectItem)="onSelectCommitteeResponsible($event)" required />
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'decisionResponsibleUser', 'required')">
+								{{ "COMMITTEES.VALIDATION.DECISIONRESPONSIBLE" | translate }}
+							</div>
+							<div class="error text-danger form-control-feedback" *ngIf="messageResponsible.length > 0">
+								{{ messageResponsible }}
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+							<label>{{ "COMMITTEES.ADD.COMMITTEEREASON" | translate }}</label>
+							<input [readonly]="committee.isFreezed" type="text" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_REASON' | translate }}" class="form-control" id="committeeReason" name="committeeReason" [(ngModel)]="committee.committee_reason" #committeeReason="ngModel" required />
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeeReason', 'required')">
+								{{ "COMMITTEES.VALIDATION.COMMITTEEREASON" | translate }}
+							</div>
+						</div>
+					</div>
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<div class="d-flex align-items-baseline justify-content-between">
+								<label>{{ "COMMITTEES.ADD.DECISION_DOCUMENT" | translate }} &nbsp;<span class="MandatoryAsterisk"></span> </label>
+								<div class="text-right">
+									<a (click)="downloadDecisionDocument()" class="m-widget4__icon col-md-12" style="margin-right: 0" *ngIf="committee.decision_document_url">
+										{{ "COMMITTEES.ADD.DOWNLOAD_DECISION_DOCUMENT" | translate }}
+										<i class="la la-download"></i>
+									</a>
+								</div>
+							</div>
+							<div class="input-group mr-3">
+								<label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" for="thefile2">
+									<input [attr.disabled]="committee.isFreezed" type="file" class="d-none" id="thefile2" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt" (change)="fileDecisionUrlChangeEvent($event)" #attachmentDecision="ngModel" name="attachmentDecision" (ngModel)="(attachmentDecisionUrl)" [required]="attachmentDecisionUrl ? null : true" />
+									<span id="fileName2" *ngIf="!attachmentDecisionUrl">{{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}</span>
+									<span id="fileName2" *ngIf="attachmentDecisionUrl">{{ attachmentDecisionUrl }}</span>
+									<span [attr.disabled]="committee.isFreezed" class="btn btn-default px-0 mx-0">{{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}</span>
+								</label>
+							</div>
+
+							<div class="error text-danger form-control-feedback" *ngIf="attachmentDecisionTypeError">
+								{{ "COMMITTEES.VALIDATION.ATTACHMENT_DECISION_UPLOAD_FILE_TYPE" | translate }}
+							</div>
+							<div class="error text-danger form-control-feedback" *ngIf="attachmentDecisionSizeError">
+								{{ attachmentDecisionSizeError }}
+							</div>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'attachmentDecision', 'required')">
+								{{ "COMMITTEES.VALIDATION.DECISIONDOCUMENT" | translate }}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="committeeHasNatureFeature">
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "COMMITTEES.ADD.COMMITTEETYPE" | translate }}</label>
+							<ng-select [readonly]="committee.isFreezed" id="committeeNature" placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_TYPE' | translate }}" name="committeeNature" [searchable]="true" [(ngModel)]="committee.committee_nature" [multiple]="false" [items]="committeeNatures" [bindLabel]="committeeNaturesBindLabel" (ngModelChange)="onCommitteeNatureSelection()" required>
+								<ng-template ng-label-tmp let-item="item">
+									{{ isArabic ? (item.committee_nature_name_ar ? item.committee_nature_name_ar : item.committee_nature_name_en) : item.committee_nature_name_en ? item.committee_nature_name_en : item.committee_nature_name_ar }}
+								</ng-template>
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.name" class="ng-option-label">{{ isArabic ? (item.committee_nature_name_ar ? item.committee_nature_name_ar : item.committee_nature_name_en) : item.committee_nature_name_en ? item.committee_nature_name_ar : item.committee_nature_name_ar }}</span>
+								</ng-template>
+							</ng-select>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'committeeNature', 'required')">
+								{{ "COMMITTEES.VALIDATION.COMMITTEETYPE" | translate }}
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col">
+						<label class="col-form-label">{{ "COMMITTEES.ADD.GOVERNANCE_REGULATION" | translate }} &nbsp;<span class="MandatoryAsterisk"></span> </label>
+					</div>
+					<div class="col ml-auto text-right">
+						<a (click)="downloadFile()" class="m-widget4__icon col-md-12" style="margin-right: 0" *ngIf="committee.governance_regulation_url">
+							{{ "COMMITTEES.ADD.DOWNLOAD_GOVERNANCE_REGULATION" | translate }}
+							<i class="la la-download"></i>
+						</a>
+					</div>
+					<div class="input-group mr-3 ml-3">
+						<label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" for="thefile">
+							<input [attr.disabled]="committee.isFreezed" type="file" class="d-none" id="thefile" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt" (change)="fileChangeEvent($event)" #governanceRegulation="ngModel" name="governanceRegulation" (ngModel)="(attachmentUrl)" />
+							<span id="fileName" *ngIf="!attachmentUrl">{{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}</span>
+							<span id="fileName" *ngIf="attachmentUrl">{{ attachmentUrl }}</span>
+							<span [attr.disabled]="committee.isFreezed" class="btn btn-default px-0 mx-0">{{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}</span>
+						</label>
+					</div>
+				</div>
+				<div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+					{{ "COMMITTEES.VALIDATION.GOVERNANCE_REGULATION_UPLOAD_FILE_TYPE" | translate }}
+				</div>
+				<div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+					{{ attachmentSizeError }}
+				</div>
+				<br />
+				<!--
+				------------------------------------
+				COMMITTEE MEMBERS
+				------------------------------------
+			-->
+
+				<m-portlet [options]="{ headLarge: false }">
+					<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+					<ng-container mPortletHeadTitle>
+						<div class="m-portlet__head-title">
+							<h3 class="m-portlet__head-text">
+								{{ "COMMITTEES.ADD.MEMBERSLIST" | translate }}
+							</h3>
+						</div>
+					</ng-container>
+					<ng-container mPortletHeadTools>
+						<!-- <a [routerLink]="['/permissions/add']" mat-raised-button color="primary" matTooltip="Create new Uers">New Permission</a> -->
+						<m-add-member [isFreezed]="committee.isFreezed" (AddMemberEmiter)="addMember($event)" [committee]="committee" [member_users]="committee.member_users" [committee_head]="committee.committee_head" [committee_organiser]="committee.committee_organiser"> </m-add-member>
+					</ng-container>
+					<!-- end::Header -->
+
+					<!-- start::Body (attribute: mPortletBody) new setting -->
+					<ng-container mPortletBody>
+						<div class="bg-white--content" [hidden]="usersCommitteeCombinedArray == 0">
+							<div class="">
+								<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="addUserFeatureSetting ? usersCommitteeCombinedArray : committee.member_users" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+									<ng-container matColumnDef="name">
+										<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.USERNAME" | translate }}</th>
+										<td *matCellDef="let user" class="mat-column-vinCode">
+											{{ isArabic ? (user.name_ar ? user.name_ar : user.name) : user.name ? user.name : user.name_ar }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="email">
+										<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.EMAIL" | translate }}</th>
+										<td *matCellDef="let user">{{ user.email }}</td>
+									</ng-container>
+									<ng-container *ngIf="addUserFeatureSetting" matColumnDef="status">
+										<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.STATUS" | translate }}</th>
+										<td *matCellDef="let user">{{ user.source == "userRequest" ? ("COMMITTEES.ADD.STATUSPENDING" | translate) : "" }}</td>
+									</ng-container>
+									<ng-container matColumnDef="committee_user_start_date">
+										<th *matHeaderCellDef>{{ "COMMITTEES.ADD.START_DATE" | translate }}</th>
+										<td *matCellDef="let user">{{ user.committee_user_start_date ? (user.committee_user_start_date | date : "MMMM d, y") : "" }}</td>
+									</ng-container>
+									<ng-container matColumnDef="committee_user_expired_date">
+										<th *matHeaderCellDef>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</th>
+										<td *matCellDef="let user">{{ user.committee_user_expired_date ? (user.committee_user_expired_date | date : "MMMM d, y") : "" }}</td>
+									</ng-container>
+
+									<ng-container matColumnDef="member_evaluation">
+										<th *matHeaderCellDef>{{ "COMMITTEES.ADD.MEMBEREVALUATION" | translate }}</th>
+										<td *matCellDef="let user">
+											<div class="d-flex justify-content-between">
+												{{ isArabic ? (user.evaluation_name_ar ? user.evaluation_name_ar : "-") : user.evaluation_name_en ? user.evaluation_name_en : "-" }}
+												<!-- <m-evaluate-member-modal *ngIf="!user.is_head && !user.is_organiser && user.source !== 'userRequest'" [user]="user" [evaluationList]="evaluationList" (evaluateMemberEmiter)="evaluateUserData($event, user)" class=""></m-evaluate-member-modal> -->
+												<button type="button" (click)="open(user)"
+													class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+													*ngIf="committee.canEvaluateUser && (!user.is_head && !user.is_organiser && user.source !== 'userRequest')">
+													<i *ngIf="user.evaluation_id" class="flaticon-edit-1"></i>
+													<img *ngIf="!user.evaluation_id" src="./assets/app/media/img/icons/star.svg" />
+												</button>
+												<button type="button" (click)="openDisclosure(user)" *ngIf="!user.is_head && !user.is_organiser"
+													class="btn btn-black m-btn m-btn--icon m-btn--outline-2x">
+													<i *ngIf="user.disclosure_url" class="flaticon-edit-1"></i>
+													<i *ngIf="!user.disclosure_url" class="flaticon-upload"></i>
+												</button>
+											</div>
+										</td>
+									</ng-container>
+
+									<ng-container matColumnDef="actions">
+										<th class="mat-column-action" *matHeaderCellDef>
+											{{ "GENERAL.ACTIONS" | translate }}
+										</th>
+										<td class="mat-column-action" *matCellDef="let user">
+											<m-edit-member-modal *ngIf="!user.is_head && !user.is_organiser && user.source !== 'userRequest'" [user]="user" (editMemberEmiter)="editUserData($event, user)"></m-edit-member-modal>
+
+											<m-delete-member-request *ngIf="!user.is_head && !user.is_organiser && customSettingDelete&& user.source !== 'userRequest'&& committeeId"
+												[user]="user" [committeeId]="committeeId" [committeeName]="committeeName">
+											</m-delete-member-request>
+											<button type="button" *ngIf="(!customSettingDelete && user.source !== 'userRequest' && !user.is_head && !user.is_organiser) || (!committeeId && user.source !== 'userRequest' && !user.is_head && !user.is_organiser)" (click)="delete(user)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x">
+												<!-- <button type="button" *ngIf="!user.is_head && !user.is_organiser && !customSettingDelete" (click)="delete(user)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"> -->
+												<i class="flaticon-delete-2"></i>
+											</button>
+										</td>
+									</ng-container>
+
+									<tr mat-header-row *matHeaderRowDef="!addUserFeatureSetting ? displayedColumns : displayedColumnsNewSetting"></tr>
+									<tr mat-row *matRowDef="let row; columns: !addUserFeatureSetting ? displayedColumns : displayedColumnsNewSetting"></tr>
+								</table>
+							</div>
+
+							<!-- start: BOTTOM -->
+							<!-- <div class="mat-table__bottom">
+								<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+								<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$"
+									[showFirstLastButtons]="true"></mat-paginator>
+							</div> -->
+							<div class="form-group m-form__group row">
+								<input type="checkbox" id="users" name="users" [(ngModel)]="memberUserSelectet" #users="ngModel" hidden required />
+								<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'users', 'required')">Member users is Required</div>
+							</div>
+						</div>
+					</ng-container>
+					<!-- end::Body -->
+				</m-portlet>
+
+				<div class="mt-5">
+					<m-works-done *ngIf="isEdit &&customSettingWorkDone"  ></m-works-done>
+				</div>
+
+
+				<!---           End Final Output Section   		-->
+				<br />
+				<m-portlet *ngIf="committeeId != null" [options]="{ headLarge: false }">
+					<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+					<ng-container mPortletHeadTitle>
+						<div class="m-portlet__head-title">
+							<h3 class="m-portlet__head-text">
+								{{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT" | translate }}
+							</h3>
+						</div>
+					</ng-container>
+					<ng-container mPortletHeadTools>
+						<div>
+							<button *ngIf="committee.can_add_final_output" type="button" class="btn btn-secondary btn-link"
+								(click)="finalOutputModal()">
+								<i class="fa fa-plus"></i>&nbsp;
+								{{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT" | translate }}
+							</button>
+						</div>
+					</ng-container>
+					<!-- end::Header -->
+					<!-- start::Body (attribute: mPortletBody) new setting -->
+					<ng-container mPortletBody>
+						<div class="row m-md-3" *ngIf="committee.final_outputs != null && committee.final_outputs.length > 0">
+							<div class="bg-white--content col-6" (click)="downloadFinalOutput(item.id)"
+								*ngFor="let item of committee.final_outputs" >
+								<div class="mat-table__wrapper">
+									<div class="m-widget24 d-flex py-3 w-75">
+										<div class="d-flex align-items-center px-3">
+											<span class="m--font-brand">
+												<img [src]="item.file_type_icon" [alt]="item.file_type_ext" class="file-icon" />
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+											<h3 class="m-widget24__title font-size-14 m-0 text-truncate color-title-dark font-weight-500" placement="top" ngbTooltip="{{ item.name }}">
+												{{ item.name }}
+											</h3>
+											<span class="m-widget24__desc font-size-12 m-0">
+												{{ item?.final_output_date | date:'EE, MMMM d, y' }}
+											</span>
+											<span class="m-widget24__desc font-size-12 m-0">
+												{{ formatBytes(item.size) }}
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</ng-container>
+					<!-- end::Body -->
+				</m-portlet>
+				<!---     End Final Output Section   		-->
+
+				<!---           Recommendations Section   		-->
+				<br />
+				<m-portlet *ngIf="committeeId != null" [options]="{ headLarge: false }">
+					<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+					<ng-container mPortletHeadTitle>
+						<div class="m-portlet__head-title">
+							<h3 class="m-portlet__head-text">
+								{{ "COMMITTEES.RECOMMENDATIONS.SECTION_TITLE" | translate }}
+							</h3>
+						</div>
+					</ng-container>
+					<ng-container mPortletHeadTools>
+						<div>
+							<button *ngIf="committee.has_recommendation_section == true" type="button" class="btn btn-secondary btn-link" (click)="addRecommendation()">
+								<i class="fa fa-plus"></i>&nbsp;
+								{{ "COMMITTEES.RECOMMENDATIONS.RECOMMENDATION_BTN" | translate }}
+							</button>
+						</div>
+					</ng-container>
+					<!-- end::Header -->
+					<!-- start::Body (attribute: mPortletBody) new setting -->
+					<ng-container mPortletBody>
+						<div class="text-center p-md-2 d-inline-flex">
+							<h4>{{ "MEETINGS.GENERAL.HAS_RECOMMENDATION" | translate }}</h4>
+							<div>
+								<label class="ml-3" for="hasRecommendationSection">
+									{{ "ORGANIZATIONS.ADD.YES" | translate }}
+								<input (change)="confirmationHasRecommendations(true)" [value]="true" type="radio" name="hasRecommendationSection"
+									id="hasRecommendationSection" [(ngModel)]="committee.has_recommendation_section" />
+								</label>
+								<label class="ml-3" for="hasRecommendationSection">
+									{{ "ORGANIZATIONS.ADD.NO" | translate }}
+									<input (change)="confirmationHasRecommendations(false)" [value]="false" type="radio" name="hasRecommendationSection"
+										id="hasRecommendationSection" [(ngModel)]="committee.has_recommendation_section" />
+								</label>
+							</div>
+						</div>
+						<div class="bg-white--content"
+							*ngIf="committee.has_recommendation_section == true && committee.recommendations != null && committee.recommendations.length > 0">
+							<div class="">
+								<table mat-table class="table table-bordered m-table table-striped table-scroll mat-table"
+									[dataSource]="committee.recommendations" matSort matSortActive="id" matSortDirection="desc"
+									matSortDisableClear>
+									<ng-container matColumnDef="recommendation_body">
+										<th *matHeaderCellDef>
+											{{ "COMMITTEES.RECOMMENDATIONS.SECTION_BODY_COLUMN" | translate }}
+										</th>
+										<td *matCellDef="let recommend" class="mat-column-vinCode">
+											{{ recommend.recommendation_body }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="recommendation_date">
+										<th *matHeaderCellDef>
+											{{ "MEETINGS.RECOMMENDATION.ADD.RECOMMENDATIONDATE" | translate }}
+										</th>
+										<td *matCellDef="let recommend" class="mat-column-vinCode">
+											{{ recommend.recommendation_date != null ? (recommend.recommendation_date | date:'EE, MMMM d,
+											y') : '-' }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="responsible_user">
+										<th *matHeaderCellDef>
+											{{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER" | translate }}
+										</th>
+										<td *matCellDef="let recommend" class="mat-column-vinCode">
+											{{ recommend.responsible_user }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="responsible_party">
+										<th *matHeaderCellDef>
+											{{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY" | translate }}
+										</th>
+										<td *matCellDef="let recommend" class="mat-column-vinCode">
+											{{ recommend.responsible_party }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="committee_final_output_id">
+										<th *matHeaderCellDef>
+											{{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT" | translate }}
+										</th>
+										<td *matCellDef="let recommend" class="mat-column-vinCode">
+											{{ recommend.committee_final_output_name }}
+										</td>
+									</ng-container>
+									<ng-container matColumnDef="actions">
+										<th class="mat-column-action" *matHeaderCellDef>
+											{{ "GENERAL.ACTIONS" | translate }}
+										</th>
+										<td class="mat-column-action" *matCellDef="let recommend">
+											<button type="button" (click)="editRecommendationModal(recommend)"
+												class="btn btn-black m-btn m-btn--icon m-btn--outline-2x">
+												<i class="flaticon-edit-1"></i>
+											</button>
+											<button type="button" (click)="deleteRecommendationModal(recommend.id)"
+												class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x">
+												<i class="flaticon-delete-2"></i>
+											</button>
+										</td>
+									</ng-container>
+					
+									<tr mat-header-row *matHeaderRowDef="recommendationDisplayedColumns"></tr>
+									<tr mat-row *matRowDef="let row; columns: recommendationDisplayedColumns"></tr>
+								</table>
+							</div>
+						</div>
+					</ng-container>
+					<!-- end::Body -->
+				</m-portlet>
+				<!---     End Recommendations Section   		-->
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button *ngIf="!committee.isFreezed" type="submit" class="btn btn-primary" [disabled]="submitted">
+								{{ "BUTTON.SAVE" | translate }}
+								<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+							</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{ "BUTTON.CANCEL" | translate }}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!--<ng-container mPortletFooter>
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" [disabled]="submitted">Save <i class="fa fa-check" aria-hidden="true"></i></button>
+					<button type="reset" (click)="redirect()" class="btn btn-secondary">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</ng-container>-->
+	<!-- end::Body -->
+</m-portlet>

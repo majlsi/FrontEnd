@@ -1,0 +1,70 @@
+<div class="m--padding-15 m--padding-top-0">
+
+
+	<div  >
+		<div class="row justify-content-between">
+			<div class="col">
+				<h5 class="m-portlet__head-text mb-4">
+					{{ "MEETINGS.GENERAL.MOMTEMPLATE" | translate }}
+				</h5>
+			</div>
+		</div>
+
+
+
+
+		<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate #momForm="ngForm"
+		(ngSubmit)="changeMomTemplate()">
+		<div class="card card-row" >
+			<div class="card-header p-b-0" id="restaurantChoice.id-header" role="tab">
+
+
+				<div class="row m-b-15">
+					<div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid">
+						<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+							<label for="MOM_TITLE_AR" class="col-lg-2 col-form-label">
+								{{'MEETINGS.INFO.ADD.MOMTEMPLATE' | translate}}
+								&nbsp;<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+                                <ng-select [clearable]="false" [searchable]="true"
+                                placeholder="{{'MEETINGS.INFO.ADD.MOMTEMPLATE' | translate}}"
+                                [(ngModel)]="meeting.meeting_mom_template_id"
+                                name="momTemplates" #meetingMomTemplates="ngModel" [items]="momTemplates"
+                                [bindLabel]="momTemplatelBindLabel" bindValue="id" required
+                                [disabled]="is_mom_sent">
+                                <ng-template ng-option-tmp let-item="item">
+                                    <span [title]="item.template_name_ar" class="ng-option-label">
+                                        {{isArabic? item.template_name_ar : (item.template_name_en? item.template_name_en : item.template_name_ar)}}
+                                    </span>
+                                </ng-template>
+                            </ng-select>
+                            </div>
+                            </div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" *ngIf="!is_mom_sent" [disabled]="submitted">
+						{{'BUTTON.SAVE' | translate}}
+						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+					</button>
+
+				</div>
+			</div>
+		</div>
+	</form>
+
+	</div>
+
+
+
+
+
+
+</div>

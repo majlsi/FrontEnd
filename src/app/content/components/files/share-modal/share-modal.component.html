@@ -1,0 +1,87 @@
+<form novalidate #shareForm="ngForm">
+
+  <div class="modal-header py-3 d-flex align-items-center">
+    <h2 class="modal-title font-size-24 font-weight-500 color-title-dark">{{'FILES.SHARE'|translate}}</h2>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body pb-2">
+    <div class="mb-4 d-flex flex-column">
+      <h3 class="font-size-18 color-title-dark">{{'FILES.SHARE_PERMISSIONS'|translate}}</h3>
+
+      <mat-checkbox class="example-margin custom-checkbox border-bottom px-0 py-2" name="edit" [(ngModel)]="isEdit">
+        <span>
+          <p class="ml-3 my-0 font-size-16 color-title-dark font-weight-500">
+            {{'FILES.EDIT'|translate}}
+            <br><small class="color-dark-grey font-size-12 font-weight-500">{{'FILES.EDIT_DESCRIPTION'|translate}}</small>
+          </p>
+        </span>
+      </mat-checkbox>
+      <mat-checkbox class="example-margin custom-checkbox px-0 py-2" name="read" [(ngModel)]="isRead" disabled>
+        <span>
+          <p class="ml-3 my-0 font-size-16 color-title-dark font-weight-500">
+            {{'FILES.READ_ONLY'|translate}}
+            <br><small class="color-dark-grey font-size-12 font-weight-500">{{'FILES.READ_ONLY_DESCRIPTION'|translate}}</small>
+          </p>
+        </span>
+      </mat-checkbox>
+    </div>
+
+
+    <h3 class="font-size-18 color-title-dark">{{'FILES.SELECT_USERS'|translate}}</h3>
+
+
+    <ng-select  [hideSelected]="true" [multiple]="true" [items]="usersResults()" bindValue="id" [placeholder]="'FILES.SEARCHHERE'|translate"
+      [typeahead]="searchInput$" class="ngSelect-noArrow mb-4 custom-ngSelect" name="addedUsers" [(ngModel)]="addedUsers">
+
+      <ng-template ng-label-tmp let-item="item" let-clear="clear">
+        <span class="ng-value-label"><img
+            [src]="item.image_url?imageBaseUrl + item.image_url:'assets/app/media/img/users/user-photo.png'"
+            width="20px" height="20px"> {{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name :
+          item.name_ar)}}</span>
+        <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+      </ng-template>
+
+      <ng-template ng-option-tmp let-item="item">
+        <img [src]="item.image_url?imageBaseUrl + item.image_url:'assets/app/media/img/users/user-photo.png'"
+          width="20px" height="20px"> {{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name :
+        item.name_ar)}}
+      </ng-template>
+    </ng-select>
+
+
+    <div class="d-flex p-0 m-0 w-100 align-items-start justify-content-between mSharedFixed-height share-modal row" name="user">
+      <div class="col-12 d-flex justify-content-between align-items-center w-100 px-0" [ngClass]="{'border-top':i}"
+        name="user" *ngFor="let item of oldUsers;let i = index;">
+        <div class="m-widget24 d-flex py-3">
+          <div class="d-flex align-items-center pr-3">
+            <span class="m--font-brand"><img
+                [src]="item.image_url?imageBaseUrl + item.image_url:'assets/app/media/img/users/user-photo.png'"
+                alt="pdf" class="files-sectin-user rounded-circle"></span>
+          </div>
+          <div class="m-widget24__item d-flex justify-content-center flex-column">
+            <h3 class="m-widget24__title font-size-14 m-0 text-overflow color-dark-grey font-weight-500"> {{isArabic?
+              (item.name_ar? item.name_ar : item.name) : (item.name? item.name : item.name_ar)}}</h3>
+            <span class="m-widget24__desc font-size-11 m-0 color-dark-grey">{{item.email}}</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center">
+          <span class="font-size-16 font-weight-400 mx-2 px-2" *ngIf="item.pivot.can_edit">{{'FILES.EDIT'|translate}}</span>
+          <span class="font-size-16 font-weight-400 mx-2 px-2" *ngIf="!item.pivot.can_edit">{{'FILES.READ_ONLY'|translate}}</span>
+          <button type="button" class="btn bg-white border-0 line-height-1  p-0 m-0 ellipsis-icon" (click)="remove(i)"><i
+              class="icon-cancel-4 color-title-dark font-size-12"></i></button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary px-5" (click)="save(shareForm)" >{{'FILES.SHARE'|translate}}</button>
+    <button type="button" class="btn bg-secondary px-5"
+      (click)="activeModal.dismiss('Close click')">{{'FILES.CANCEL'|translate}}</button>
+
+  </div>
+</form>

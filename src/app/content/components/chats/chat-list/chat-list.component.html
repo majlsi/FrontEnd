@@ -1,0 +1,717 @@
+<div class="bg-white--content bg-white d-xl-flex row m-0 d-none">
+	<div class="col-3"
+		[ngClass]="{'col-xl-3 border-left-1 border-right-1': chatGroups.length > 0,'col-xl-3': chatGroups.length == 0}">
+		<div class="bg-white--content" style='min-height: 100vh-50px;'>
+			<div class="row">
+				<div class="col-12 p-0">
+					<div class="chat-box-heading border-bottom-light-grey bg-gray px-4 py-2 d-flex align-items-center">
+						<p class="h5 mt-1 mb-1 py-1 text-left">
+							{{'CONVERSATIONS.ALL_CONVERSATIONS' | translate}}
+						</p>
+					</div>
+					<div class="p-3">
+						<a (click)="openReassignMarkers()" type="button" class="text-white btn-block btn btn-primary" joyrideStep="addConversationFullScreen" [title]="'TUTORIALGUIDE.ADD_CONVERSATION_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_CONVERSATION_BODY' | translate" id="startConversationFullScreen">
+							{{'CONVERSATIONS.START_NEW_CONVERSATION' | translate}}
+							<i class='fa fa-spinner fa-spin' *ngIf="submitedStartConvensation"></i>
+						</a>
+
+						<form class="search-box" novalidate #chatGroupForm="ngForm"
+							(ngSubmit)="getChatGroups(true,'search')">
+
+							<div class="d-flex my-2">
+								<input type="text" placeholder="{{'CONVERSATIONS.CONVERSATION_NAME' | translate}}"
+									class="form-control form-filter input-sm" id="chatgroupname" name="chatgroupname"
+									[(ngModel)]="filterObject.SearchObject.chat_group_name" #chatgroupname="ngModel"
+									(ngModelChange)="getChatGroups(true,'search')">
+								<div class="input-group-append">
+									<button class="btn btn-outline-secondary" type="submit">
+										<i class="la la-search"></i>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<div class="messages-box" #scrollDown [scrollWindow]="false" infiniteScroll
+						[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScrollDown()">
+						<div>
+							<div class="list-group rounded-0" *ngFor="let chatGroup of chatGroups; let i = index;">
+								<a class="list-group-item list-group-item-action rounded-0"
+									[ngClass]="{'active': chatGroup.is_selected,'list-group-item-light': !chatGroup.is_selected}"
+									(click)="openChat(chatGroup, i)">
+									<div class="media">
+										<img [src]="getChatImage(chatGroup)" alt="user"
+											onerror="this.src='./assets/app/media/img/icons/group-icon.png';" width="50"
+											class="rounded-circle chat-icon">
+										<div class="media-body ml-4">
+											<div class="d-flex align-items-center justify-content-between mb-1">
+												<h6 class="mb-0">
+													{{isArabic? (chatGroup.chat_group_name_ar? chatGroup.chat_group_name_ar : chatGroup.chat_group_name_en) : (chatGroup.chat_group_name_en? chatGroup.chat_group_name_en : chatGroup.chat_group_name_ar)}}
+												</h6><small
+													class="small font-weight-bold">{{formatDateOfLastMessageOfChatGroup(chatGroup.last_message_date)}}
+
+												</small>
+											</div>
+											<div class="d-flex align-items-end justify-content-between mb-1">
+												<p class="font-italic mb-0 text-small" [ngClass]="{'font-weight-500': chatGroup.markUnread }">
+													{{chatGroup.last_message_text}}
+												</p>
+												<div class="m-0 m-badge m-badge--accent w-10 h-10" *ngIf="chatGroup.markUnread">
+
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</a>
+
+							</div>
+						</div>
+						<div *ngIf="chatGroups.length==0"
+							class="empty-chat-list pt-5 text-center d-flex flex-column justify-content-center align-items-center m-auto">
+							<img src="./assets/app/media/img/icons/chat.png" />
+							<h3 class="mb-3 mt-3 font-weight-500">
+								{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_TITLE' | translate }}
+							</h3>
+							<p class="mt-0">
+								{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_DESC' | translate }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="col-9 col-xl-9 px-0" *ngIf="chatGroups.length == 0">
+		<div class="bg-white--content">
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-12 ">
+
+					<div class="chat-box-heading d-flex">
+
+					</div>
+					<!-- Chat Box-->
+					<div class="bg-white">
+
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="px-0" [ngClass]="{'col-6 col-xl-6': isCollapsed,'col-9 col-xl-9': !isCollapsed}"
+		*ngIf="chatGroups.length > 0">
+		<div class="bg-white--content">
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-12 ">
+
+					<div class="chat-box-heading d-flex">
+
+						<div class="d-block d-lg-none">
+							<a class="btn btn-link" (click)="backToChatList()"><i class="fa fa-chevron-left"></i></a>
+						</div>
+						<div class="media">
+							<img [src]="chatGroupLogoURL" alt="user" width="50" class="rounded-circle"
+								onerror="this.src='./assets/app/media/img/icons/group-icon.png';">
+							<div class="media-body pt-1 ml-4">
+								<div class="d-flex flex-column align-items-start justify-content-start mb-1">
+									<h6 class="mb-0">
+										{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}
+									</h6>
+									<small class="small">
+										{{membersNumber}} {{'CONVERSATIONS.MEMBER' | translate}}</small>
+								</div>
+							</div>
+						</div>
+						<a class="btn btn-default btn-icon-sm px-3" *ngIf="selectedChatGroup.is_group_chat" (click)="isCollapsed = !isCollapsed"
+							[attr.aria-expanded]="!isCollapsed">
+							<i class="fa fa-info"></i>
+						</a>
+					</div>
+					<!-- Chat Box-->
+					<div class="bg-white">
+						<div #scrollMe class="px-4 py-5 chat-box bg-light" [scrollWindow]="false" infiniteScroll
+							[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollUpDistance]="2"
+							(scrolledUp)="onScrollUp()" [scrollTop]="scrollToBottom && scrollMe.scrollHeight">
+							<!-- Sender Message-->
+							<div *ngFor="let message of chatHistory; let i = index;">
+								<div class="chat-date" *ngIf="compareDate(message.message_time,chatHistory,i)">
+									{{message.message_time | date: 'MMM d, y'}}</div>
+								<div class="media chat-media w-50 mb-3 ml-auto mr-0"
+									[ngClass]="{'ml-auto mr-0': !message.is_send_by_current_user}">
+
+									<div width="50 " style="width: 50px;"
+										*ngIf="(i > 0 && message.sender_user_id == chatHistory[i-1].sender_user_id)">
+									</div>
+									<img *ngIf="!message.is_send_by_current_user && message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+										[src]="environment.imagesBaseURL + message.image_url" alt="user" width="50"
+										class="rounded-circle"
+										onerror="this.src='https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg';">
+									<img *ngIf="!message.is_send_by_current_user && !message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+										src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+										alt="user" width="50" class="rounded-circle">
+									<div class="media-body"
+										[ngClass]="{'mx-3': !message.is_send_by_current_user, 'current-user-media-body': message.is_send_by_current_user}">
+										<div class="chat-bubble py-2 px-3 mb-2"
+											[ngClass]="{'chat-bubble-default bg-white': !message.is_send_by_current_user,'chat-bubble-primary': message.is_send_by_current_user}">
+											<p *ngIf="!message.is_send_by_current_user && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+												class="sender-name font-weight-500 mb-0">
+												{{message.username}}
+											</p>
+											<p class="text-small mb-0"
+												[ngClass]="{'m': !message.is_send_by_current_user}">
+												{{message.message_text}}</p>
+										</div>
+										<p class="small  ">{{message.message_time | date: 'h:mm a'}}</p>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+
+						<!-- Typing area -->
+						<div class="box-footer">
+							<form name="messageForm" #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)"
+								novalidate class="bg-light">
+								<div class="form-group d-flex">
+									<input type="text" placeholder="{{'CONVERSATIONS.MESSAGE_LABEL' | translate}}"
+										aria-describedby="button-addon2"
+										class="form-control px-2 rounded-0 border-0 py-4 bg-light" name="messageText"
+										#messageText="ngModel" [(ngModel)]="message">
+									<div class="input-group-append">
+										<button id="button-addon2" type="submit" [disabled]="submitMessage"
+											class="btn btn-primary m-btn--icon-right">
+											<i class="fa fa-paper-plane"></i>
+											{{'CONVERSATIONS.SEND_MESSAGE' | translate}}
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+
+
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-3 col-xl-3 p-0 border-left-1 border-right-1" [ngbCollapse]="!isCollapsed">
+		<div class="m-form">
+			<div class="bg-white--content">
+
+				<div class="chat-box-heading border-bottom-light-grey bg-gray px-4 py-2 d-flex align-items-center">
+					<p class="h5 mt-1 mb-1 py-1 text-left">
+						{{'CONVERSATIONS.CONVERSATION_DETAILS' | translate}}
+					</p>
+					<a class="btn btn-default btn-icon-sm" (click)="isCollapsed = !isCollapsed"
+						[attr.aria-expanded]="!isCollapsed">
+						<i class="fa fa-times-circle"></i>
+					</a>
+
+				</div>
+
+				<div class="card text-center d-flex justify-content-center border-0">
+					<img [src]="chatGroupLogoURL" onerror="this.src='./assets/app/media/img/icons/group-icon.png';"
+						alt="{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}"
+						width="50" class="card-img-top rounded-circle">
+
+					<div class="card-body">
+						<h4 class="card-title">
+							{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}
+						</h4>
+						<p class="card-text">{{chatCreatedAt | date: 'd/M/y, h:mm a'}}</p>
+						<a type="button" class="btn btn-default" (click)="openEditChatInfo()"
+							*ngIf="canEditName">{{'CONVERSATIONS.EDIT_CHAT_GROUP' | translate}}</a>
+					</div>
+				</div>
+
+				<div>
+					<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0" class="mjl-accordion"
+						activeIds="ngb-panel-members">
+
+						<ngb-panel id="ngb-panel-members" class="attendands-panel">
+							<ng-template ngbPanelTitle>
+								<div class="d-flex justify-content-between w-100">
+									<div>
+										<i class="fa fa-folder folder-icon"></i>
+										<span
+											class="accordion-title-lg ml-2">{{'PRESENTATION.PARTICIPANTS' | translate}}
+										</span>
+									</div>
+									<div>
+										<i class="fa fa-chevron-down"></i>
+									</div>
+
+								</div>
+
+							</ng-template>
+							<ng-template ngbPanelContent>
+								<a class="btn btn-default btn-block mb-3  py-2" (click)="openGroupChatMembersModal()"
+									*ngIf="canEditName">
+									<i class="fa fa-user-plus"></i> {{'CONVERSATIONS.ADD_USER' | translate}}
+								</a>
+								<div class="attendance-list__cont my-3">
+									<div class="m-widget4 mb-3"
+										*ngFor="let memberUser of selectedChatGroup.member_users">
+										<div
+											class="m-widget4__item  m-widget--has-bg d-flex justify-content-between align-items-center">
+											<div class="m-widget4__img m-widget4__img--pic">
+
+												<img [src]="getMemberUserImage(memberUser,selectedChatGroup.organization_logo_url)"
+													alt=""
+													onerror="this.src='./assets/app/media/img/icons/individual.png';">
+											</div>
+											<div class="m-widget4__info m-widget__member-name">
+												<span class="m-widget4__sub text-small">
+													{{isArabic? (memberUser.name_ar? memberUser.name_ar : memberUser.name) : (memberUser.name? memberUser.name : memberUser.name_ar)}}
+												</span>
+
+
+											</div>
+											<div class="m-widget19_ _time pointer"
+												*ngIf="canEditName && memberUser.id != selectedChatGroup.creator_id"
+												(click)="deleteMemberUser(memberUser,selectedChatGroup)">
+												<i class="fa fa-trash"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ng-template>
+						</ngb-panel>
+
+						<!--<ngb-panel id="ngb-panel-Attachments">
+							<ng-template ngbPanelTitle>
+								<div class="d-flex justify-content-between w-100">
+									<div>
+										<i class="fa fa-folder folder-icon"></i>
+										<span class="accordion-title-lg ml-2">{{'PRESENTATION.ATTACHMENTS' | translate}}
+										</span>
+									</div>
+									<div>
+										<i class="fa fa-chevron-down"></i>
+									</div>
+
+								</div>
+							</ng-template>
+							<ng-template ngbPanelContent>-->
+						<!-- <div class="d-block mx-auto mb-5 pt-2 text-center"
+									*ngIf="meeting.meeting_attachments.length == 0">
+									<img class="mx-auto mb-2 w-50"
+										src="./assets/app/media/img/icons/empty-attachments.png" />
+									<h5>
+										{{'PRESENTATION.NO_ATTACHMENTS' | translate}}
+									</h5>
+								</div> -->
+						<!-- <div class="meeting-attachments__cont bg-grey">
+
+									<div class="m-widget4">
+										<div class="m-widget4__item"
+											*ngFor="let attachment of meeting.meeting_attachments"
+											(click)="downloadFile(imagesBaseURL+attachment.attachment_url,attachment.attachment_name)">
+											<div class="m-widget4__img m-widget4__img--icon">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+													src="./assets/app/media/img/files/doc.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+													src="./assets/app/media/img/files/jpg.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+													src="./assets/app/media/img/files/pdf.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+													src="./assets/app/media/img/files/ppt.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+													src="./assets/app/media/img/files/xls.svg" alt="">
+
+											</div>
+											<div class="m-widget4__info">
+												<span class="m-widget4__text"><a rel="noopener noreferrer">
+														{{attachment.attachment_name}} </a>
+												</span>
+											</div>
+											<div class="m-widget4__ext">
+												<a class="m-widget4__icon"><i class="la la-download"></i></a>
+											</div>
+										</div>
+									</div>
+								</div> -->
+						<!--</ng-template>
+						</ngb-panel>-->
+
+					</ngb-accordion>
+
+				</div>
+
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
+
+
+
+<div class="bg-white--content bg-white d-flex row m-0 d-block d-xl-none mt-n3">
+	<div id="chat-list" *ngIf="chatList" class="col-12 col-xl-3"
+		[ngClass]="{'col-xl-3 border-left-1 border-right-1': chatGroups.length > 0,'col-xl-3': chatGroups.length == 0}">
+		<div class="bg-white--content">
+			<div class="row">
+				<div class="col-12 p-0">
+					<div class="chat-box-heading border-bottom-light-grey bg-gray px-4 py-2 d-flex align-items-center">
+						<p class="h5 mt-1 mb-1 py-1 text-left">
+							{{'CONVERSATIONS.ALL_CONVERSATIONS' | translate}}
+						</p>
+					</div>
+					<div class="p-3">
+						<a (click)="openReassignMarkers()" type="button" class="text-white btn-block btn btn-primary"
+						joyrideStep="addConversation" [title]="'TUTORIALGUIDE.ADD_CONVERSATION_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_CONVERSATION_BODY' | translate">
+							{{'CONVERSATIONS.START_NEW_CONVERSATION' | translate}}
+							<i class='fa fa-spinner fa-spin' *ngIf="submitedStartConvensation"></i>
+						</a>
+
+						<form class="search-box" novalidate #chatGroupForm="ngForm"
+							(ngSubmit)="getChatGroups(true,'search')">
+
+							<div class="d-flex my-2">
+								<input type="text" placeholder="{{'CONVERSATIONS.CONVERSATION_NAME' | translate}}"
+									class="form-control  m-input form-filter input-sm" id="chatgroupname"
+									name="chatgroupname" [(ngModel)]="filterObject.SearchObject.chat_group_name"
+									#chatgroupname="ngModel" (ngModelChange)="getChatGroups(true,'search')">
+								<div class="input-group-append">
+									<button class="btn btn-outline-secondary" type="submit">
+										<i class="la la-search"></i>
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+
+					<div class="messages-box" #scrollDown [scrollWindow]="false" infiniteScroll
+						[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" (scrolled)="onScrollDown()">
+						<div>
+							<div class="list-group rounded-0" *ngFor="let chatGroup of chatGroups; let i = index;">
+								<a class="list-group-item list-group-item-action rounded-0"
+									[ngClass]="{'active': chatGroup.is_selected,'list-group-item-light': !chatGroup.is_selected}"
+									(click)="chatList=false;isChatHistory = true;openChat(chatGroup, i)">
+									<div class="media">
+										<img [src]="getChatImage(chatGroup)" alt="user"
+											onerror="this.src='./assets/app/media/img/icons/group-icon.png';" width="50"
+											class="rounded-circle chat-icon">
+										<div class="media-body ml-4">
+											<div class="d-flex align-items-center justify-content-between mb-1">
+												<h6 class="mb-0">
+													{{isArabic? (chatGroup.chat_group_name_ar? chatGroup.chat_group_name_ar : chatGroup.chat_group_name_en) : (chatGroup.chat_group_name_en? chatGroup.chat_group_name_en : chatGroup.chat_group_name_ar)}}
+												</h6><small
+													class="small font-weight-bold">{{chatGroup.last_message_date| date: 'MMM d'}}</small>
+											</div>
+											<div class="d-flex align-items-end justify-content-between mb-1">
+												<p class="font-italic mb-0 text-small" [ngClass]="{'font-weight-500': chatGroup.markUnread }">
+													{{chatGroup.last_message_text}}
+												</p>
+												<div class="m-0 m-badge m-badge--accent w-10 h-10" *ngIf="chatGroup.markUnread">
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</a>
+
+							</div>
+						</div>
+						<div *ngIf="chatGroups.length==0"
+							class="empty-chat-list pt-5 text-center d-flex flex-column justify-content-center align-items-center m-auto">
+							<img src="./assets/app/media/img/icons/chat.png" />
+							<h3 class="mb-3 mt-3 font-weight-500">
+								{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_TITLE' | translate }}
+							</h3>
+							<p class="mt-0">
+								{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_DESC' | translate }}
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div class="col-9 col-xl-9 px-0" *ngIf="chatGroups.length == 0">
+		<div class="bg-white--content">
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-12 ">
+
+					<div class="chat-box-heading d-flex">
+
+					</div>
+					<!-- Chat Box-->
+					<div class="bg-white">
+
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="chat-content" class="px-0" [ngClass]="{'col-12 col-xl-12': isCollapsed,'col-12 col-xl-12': !isCollapsed}"
+		*ngIf="chatGroups.length > 0 && isChatHistory">
+		<div class="bg-white--content">
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-12 ">
+
+					<div class="chat-box-heading d-flex">
+						<div class="d-flex">
+							<a class="btn btn-default btn-icon-sm col-2" (click)="backToChatList()"><i
+									class="fa fa-chevron-left"></i></a>
+
+							<div class="d-flex col-10">
+								<img [src]="chatGroupLogoURL" alt="user" width="50" class="rounded-circle"
+									onerror="this.src='./assets/app/media/img/icons/group-icon.png';">
+								<div class="media-body pt-1 ml-4">
+									<div class="d-flex flex-column align-items-start justify-content-start mb-1">
+										<h6 class="mb-0">
+											{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}
+										</h6>
+										<small class="small">
+											{{membersNumber}} {{'CONVERSATIONS.MEMBER' | translate}}</small>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<a class="btn btn-default btn-icon-sm px-3" *ngIf="selectedChatGroup.is_group_chat" (click)="isCollapsed = !isCollapsed"
+							[attr.aria-expanded]="!isCollapsed">
+							<i class="fa fa-info"></i>
+						</a>
+					</div>
+					<!-- Chat Box-->
+					<div class="bg-white">
+						<div #scrollMe class="px-4 py-5 chat-box bg-light" [scrollWindow]="false" infiniteScroll
+							[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollUpDistance]="2"
+							(scrolledUp)="onScrollUp()" [scrollTop]="scrollToBottom && scrollMe.scrollHeight">
+							<!-- Sender Message-->
+							<div *ngFor="let message of chatHistory; let i = index;">
+								<div class="chat-date" *ngIf="compareDate(message.message_time,chatHistory,i)">
+									{{message.message_time | date: 'MMM d, y'}}</div>
+								<div class="media chat-media w-xl-50 w-100 mb-3 ml-auto mr-0"
+									[ngClass]="{'ml-auto mr-0': !message.is_send_by_current_user}">
+
+									<div width="50 " style="width: 50px;"
+										*ngIf="(i > 0 && message.sender_user_id == chatHistory[i-1].sender_user_id)">
+									</div>
+									<img *ngIf="!message.is_send_by_current_user && message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+										[src]="environment.imagesBaseURL + message.image_url" alt="user" width="50"
+										class="rounded-circle"
+										onerror="this.src='https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg';">
+									<img *ngIf="!message.is_send_by_current_user && !message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+										src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+										alt="user" width="50" class="rounded-circle">
+									<div class="media-body"
+										[ngClass]="{'mx-3': !message.is_send_by_current_user, 'current-user-media-body': message.is_send_by_current_user}">
+										<div class="chat-bubble py-2 px-3 mb-2"
+											[ngClass]="{'chat-bubble-default bg-white': !message.is_send_by_current_user,'chat-bubble-primary': message.is_send_by_current_user}">
+											<p *ngIf="!message.is_send_by_current_user && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+												class="sender-name font-weight-500 mb-0">
+												{{message.username}}
+											</p>
+											<p class="text-small mb-0"
+												[ngClass]="{'m': !message.is_send_by_current_user}">
+												{{message.message_text}}</p>
+										</div>
+										<p class="small  ">{{message.message_time | date: 'h:mm a'}}</p>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+
+						<!-- Typing area -->
+						<div class="box-footer">
+							<form name="messageForm" #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)"
+								novalidate class="">
+
+								<div class="d-flex">
+									<input _ngcontent-c5="" class="form-control m-input px-2" id="messageText"
+										name="messageText" placeholder="{{'CONVERSATIONS.MESSAGE_LABEL' | translate}}"
+										type="text" #messageText="ngModel" [(ngModel)]="message"
+										aria-describedby="button-addon2">
+									<button id="button-addon2" type="submit" class="btn btn-primary m-btn--icon-right"  [disabled]="submitMessage">
+										<i class="fa fa-paper-plane"></i>
+										{{'CONVERSATIONS.SEND_MESSAGE' | translate}}
+									</button>
+								</div>
+							</form>
+						</div>
+
+
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="fixed p-0" id="chat-info" [ngbCollapse]="!isCollapsed">
+		<div class="m-form">
+			<div class="bg-white--content">
+
+				<div class="chat-box-heading border-bottom-light-grey bg-gray px-4 py-2 d-flex align-items-center">
+					<p class="h5 mt-1 mb-1 py-1 text-left">
+						{{'CONVERSATIONS.CONVERSATION_DETAILS' | translate}}
+					</p>
+					<a class="btn btn-default btn-icon-sm" (click)="isCollapsed = !isCollapsed"
+						[attr.aria-expanded]="!isCollapsed">
+						<i class="fa fa-times-circle"></i>
+					</a>
+
+				</div>
+
+				<div class="card text-center d-flex justify-content-center">
+					<img [src]="chatGroupLogoURL" onerror="this.src='./assets/app/media/img/icons/group-icon.png';"
+						alt="{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}"
+						width="50" class="card-img-top rounded-circle">
+
+					<div class="card-body">
+						<h4 class="card-title">
+							{{isArabic? (selectedChatGroup.chat_group_name_ar? selectedChatGroup.chat_group_name_ar : selectedChatGroup.chat_group_name_en) : (selectedChatGroup.chat_group_name_en? selectedChatGroup.chat_group_name_en : selectedChatGroup.chat_group_name_ar)}}
+						</h4>
+						<p class="card-text">{{chatCreatedAt | date: 'd/M/y, h:mm a'}}</p>
+						<a type="button" class="btn btn-default" (click)="openEditChatInfo()"
+							*ngIf="canEditName">{{'CONVERSATIONS.EDIT_CHAT_GROUP' | translate}}</a>
+					</div>
+				</div>
+
+				<div>
+					<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0" class="mjl-accordion"
+						activeIds="ngb-panel-members">
+
+						<ngb-panel id="ngb-panel-members" class="attendands-panel">
+							<ng-template ngbPanelTitle>
+								<div class="d-flex justify-content-between w-100">
+									<div>
+										<i class="fa fa-folder folder-icon"></i>
+										<span
+											class="accordion-title-lg ml-2">{{'PRESENTATION.PARTICIPANTS' | translate}}
+										</span>
+									</div>
+									<div>
+										<i class="fa fa-chevron-down"></i>
+									</div>
+
+								</div>
+
+							</ng-template>
+							<ng-template ngbPanelContent>
+								<a class="btn btn-default btn-block mb-3  py-2" (click)="openGroupChatMembersModal()"
+									*ngIf="canEditName">
+									<i class="fa fa-user-plus"></i> {{'CONVERSATIONS.ADD_USER' | translate}}
+								</a>
+								<div class="attendance-list__cont my-3">
+									<div class="m-widget4 mb-3"
+										*ngFor="let memberUser of selectedChatGroup.member_users">
+										<div
+											class="m-widget4__item  m-widget--has-bg d-flex justify-content-between align-items-center">
+											<div class="m-widget4__img m-widget4__img--pic">
+
+												<img [src]="getMemberUserImage(memberUser,selectedChatGroup.organization_logo_url)"
+													alt=""
+													onerror="this.src='./assets/app/media/img/icons/individual.png';">
+											</div>
+											<div class="m-widget4__info m-widget__member-name">
+												<span class="m-widget4__sub text-small">
+													{{isArabic? (memberUser.name_ar? memberUser.name_ar : memberUser.name) : (memberUser.name? memberUser.name : memberUser.name_ar)}}
+												</span>
+
+
+											</div>
+											<div class="m-widget19_ _time pointer"
+												*ngIf="canEditName && memberUser.id != selectedChatGroup.creator_id"
+												(click)="deleteMemberUser(memberUser,selectedChatGroup)">
+												<i class="fa fa-trash"></i>
+											</div>
+										</div>
+									</div>
+								</div>
+							</ng-template>
+						</ngb-panel>
+
+						<!--<ngb-panel id="ngb-panel-Attachments">
+							<ng-template ngbPanelTitle>
+								<div class="d-flex justify-content-between w-100">
+									<div>
+										<i class="fa fa-folder folder-icon"></i>
+										<span class="accordion-title-lg ml-2">{{'PRESENTATION.ATTACHMENTS' | translate}}
+										</span>
+									</div>
+									<div>
+										<i class="fa fa-chevron-down"></i>
+									</div>
+
+								</div>
+							</ng-template>
+							<ng-template ngbPanelContent>-->
+						<!-- <div class="d-block mx-auto mb-5 pt-2 text-center"
+									*ngIf="meeting.meeting_attachments.length == 0">
+									<img class="mx-auto mb-2 w-50"
+										src="./assets/app/media/img/icons/empty-attachments.png" />
+									<h5>
+										{{'PRESENTATION.NO_ATTACHMENTS' | translate}}
+									</h5>
+								</div> -->
+						<!-- <div class="meeting-attachments__cont bg-grey">
+
+									<div class="m-widget4">
+										<div class="m-widget4__item"
+											*ngFor="let attachment of meeting.meeting_attachments"
+											(click)="downloadFile(imagesBaseURL+attachment.attachment_url,attachment.attachment_name)">
+											<div class="m-widget4__img m-widget4__img--icon">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+													src="./assets/app/media/img/files/doc.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+													src="./assets/app/media/img/files/jpg.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+													src="./assets/app/media/img/files/pdf.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+													src="./assets/app/media/img/files/ppt.svg" alt="">
+												<img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+													src="./assets/app/media/img/files/xls.svg" alt="">
+
+											</div>
+											<div class="m-widget4__info">
+												<span class="m-widget4__text"><a rel="noopener noreferrer">
+														{{attachment.attachment_name}} </a>
+												</span>
+											</div>
+											<div class="m-widget4__ext">
+												<a class="m-widget4__icon"><i class="la la-download"></i></a>
+											</div>
+										</div>
+									</div>
+								</div> -->
+						<!--</ng-template>
+						</ngb-panel>-->
+
+					</ngb-accordion>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

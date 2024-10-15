@@ -1,0 +1,108 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<h3 class="m-portlet__head-text">
+			{{ "REQUEST.ADD.REQUESTDETAILS" | translate }}
+		</h3>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<div>
+			<button type="reset" (click)="redirect()" class="btn btn-secondary">
+				<span class="px-2">{{ "BUTTON.BACKTOREQUESTS" | translate }}</span>
+				<i class="fa fa-arrow-left"></i>
+			</button>
+		</div>
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right" novalidate #userForm="ngForm">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "AUTH.INPUT.FULLNAME" | translate }}</label>
+						<input type="text" placeholder="{{ 'AUTH.INPUT.FULLNAME' | translate }}" class="form-control" id="namear" name="namear" [(ngModel)]="user.name_ar" #namear="ngModel" disabled  />
+					</div>
+
+					<div class="col-lg-6">
+						<label class="">{{ 'USERS.LIST.EMAIL' | translate }}</label>
+						<input  type="email" placeholder="{{ 'USERS.LIST.EMAIL' | translate }}" class="form-control" id="email" name="email" [(ngModel)]="user.email" #email="ngModel" email="true" disabled/>
+					</div>
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "USERS.LIST.JOBID" | translate }}</label>
+						<input type="text" placeholder="{{ 'USERS.LIST.JOBID' | translate }}" class="form-control" id="job_id" name="job_id" [(ngModel)]="user.job_id" #job_id="ngModel" disabled  />
+					</div>
+
+					<div class="col-lg-6">
+						<label class="">{{ "USERS.LIST.JOBTITLE" | translate }}</label>
+						<input  type="text" placeholder="{{ 'USERS.LIST.JOBTITLE' | translate }}" class="form-control" id="job_title" name="job_title" [(ngModel)]="user.job_title" #job_title="ngModel" disabled  />
+					</div>
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "USERS.LIST.RESPONSIBLEADMINISTRATION" | translate }}</label>
+						<input type="text" placeholder="{{ 'USERS.LIST.RESPONSIBLEADMINISTRATION' | translate }}" class="form-control" id="Responsible_admininstartation" name="Responsible_admininstartation" [(ngModel)]="user.Responsible_admininstartation" #Responsible_admininstartation="ngModel" disabled  />
+					</div>
+
+					<div class="col-lg-6">
+						<label class="">{{ "USERS.LIST.TRANSFERNO" | translate }}</label>
+						<input  type="text" placeholder="{{ 'USERS.LIST.TRANSFERNO' | translate }}" class="form-control" id="transfer_NO" name="transfer_NO" [(ngModel)]="user.transfer_NO" #transfer_NO="ngModel" disabled />
+					</div>
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "COMMITTEES.LIST.COMMITTEENAME" | translate }}</label>
+						<input type="text" placeholder="{{ 'COMMITTEES.LIST.COMMITTEENAME' | translate }}" class="form-control" id="committee_name" name="committee_name" [(ngModel)]="user.committee_name" #committee_name="ngModel" disabled />
+					</div>
+
+					<!--! file here -->
+
+					<div class="col-md-6 col-lg-3 py-2 pr-4 pr-lg-0 pl-lg-3 pl-2" *ngFor="let file of files;let i = index">
+						<label>{{ 'COMMITTEES.ADD.EVIDENCEDOCUMENT' | translate }}</label>
+						<div class="bg-white d-flex align-items-center justify-content-between border shadow-sm rounded" (click)="downloadFile(file.file_path)">
+						  <div class="m-widget24 d-flex py-3 w-75">
+							<div class="d-flex align-items-center px-3">
+							  <span class="m--font-brand"><img [src]="file?.file_type?.file_type_icon"
+								  class="file-icon"></span>
+							</div>
+							<div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+							  <h3 class="m-widget24__title font-size-14 m-0 text-truncate color-title-dark font-weight-500" placement="top" > {{file.file_name}} </h3>
+							  <span class="m-widget24__desc font-size-12 m-0">{{formatBytes(file.file_size)}}</span>
+							</div>
+						  </div>
+						</div>
+					  </div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-12">
+						<label>{{ "COMMITTEES.DELETE.DELETEREASON" | translate }}</label>
+						<textarea type="text" placeholder="{{ 'COMMITTEES.DELETE.DELETEREASON' | translate }}" class="form-control" id="delete_reason" name="delete_reason" [(ngModel)]="user.delete_reason" #delete_reason="ngModel" disabled  ></textarea>
+					</div>
+
+
+				</div>
+
+				<div class="m-form__actions m-form__actions--solid" *ngIf="request.is_approved == null">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" (click)="accept()">{{ "BUTTON.ACCEPT" | translate }} <i class="fa fa-spinner fa-spin" *ngIf="submitted" ></i></button>
+							<button (click)="reject()" class="btn btn-secondary">{{ "BUTTON.REJECT" | translate }}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

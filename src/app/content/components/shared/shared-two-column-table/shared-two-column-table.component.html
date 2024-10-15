@@ -1,0 +1,26 @@
+
+<div class="bg-white--cont ent tabs Wrabber">
+	<div class="px-lg-0 px-3">
+		<div class="mat-table__wrapper">
+			<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+				<ng-container matColumnDef="column_1">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEENAME" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committee_name_en }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="column_2">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEENAMEAR" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committee_name_ar }}</td>
+				</ng-container>
+
+
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+			</table>
+			<div class="mat-table__message" *ngIf="dataSourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+		</div>
+	</div>
+
+	</div>
+
+

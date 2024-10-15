@@ -1,0 +1,164 @@
+<div class="m--padding-15 m--padding-top-0">
+	<div>
+		<div class="row justify-content-between">
+			<div class="col">
+				<h5 class="m-portlet__head-text mb-4">
+					{{ "MEETINGS.MOM.GENERAL.MOM_LIST" | translate }}
+				</h5>
+			</div>
+			<div class="col d-flex justify-content-end">
+				<button type="button" class="btn btn-light-grey title-action-btn mr-3" (click)="downloadMomAsPdf()">
+					{{'MEETINGS.MOM.GENERAL.DOWNLOAD_MOM' | translate}}
+				</button>
+			</div>
+		</div>
+
+
+
+
+		<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate #momForm="ngForm"
+			(ngSubmit)="save(momForm)">
+			<div class="card card-row">
+				<div class="card-header p-b-0" id="restaurantChoice.id-header" role="tab">
+
+
+					<div class="row m-b-15">
+						<div class="m-form col-lg-12 ng-untouched ng-pristine ng-valid">
+							<div class="m-form__group form-group col-lg-12">
+								<div class="m-radio-inline">
+									<label class="m-radio">
+										<input type="radio" name="example_1" [disabled]="is_signature_sent"
+											[(ngModel)]="meeting.is_mom_pdf" [value]="0">
+										{{'MOM_TEMPLATE_PAGE.TEMPLATE_TITLE'|translate}}
+										<span></span>
+									</label>
+									<label class="m-radio">
+										<input type="radio" name="example_1" [disabled]="is_signature_sent"
+											[(ngModel)]="meeting.is_mom_pdf" [value]="1">
+										{{'REVIEWS_ROOM.ADD.UPLOAD_FILE'| translate}}
+										<span></span>
+									</label>
+								</div>
+							</div>
+							<div *ngIf="meeting.is_mom_pdf">
+								<div class="form-group m-form__group row col-lg-12">
+									<div class="col">
+										<label class="col-form-label">{{'REVIEWS_ROOM.ADD.UPLOAD_FILE'| translate}}
+											<span class="MandatoryAsterisk">*</span>
+										</label>
+									</div>
+									<div class="col ml-auto text-right">
+										<a (click)="downloadOriginalFile()" class="m-widget4__icon col-md-12"
+											style="margin-right: 0;" *ngIf="meeting.mom_pdf_file_name">
+											{{meeting.mom_pdf_file_name}}
+											<i class="la la-download"></i>
+										</a>
+									</div>
+									<div class="input-group mr-3 ml-3">
+										<label
+											class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+											for="thefile">
+											<input type="file" class="d-none" id="thefile" accept=".pdf"
+												[disabled]="is_signature_sent" (change)="fileChangeEvent($event)"
+												#governanceRegulation="ngModel" name="governanceRegulation"
+												(ngModel)="documentUrl" />
+											<span id="fileName" *ngIf="!documentUrl">{{
+												'REVIEWS_ROOM.ADD.NO_CHOSEN_FILE' | translate }}</span>
+											<span id="fileName" *ngIf="documentUrl">{{documentUrl}}</span>
+											<span class="btn btn-default px-0 mx-0">{{'REVIEWS_ROOM.ADD.BROWSE' |
+												translate}}</span>
+										</label>
+									</div>
+								</div>
+								<div class="error text-danger form-control-feedback col-lg-10" *ngIf="fileTypeError">
+									{{'SETTINGS.VALIDATION.FILE_EXTENSION' | translate}}
+								</div>
+								<div class="error text-danger form-control-feedback col-lg-10"
+									*ngIf="documentSizeError">
+									{{documentSizeError}}
+								</div>
+							</div>
+							<br>
+							<div class="form-group m-form__group row col-lg-10" style="padding: 5px 0 20px;"
+								*ngIf="!meeting.is_mom_pdf">
+								<label for="MOM_TITLE_AR" class="col-lg-2 col-form-label">
+									{{'MEETINGS.INFO.ADD.MOMTEMPLATE' | translate}}
+									&nbsp;<span class="MandatoryAsterisk">*</span>
+								</label>
+								<div class="col-lg-9">
+									<ng-select [clearable]="false" [searchable]="true"
+										placeholder="{{'MEETINGS.INFO.ADD.MOMTEMPLATE' | translate}}"
+										[(ngModel)]="meeting.meeting_mom_template_id" name="momTemplates"
+										#meetingMomTemplates="ngModel" [items]="momTemplates"
+										[bindLabel]="momTemplatelBindLabel" bindValue="id" required
+										[disabled]="is_signature_sent" (change)="updateMomTemplate($event)">
+										<ng-template ng-option-tmp let-item="item">
+											<span [title]="item.template_name_ar" class="ng-option-label">
+												{{isArabic? item.template_name_ar : (item.template_name_en?
+												item.template_name_en : item.template_name_ar)}}
+											</span>
+										</ng-template>
+									</ng-select>
+									<div class="mt-2 mb-2">
+										<a class=""
+											[routerLink]="['/mom-templates/edit',meeting.meeting_mom_template_id]">
+											<i
+												class="fas fa-edit"></i>&nbsp;{{'MEETINGS.MOM.GENERAL.UPDATE_MOM_TEMPLATE'
+											| translate}}
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="card card-row" *ngIf="!meeting.is_mom_pdf">
+				<div class="card-header p-b-0" id="restaurantChoice.id-header" role="tab">
+					<div class="row m-b-15">
+						<!-- <div class="form-group m-form__group row" style="padding: 5px 0 20px;" *ngIf="isArabic"> -->
+						<div class="col-lg-12">
+
+							<!-- <ck-editor name="mom_template_view" [config]="editorConfig" [(ngModel)]="momTemplateView" 
+							skin="moono-lisa" language="{{lang}}" [readonly]= "is_mom_sent? 1 : 0" [fullPage]="true" 
+							id="mom_template_view" required></ck-editor> -->
+
+							<jodit-editor [config]="editorConfig" [(ngModel)]="momTemplateView"
+								[disabled]="is_signature_sent" name="meetingmom" (onChange)="onChange($event)" required>
+							</jodit-editor>
+
+							<div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(momForm,'meetingmom', 'required')">
+								{{'MEETINGS.MOM.VALIDATION.SUMMARYAR' | translate}}
+							</div>
+							<button id="error" hidden (click)="dipalyError()"></button>
+						</div>
+						<!-- </div> -->
+					</div>
+				</div>
+			</div>
+
+			<div class="m-form__actions m-form__actions--solid">
+				<div class="row">
+					<div class="col-lg-12 m--align-left">
+						<button type="submit" class="btn btn-primary" *ngIf="!is_signature_sent" [disabled]="submitted">
+							{{'BUTTON.SAVE' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+						<button type="reset" (click)="redirect()" class="btn btn-secondary" [hidden]="hideAddCancel">
+							{{'BUTTON.CANCEL' | translate}}
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+
+	</div>
+
+
+
+
+
+
+</div>

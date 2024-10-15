@@ -1,0 +1,33 @@
+<div class="signature-modal">
+    <div class="modal-header">
+        <h4 class="modal-title text-center" id="modal-basic-title">{{"SIGNATURE.SELECT_VERIFICATION_TYPE" | translate}}
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="font-24 text-center">{{"SIGNATURE.GET_VERIFICATION_CODE" | translate}}</p>
+        <div class="radio-buttons">
+            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group">
+                <mat-radio-button value="1" checked (change)="radioChange($event)">
+                    {{"SIGNATURE.SHORT_MESSAGE" | translate}}
+                </mat-radio-button>
+                <mat-radio-button value="2" (change)="radioChange($event)">
+                    {{"SIGNATURE.EMAIL" | translate}}
+                </mat-radio-button>
+                <mat-radio-button value="3" (change)="radioChange($event)">
+                    {{"SIGNATURE.SHORT_MESSAGE_EMAIL" | translate}}
+                </mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-dark btn-lg" (click)="close()">
+            {{"SIGNATURE.CANCEL" | translate}}
+        </button>
+        <button type="button" class="btn btn-primary btn-lg"
+            (click)="openVerificationCode()">{{"SIGNATURE.SEND" | translate}}</button>
+    </div>
+
+</div>

@@ -1,0 +1,102 @@
+.mat-column-orgIcon {
+	flex: 0 0 50px;
+}
+
+/* .mat-column-status {
+    flex: 0 0 200px;
+    width: 200px;
+} */
+
+.mat-column-action {
+	flex: 0 0 200px;
+	width: 200px;
+}
+
+.mat-column-action-lg {
+	flex: 0 0 290px;
+	width: 290px;
+}
+
+.mat-column-action .btn.btn-primary.active, .mat-column-action .btn.btn-primary.focus, .mat-column-action .btn.btn-primary:focus, .mat-column-action .btn.btn-primary:hover:not(:disabled) {
+	border-width: 2px;
+}
+
+.table.table-striped tbody tr:nth-of-type(odd) {
+	background-color: #fbfbf8;
+}
+
+.table.table-striped tbody tr:hover {
+	background-color: #efefe9;
+}
+
+.table.table-striped tbody td {
+	line-height: 20px;
+}
+
+.table-bordered th, .table-bordered td {
+	border: 1px solid #ebedf2;
+}
+
+.table-filter {
+	border: 0 solid #f4f5f8;
+	border-radius: 19px;
+	padding: 10px;
+	margin-bottom: 0;
+}
+
+.table-filter .margin-bottom-5.in-b.serchbtnMar {
+	margin: 5px 0;
+}
+
+.mat-table th, .mat-table .mat-sort-header-button {
+	font-size: 12px;
+	font-weight: 700;
+}
+
+m-meeting-dash-list .mat-row {
+	cursor: pointer;
+}
+
+td.md-column {
+	width: 160px;
+}
+
+td.sm-column {
+	width: 130px;
+}
+
+.mat-table.table-grey-header {
+	border: 1px solid #EFEFEF;
+}
+
+.table-grey-header thead th {
+	border-bottom: 2px solid #EFEFEF;
+	background: #F9F9FB;
+	vertical-align: middle;
+	text-align: inherit;
+	padding: 0 15px;
+}
+
+.table-grey-header td {
+	padding: .75rem;
+	vertical-align: middle;
+	border-top: 1px solid #EFEFEF;
+	padding: 0 15px!important;
+}
+
+@media (min-width: 992px) {
+	.meeting-table td.mat-cell, .meeting-table td.mat-footer-cell, .meeting-table th.mat-header-cell {
+		padding: .75rem!important;
+	}
+	m-organization-list .mat-table__wrapper .mat-table .email-cell {
+		width: unset!important;
+		flex: auto;
+	}
+	m-organization-list .table.table-striped tbody td {
+		max-width: initial!important;
+	}
+}
+
+.mat-table__message {
+	text-align: center;
+}

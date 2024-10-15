@@ -1,0 +1,196 @@
+
+.btn a {
+	color: white;
+}
+.btn:hover a{
+	color: white;
+}
+.btn-outline-black {
+    border-color: #000;
+    background: #fff;
+}
+.btn-outline-black:hover,
+.btn-outline-black:focus,
+.btn-outline-black:active,
+.btn-outline-black.active {
+    border-color: #000;
+    background: #000;
+    color: #fff;
+}
+
+
+.btn.btn-default, .btn.btn-secondary {
+    background: #ebedf2;
+    border-color: #ebedf2;
+    color: #000;
+}
+
+.btn.btn-secondary {
+    background: #efeff4;
+    border-color: #d1d1d5;
+}
+.btn.btn-secondary:hover:not(:disabled),
+.btn.btn-secondary.active,
+.btn.btn-secondary:active,
+.btn.btn-secondary:focus {
+    background: #d1d1d5;
+    border-color: #d1d1d5;
+}
+
+
+.btn-primary {
+    background: #34607B;
+	border:1px solid #34607B;
+	color: #fff;
+}
+.btn-primary:hover, .btn-primary:active, .btn-primary.active, .btn-primary:focus , .btn-primary:disabled{
+    background: #1B3C51;
+	border:1px solid #1B3C51;
+}
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show>.btn-primary.dropdown-toggle{
+    background: #1B3C51;
+	border:1px solid #1B3C51;
+}
+
+.btn-sky{
+    background-color: #7AC7CC;
+}
+
+.btn-sky:not(:disabled):not(.disabled):active,
+.btn-sky:not(:disabled):not(.disabled).active,
+.show>.btn-sky.dropdown-toggle,
+.btn-sky:hover, .btn-sky:active,
+.btn-sky.active, .btn-sky:focus ,
+.btn-sky:disabled{
+    background-color: #63babf;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #8dceb1;
+    border-color: #8dceb1;
+}
+
+.btn-danger {
+    background-color: #FC4F59;
+    border-color: #FC4F59;
+}
+
+.text-danger{
+    color: #FC4F59!important
+}
+.btn-light-grey {
+    background: #3D5067;
+    border: 1px solid #3D5067;
+    color: #fff;
+}
+.btn-light-grey:not(:disabled):not(.disabled):active,
+.btn-light-grey:not(:disabled):not(.disabled).active,
+.show>.btn-light-grey.dropdown-toggle,
+.btn-light-grey:hover, .btn-light-grey:active,
+.btn-light-grey.active, .btn-light-grey:focus ,
+.btn-light-grey:disabled{
+    background: #3D5067;
+}
+
+.m-radio-btn-group>.m-btn {
+    color: #212529;
+}
+
+.m-vote-btn-group .btn-success{
+	background: #fff;
+	color: #299781;
+}
+.m-vote-btn-group>input:disabled ~ .btn-success:hover,
+.m-vote-btn-group>input:disabled ~ .btn-success:focus,
+.m-vote-btn-group>input:disabled ~ .btn-success.active,
+.m-vote-btn-group>input:disabled ~ .btn-success:active{
+	cursor: not-allowed!important;
+	background: #fff;
+	color: #299781!important;
+}
+.m-vote-btn-group>input:not(:disabled) ~ .btn-success:hover,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-success:focus,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-success.active,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-success:active,
+.m-vote-btn-group>input:checked ~ .btn-success{
+	background: #299781;
+	color: #fff;
+}
+
+.m-vote-btn-group .btn-danger{
+	background: #fff;
+	color: #f4516c;
+}
+
+.m-vote-btn-group>input:disabled ~ .btn-danger:hover,
+.m-vote-btn-group>input:disabled ~ .btn-danger:focus,
+.m-vote-btn-group>input:disabled ~ .btn-danger.active,
+.m-vote-btn-group>input:disabled ~ .btn-danger:active{
+	cursor: not-allowed!important;
+	background: #fff;
+	color: #f4516c!important;
+}
+.m-vote-btn-group>input:not(:disabled) ~ .btn-danger:hover,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-danger:focus,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-danger.active,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-danger:active,
+.m-vote-btn-group>input:checked ~ .btn-danger{
+	background: #f4516c;
+	color: #fff;
+}
+
+.m-vote-btn-group .btn-warning{
+	background: #fff;
+	color: #ffb822;
+}
+.m-vote-btn-group>input:disabled ~ .btn-warning:hover,
+.m-vote-btn-group>input:disabled ~ .btn-warning:focus,
+.m-vote-btn-group>input:disabled ~ .btn-warning.active,
+.m-vote-btn-group>input:disabled ~ .btn-warning:active{
+	cursor: not-allowed!important;
+	background: #fff;
+	color: #ffb822!important;
+}
+.m-vote-btn-group>input:not(:disabled) ~ .btn-warning:hover,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-warning:focus,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-warning.active,
+.m-vote-btn-group>input:not(:disabled) ~ .btn-warning:active,
+.m-vote-btn-group>input:checked ~ .btn-warning{
+	background: #ffb822;
+	color: #fff;
+}
+
+
+/* End Radio button group */
+
+
+.map-link-sm{
+    color: rgb(113, 106, 202);
+}
+.btn-link-danger{
+	color: #ff4b55;
+}
+.btn-white-primary-text{
+	background: #ffffff;
+	box-shadow: 0 0 7px 1px rgba(51, 51, 51, 0.09)!important;
+	border: 1px solid #ebedf2;
+}
+.btn-white-primary-text .fa-play{
+	color: #34607B!important;
+}
+.fc-unthemed .fc-toolbar .fc-button:focus, .fc-unthemed .fc-toolbar .fc-button:active, .fc-unthemed .fc-toolbar .fc-button.fc-state-active {
+    background: #444646;
+    color: #fff;
+}
+
+.btn.btn-outline-primary {
+	color: #34607B;
+	border-color: #34607B;
+}
+
+.btn-outline-primary.focus, .btn-outline-primary:focus, .btn-outline-primary:hover , .btn-outline-primary:active {
+    border-color: #34607B;
+    background: #34607B;
+    color: #fff;
+}

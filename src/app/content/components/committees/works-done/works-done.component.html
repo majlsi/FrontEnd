@@ -1,0 +1,65 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle >
+		<div class="m-portlet__head-title mt-5">
+			<h3 class="m-portlet__head-text">
+				{{ "COMMITTEES.ADD.WORKDONE" | translate }}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<m-add-work-modal (addWorkEmitter)="addWork($event)" [committeeId]="committeeId"></m-add-work-modal>
+		<!-- <m-add-member [isFreezed]="committee.isFreezed" (AddMemberEmiter)="addMember($event)" [committee]="committee" [member_users]="committee.member_users" [committee_head]="committee.committee_head" [committee_organiser]="committee.committee_organiser"> </m-add-member> -->
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) new setting -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+
+					<ng-container matColumnDef="work_done">
+						<th *matHeaderCellDef>{{ "COMMITTEES.ADD.WORKDONE" | translate }}</th>
+						<td *matCellDef="let work" class="mat-column-vinCode">
+							{{work.work_done}}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="work_done_date">
+						<th *matHeaderCellDef>{{ "FILES.DATE" | translate }}</th>
+						<td *matCellDef="let work" class="mat-column-vinCode">
+							{{work.work_done_date != null ? (work.work_done_date | date:'EE, MMMM d, y') : '-' }}
+						</td>
+					</ng-container>
+
+
+					<ng-container matColumnDef="actions">
+						<th class="mat-column-action" *matHeaderCellDef>
+							{{ "GENERAL.ACTIONS" | translate }}
+						</th>
+						<td class="mat-column-action" *matCellDef="let work">
+
+							<m-edit-work-done-modal [work]="work" (editWorkEmiter)="editWork($event)"></m-edit-work-done-modal>
+
+							<!-- <button type="button"  (click)="delete(work)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x">
+								<i class="flaticon-delete-2"></i>
+							</button> -->
+						</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+				</table>
+			</div>
+
+			<!-- start: BOTTOM -->
+
+			<!-- <div class="form-group m-form__group row">
+				<input type="checkbox" id="users" name="users" [(ngModel)]="memberUserSelectet" #users="ngModel" hidden required />
+				<div class="error text-danger form-control-feedback" [hidden]="!hasError(committeeForm, 'users', 'required')">Member users is Required</div>
+			</div> -->
+		</div>
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

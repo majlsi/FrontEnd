@@ -1,0 +1,79 @@
+<div class="row py-0 d-flex">
+  <div class="col-6 col-md-4 col-lg-2 py-2 pr-4 pr-lg-0 pl-lg-3 pl-2 position-relative"
+    *ngFor="let directory of directories;let i = index">
+    <div class="bg-white border shadow-sm rounded p-3 min-height-150">
+      <a [routerLink]="['/files/'+ config.path+ '/' + directory.id]">
+        <div class="">
+          <div class="d-flex flex-nowrap justify-content-between align-items-center">
+            <i class="fas fa-folder color-icon-blue font-size-22"></i>
+          </div>
+          <div class="m-widget24 d-flex py-3">
+            <div class="m-widget24__item d-flex justify-content-center flex-column w-100">
+              <h3 class="m-widget24__title font-size-16 m-0 text-truncate color-title-dark font-weight-500"
+                placement="top" ngbTooltip="{{directory.directory_name}}">
+                {{directory.directory_name}}</h3>
+              <span class="m-widget24__desc font-size-14 m-0"> {{directory.files_count}} {{'FILES.FILE'|translate}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </a>
+      <div class="d-flex px-0 align-items-center justify-content-end">
+        <div class="d-flex ">
+          <img [src]="user.image_url?imageBaseUrl + user.image_url:'assets/app/media/img/users/user-photo.png'"
+            width="30" height="30" *ngFor="let user of directory.directory_users  | slice : 0:3"
+            class="rounded-circle folder__contributors" placement="top" ngbTooltip="{{isArabic? (user.name_ar? user.name_ar : user.name) : (user.name? user.name :
+              user.name_ar)}}">
+          <div ngbDropdown>
+            <ng-template #tipContent>
+              <div class="d-flex align-items-center my-0">
+                <p class="my-0">+</p>
+                <p class="mx-1 my-0">{{directory.directory_users.length - 3 }}</p>
+                <p class="my-0">{{'FILES.MORE_USERS'|translate}}</p>
+              </div>
+            </ng-template>
+            <div ngbDropdownToggle class="more-users-circle d-flex justify-content-center align-items-center"
+              *ngIf="directory.directory_users.length > 3" placement="top" [ngbTooltip]="tipContent">
+              <p class="font-size-14 font-weight-500 m-0 color-dark-grey"> + {{directory.directory_users.length - 3 }}
+              </p>
+  
+            </div>
+            <div ngbDropdownMenu class="min-width-MX max-height-118 px-3 py-2" [ngClass]="{'dropdown-menu-right': isArabic, 'dropdown-menu-left': !isArabic}">
+              <div *ngFor="let user of directory.directory_users|slice: 3">
+                <div class="d-flex align-items-center my-2">
+                  <img [src]="user.image_url?imageBaseUrl + user.image_url:'assets/app/media/img/users/user-photo.png'"
+                    width="20">
+                  <p class="my-0 ml-2">
+                    {{isArabic? (user.name_ar? user.name_ar : user.name) : (user.name? user.name :
+                    user.name_ar)}}
+                  </p>
+                </div>
+              </div>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+      <div ngbDropdown class="d-inline-block position-absolute ellipsis-btn-absolute ellipsis-btn">
+        <button
+          class="btn bg-white dropdown_no_arrow position-absolute dropdown-btn-transperant p-0 m-0 m-link ellipsis-icon"
+          id="dropdownBasic1" ngbDropdownToggle><i class="fas fa-ellipsis-v"></i></button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1" display="dynamic" placement="bottom-right"
+           [ngClass]="{'dropdown-menu-right': isArabic, 'dropdown-menu-left': !isArabic}">
+          <button ngbDropdownItem class="btn bg-white d-flex align-items-center p-0 m-0 color-dark-grey"
+            (click)="openShareModal(directory)" *ngIf="directory.can_share"><i class="fas fa-external-link-alt"></i>
+            {{'FILES.SHARE'|translate}}</button>
+          <button ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+            (click)="downloadDirectory(directory)"><i class="fas fa-arrow-down"></i>
+            {{'FILES.DOWNLOAD'|translate}}</button>
+          <button ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+            (click)="openRenameModal(directory)" *ngIf="directory.can_edit"><i class="far fa-edit"></i>
+            {{'FILES.RENAME'|translate}}</button>
+          <button ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 text-danger"
+            (click)="deleteDirectory(directory,i)" *ngIf="directory.can_delete"><i class="far fa-trash-alt"></i>
+            {{'FILES.REMOVE'|translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

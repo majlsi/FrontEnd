@@ -1,0 +1,61 @@
+ngx-charts-advanced-pie-chart {
+	::ng-deep {
+		.advanced-pie-legend-wrapper {
+			display: none;
+		}
+		width: 125px !important;
+		height: 120px !important;
+		> div {
+			width: 125px !important;
+			height: 120px !important;
+		}
+
+		.ngx-charts-outer.ng-trigger.ng-trigger-animationState {
+			width: 700px;
+			display: flex;
+			flex-direction: row-reverse;
+			position: absolute;
+		}
+
+		ngx-charts-chart.ng-tns-c14-3 {
+			-webkit-transform: scaleX(-1);
+			-moz-transform: scaleX(-1);
+			-o-transform: scaleX(-1);
+			transform: scaleY(-1);
+			position: relative;
+		}
+
+		.ngx-charts {
+			float: left;
+			overflow: visible;
+			display: flex;
+			flex-direction: column-reverse;
+			position: absolute;
+			width: 200px;
+			top: -45px;
+			left: 70px;
+		}
+	}
+}
+.m-widget14 .m-widget14__header {
+	padding: 0.1rem 0;
+}
+.ngx-charts-advanced-pie-chart-col-sm {
+	min-height: 180px;
+	margin: -60px -20px 0;
+	margin-top: -80px;
+}
+
+@media (max-width: 960px) {
+	ngx-charts-advanced-pie-chart[_ngcontent-c4] .ngx-charts {
+		float: right;
+		overflow: visible;
+		display: flex;
+		flex-direction: column-reverse;
+		position: absolute;
+		width: 200px;
+		top: -75px;
+		right: auto;
+		left: 150px;
+	}
+}

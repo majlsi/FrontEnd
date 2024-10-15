@@ -1,0 +1,201 @@
+<m-portlet [options]="{headLarge: true}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'CONVERSATIONS.MEETINGS_CONVERSATIONS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed"
+			[attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i> {{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<a (click)="openReassignMarkers()" type="button" class="btn btn-primary text-white">
+			{{'CONVERSATIONS.START_NEW_CONVERSATION' | translate}}
+			<i class='fa fa-spinner fa-spin' *ngIf="submitedStartConvensation"></i>
+		</a>
+	</ng-container>
+	<!-- end::Header -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #committeeForm="ngForm" (ngSubmit)="getMeetingChats()">
+						<table class="table table-bordered">
+							<thead class="">
+								<tr>
+									<th>{{'CONVERSATIONS.CONVERSATION_NAME' | translate}}</th>
+									<th> {{'GENERAL.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div class="input-group">
+											<input type="text" placeholder="{{'CONVERSATIONS.CONVERSATION_NAME' | translate}}" class="form-control form-filter input-sm" id="meetingtitle"
+									 			name="meetingtitle" [(ngModel)]="filterObject.SearchObject.meeting_title" #meetingtitle="ngModel">
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+	
+	
+										</div>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="row">
+			<div class="col-12" [ngClass]="{'col-xl-4': meetings.length > 0,'col-xl-12': meetings.length == 0}">
+				<div class="bg-white--content" style='min-height: 285px;'>
+					<div class="row">
+						<div class="col-12">
+
+							<div class="bg-gray px-4 py-2">
+								<p class="h5 mt-1 mb-1 py-1">{{'CONVERSATIONS.CONVERSATIONS_LIST' | translate}}</p>
+							</div>
+
+							<div class="messages-box">
+								<div class="list-group rounded-0" *ngFor="let meeting of meetings; let i = index;">
+									<a class="list-group-item list-group-item-action rounded-0"
+										[ngClass]="{'active': meeting.is_selected,'list-group-item-light': !meeting.is_selected}"
+										(click)="openChat(meeting, i)">
+										<div class="media"><img src="./assets/app/media/img/icons/meeting-icon.png"
+												alt="user" width="50" class="rounded-circle">
+											<div class="media-body ml-4">
+												<div class="d-flex align-items-center justify-content-between mb-1">
+													<h6 class="mb-0">
+														{{isArabic? meeting.meeting_title_ar : (meeting.meeting_title_en? meeting.meeting_title_en : meeting.meeting_title_ar)}}
+													</h6><small
+														class="small font-weight-bold">{{meeting.last_message_date| date: 'MMM d'}}</small>
+												</div>
+												<p class="font-italic mb-0 text-small">{{meeting.last_message_text}}</p>
+											</div>
+										</div>
+									</a>
+
+								</div>
+								<div *ngIf="meetings.length==0"
+									class="empty-chat-list pt-5 text-center d-flex flex-column justify-content-center align-items-center m-auto">
+									<img src="./assets/app/media/img/icons/chat.png" />
+									<h3 class="mb-3 mt-3 font-weight-500">
+										{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_TITLE' | translate }}
+									</h3>
+									<p class="mt-0">
+										{{ 'CONVERSATIONS.NO_CONVERSATION_LIST_DESC' | translate }}
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-xl-8 px-0"  *ngIf="meetings.length >0">
+				<div class="bg-white--content">
+					<div class="row m-row--no-padding m-row--col-separator-xl">
+						<div class="col-xl-12 ">
+							<!--begin:: Widgets/Profit Share-->
+
+							<!---->
+							<div class="chat-box-heading">
+								<div class="media"><img src="./assets/app/media/img/icons/meeting-icon.png" alt="user"
+										width="50" class="rounded-circle">
+									<div class="media-body pt-1 ml-4">
+										<div class="d-flex flex-column align-items-start justify-content-start mb-1">
+											<h6 class="mb-0">{{isArabic? chatNameAr : chatNameEn}}</h6>
+											<small class="small">
+												{{membersNumber}} {{'CONVERSATIONS.MEMBER' | translate}}</small>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Chat Box-->
+							<div class="">
+								<div #scrollMe class="px-4 py-5 chat-box bg-white" [scrollWindow]="false" infiniteScroll
+									[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50"
+									[infiniteScrollUpDistance]="2" (scrolledUp)="onScrollUp()"
+									[scrollTop]="scrollToBottom && scrollMe.scrollHeight">
+									<!-- Sender Message-->
+									<div *ngFor="let message of chatHistory; let i = index;">
+										<div class="chat-date" *ngIf="compareDate(message.message_time,chatHistory,i)">
+											{{message.message_time | date: 'MMM d, y'}}</div>
+										<div class="media chat-media w-50 mb-3 ml-auto mr-0"
+											[ngClass]="{'ml-auto mr-0': !message.is_send_by_current_user}">
+
+											<div width="50 " style="width: 50px;"
+												*ngIf="(i > 0 && message.sender_user_id == chatHistory[i-1].sender_user_id)">
+											</div>
+											<img *ngIf="!message.is_send_by_current_user && message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+												[src]="environment.imagesBaseURL + message.image_url" alt="user"
+												width="50" class="rounded-circle"
+												onerror="this.src='https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg';">
+											<img *ngIf="!message.is_send_by_current_user && !message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+												src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+												alt="user" width="50" class="rounded-circle">
+											<div class="media-body"
+												[ngClass]="{'mx-3': !message.is_send_by_current_user, 'current-user-media-body': message.is_send_by_current_user}">
+												<div class="chat-bubble py-2 px-3 mb-2"
+													[ngClass]="{'chat-bubble-default': !message.is_send_by_current_user,'chat-bubble-primary': message.is_send_by_current_user}">
+													<p *ngIf="!message.is_send_by_current_user && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+														class="sender-name font-weight-500 mb-0">
+														{{message.username}}
+													</p>
+													<p class="text-small mb-0"
+														[ngClass]="{'m': !message.is_send_by_current_user}">
+														{{message.message_text}}</p>
+												</div>
+												<p class="small  ">{{message.message_time | date: 'h:mm a'}}</p>
+											</div>
+										</div>
+									</div>
+
+
+								</div>
+
+								<!-- Typing area -->
+								<div class="box-footer">
+									<form name="messageForm" #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)"
+										novalidate class="bg-light">
+										<div class="input-group">
+											<input type="text"
+												placeholder="{{'CONVERSATIONS.MESSAGE_LABEL' | translate}}"
+												aria-describedby="button-addon2"
+												class="form-control rounded-0 border-0 py-4 bg-light" name="messageText"
+												#messageText="ngModel" [(ngModel)]="message">
+											<div class="input-group-append">
+												<button id="button-addon2" type="submit"
+													class="btn btn-primary m-btn--icon-right" [disabled]="submitMessage">
+													<i class="fa fa-paper-plane"></i>
+													{{'CONVERSATIONS.SEND_MESSAGE' | translate}}
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+
+
+							</div>
+
+							<!--end:: Widgets/Profit Share-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

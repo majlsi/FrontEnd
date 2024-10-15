@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<h4 class="modal-title" id="modal-basic-title">{{'VIEW_MEETING.MEETINGATTENDANCESTATUS.ABSENT.ABSENTMEETING' | translate}}
+	</h4>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click');">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="m-form">
+	<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate
+		#rejectionReasonForm="ngForm" (ngSubmit)="save(rejectionReasonForm)">
+		<div class="modal-body">
+			<div class="form-group m-form__group row">
+				<label>{{'VIEW_MEETING.MEETINGATTENDANCESTATUS.ABSENT.DESCRIPTION'|translate}}</label>
+				<br>
+				<textarea name="comment" class="white-bg py-0 form-control m-input m-input--solid"
+					placeholder="{{'VIEW_MEETING.REJECTION_REASON.ADD_COMMENT'|translate}}" required
+					[(ngModel)]="rejectionReason.rejection_reason_comment" rows="3" [maxlength]="1000"></textarea>
+				<div class="error text-danger"
+					[hidden]="!hasError(rejectionReasonForm,'comment', 'maxlength')">
+					{{'VIEW_MEETING.REJECTION_REASON.VALIDATION.COMMENT_LENGTH'|translate}}</div>
+
+				<div class="error text-danger"
+					[hidden]="!hasError(rejectionReasonForm,'comment', 'required')">
+					{{'VIEW_MEETING.REJECTION_REASON.VALIDATION.REASONREQUIRED'|translate}}</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="submit" class="btn btn-light-grey">{{'BUTTON.CONFIRM' | translate}}
+				<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+			</button>
+			<button class="btn btn-secondary"
+				(click)="activeModal.dismiss('Cross click');">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+		</div>
+	</form>
+</div>

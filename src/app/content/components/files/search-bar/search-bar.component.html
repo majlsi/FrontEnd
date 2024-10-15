@@ -1,0 +1,26 @@
+<form novalidate="">
+  <div class="d-flex my-3">
+    <input class="form-control form-filter input-sm " id="chatgroupname" name="chatgroupname" type="text"
+      [ngbTypeahead]="search" [resultTemplate]="rt" [inputFormatter]="formatter" [resultFormatter]="formatter" #ngbTypeahead (selectItem)="select($event)"
+      placeholder="{{'FILES.SEARCHHERE'|translate}}">
+      <ng-template #rt let-r="result" let-t="term">
+        <div class="d-flex justify-content-between">
+          <div  class="d-flex align-items-center">
+            <img *ngIf="r.is_file" [src]="r.icon?r.icon:''" class="mr-1" style="width: 16px">
+            <i *ngIf="!r.is_file" class="fa fa-folder color-icon-blue font-size-16"></i>
+            <div class="d-flex flex-column search-result mx-3">
+              <span class="font-size-14 font-weight-500 w-100 text-truncate" placement="bottom" ngbTooltip="{{r.name}}">
+                <ngb-highlight [result]="r.name" [term]="t" class="text-truncate"></ngb-highlight>
+              </span>
+              <span class="font-size-12">{{isArabic? (r.owner_ar? r.owner_ar : r.owner) : (r.owner? r.owner :
+                r.owner_ar)}}</span>
+            </div>
+          </div>
+          <div>
+            
+            <span>{{r.created_at|date : 'MMMM d, y'}}</span>
+          </div>
+        </div>
+      </ng-template>
+  </div>
+</form>

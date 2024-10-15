@@ -1,0 +1,112 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'NOTIFICATIONS.TITLE' | translate}}
+				<span class="badge badge-primary mx-2 px-3"> <span class="px-1">{{newNotificationCount}}</span></span>
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="enz-notifications-page">
+			<ul class="enz-notifications-list p-0">
+				<!-- Start notification repeate -->
+				<li class="pt-2" *ngIf="notificationList.new_notifications.length > 0">
+					<div>
+						<h4 class="enz-notifications-title col-12">{{'NOTIFICATIONS.NEW'|translate}}</h4>
+					</div>
+				</li>
+				<li class="enz-notifications-item" [ngClass]="{'enz-notification-new': true}" *ngFor="let notification of notificationList.new_notifications" (click)="openNotification(notification)">
+					<span class="enz-notifications-icon">
+						<i [ngClass]="notification.notification_icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">{{isArabic? notification.notification_title_ar : notification.notification_title_en}}</h6>
+						<p class="enz-notifications-text">{{isArabic? notification.notification_body_ar : notification.notification_body_en}}</p>
+						<p class="enz-notifications-date">
+							{{isArabic? notification.time_string_ar : notification.time_string_en}}
+						</p>
+					</div>
+				</li>
+				<!-- <li class="enz-notifications-item" [ngClass]="{'enz-notification-new': true}">
+					<span class="enz-notifications-icon">
+						<i class="fas fa-bell font-awesome-icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">This is a meeting Title</h6>
+						<p class="enz-notifications-text">Annotation has been updated to document "document name" into
+							review room by Ghada</p>
+						<p class="enz-notifications-date">
+							منذ 2 ساعة و 12 دقيقة
+						</p>
+					</div>
+				</li> -->
+				<li class="pt-2" *ngIf="notificationList.old_notifications.length > 0">
+					<div>
+						<h4 class="enz-notifications-title col-12">{{'NOTIFICATIONS.EARLIER'|translate}}</h4>
+					</div>
+				</li>
+				<li class="enz-notifications-item d-flex" *ngFor="let notification of notificationList.old_notifications"
+					(click)="openNotification(notification)">
+					<span class="enz-notifications-icon">
+						<i [ngClass]="notification.notification_icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">{{isArabic? notification.notification_title_ar : notification.notification_title_en}}</h6>
+						<p class="enz-notifications-text">{{isArabic? notification.notification_body_ar : notification.notification_body_en}}</p>
+						<p class="enz-notifications-date">
+							{{isArabic? notification.time_string_ar : notification.time_string_en}}
+						</p>
+					</div>
+				</li>
+				<!-- <li class="enz-notifications-item ">
+					<span class="enz-notifications-icon">
+						<i class="fa fa-tasks font-awesome-icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">This is a meeting Title</h6>
+						<p class="enz-notifications-text">Annotation has been updated to document "document name" into
+							review room by Ghada</p>
+						<p class="enz-notifications-date">
+							منذ 3 يوم
+						</p>
+					</div>
+				</li> -->
+				<!-- <li class="enz-notifications-item ">
+					<span class="enz-notifications-icon">
+						<i class="fas fa-comment-alt font-awesome-icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">This is a meeting Title</h6>
+						<p class="enz-notifications-text">Annotation has been updated to document "document name" into
+							review room by Ghada</p>
+						<p class="enz-notifications-date">
+							منذ 4 يوم
+						</p>
+					</div>
+				</li> -->
+				<!-- <li class="enz-notifications-item ">
+					<span class="enz-notifications-icon">
+						<i class="fas fas fa-comments font-awesome-icon"></i>
+					</span>
+					<div>
+						<h6 class="enz-notifications-title">This is a meeting Title</h6>
+						<p class="enz-notifications-text">Annotation has been updated to document "document name" into
+							review room by Ghada</p>
+						<p class="enz-notifications-date">
+							منذ 4 يوم
+						</p>
+					</div>
+				</li> -->
+				<!-- End notification repeate -->
+			</ul>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

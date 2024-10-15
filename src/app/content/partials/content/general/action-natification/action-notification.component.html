@@ -1,0 +1,19 @@
+<div class="m-mat-snackbar">
+	<div class="m-mat-snackbar__message">
+		<i [ngClass]="data.isError === false ? 'fa fa-check' : 'fa fa-info'"></i>
+		<!-- <i class="fa fa-info"></i>  -->
+		{{data.message}}</div>
+	<div class="m-mat-snackbar__btn">
+		<button *ngIf="data.showUndoButton" type="button" mat-button color="primary" (click)="onDismissWithAction()">
+			Undo
+		</button>
+	</div>
+	<div class="m-mat-snackbar__close">
+		<button *ngIf="data.showCloseButton"
+			mat-icon-button
+			(click)="onDismiss()"
+			color="warn" class="btn btn-link min-width-unset px-0 mx-0">
+			<i class="fas fa-times"></i>
+		</button>
+	</div>
+</div>

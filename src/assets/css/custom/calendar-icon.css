@@ -1,0 +1,89 @@
+.bg-white--content.m--border-radius-15 {
+	border: 1px solid #ebedf2;
+    background: white;
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+    border-radius: 15px!important;
+}
+
+.calendar-icon {
+    display: inline-block;
+    font-size: 0.6em;
+    color: white;
+    background-color: white;
+    width: 4em;
+    height: 5.6em;
+    border-radius: 2px;
+    text-align: center;
+    border: 1px solid #666;
+}
+
+.calendar-icon .month {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 0.125em 0;
+    background-color: #c90000;
+    border-bottom: 1px solid #666;
+}
+
+.calendar-icon .day {
+    font-weight: bold;
+    font-size: 2.4em;
+    line-height: 1.22em;
+    background-color: white;
+    color: #333;
+    /* border-radius: 0 0 $default_border_radius $default_border_radius; */
+}
+
+.calendar-icon .day-of-week {
+    padding: 0.125em 0;
+}
+
+
+
+/**/
+
+
+.media-aside {
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 2rem;
+    color: #aeaeae;
+    text-align: center;
+    min-width: 100px;
+}
+
+.grey-lg-text{
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 5px 0;
+}
+
+.media-body{
+    position: relative;
+}
+.media:not(.agenda-media) .media-body:before {
+    border-right-style: solid;
+    border-right-width: 1px;
+    bottom: 0;
+    content: "";
+    left: -110px;
+    position: absolute;
+    top: 0;
+    width: 100px;
+    /* background-color: #fafafa; */
+    border-right-color: #ededed;
+}
+.sm-user-img img {
+    border-radius: 50%;
+    margin: 0 3px 0 0;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #ddd;
+}
+
+.show-more-abs {
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+}

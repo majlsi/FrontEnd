@@ -1,0 +1,341 @@
+<div class="m--padding-15 m--padding-top-0">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>
+                {{'MEETINGS.GENERAL.AGENDA' | translate}}
+            </h3>
+        </div>
+
+        <div class="col-lg-6 text-right card-header-action">
+            <button class="btn btn-light-grey title-action-btn" (click)="appendNewAgenda()" [hidden]="!canEditMeeting">
+                <i class="fa fa-plus"></i>
+
+                {{'MEETINGS.AGENDA.ADD.ADDNEWAGENDA' | translate}}
+            </button>
+        </div>
+    </div>
+    <div [hidden]="errors.length == 0" class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+        role="alert">
+        <p *ngFor="let error of errors">
+            {{isArabic? error?.message_ar : error?.message? error?.message : error?.message_ar}}
+        </p>
+    </div>
+    <div class="mat-table__wrapper mat-table__message" *ngIf="agendas?.length == 0">
+        {{'MEETINGS.AGENDA.ADD.NORECORDSFOUND' | translate}}</div>
+
+    <form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate
+        #agendaPurposeForm="ngForm" (ngSubmit)="save(agendaPurposeForm)">
+
+        <div dragula="agendas" [(dragulaModel)]="agendas">
+            <div class="card card-row card-header p-b-0 cursor-grab mb-3"
+                *ngFor="let agenda of agendas; let i = index; trackBy: trackFunction" [attr.data-index]="i">
+                <span class="handle"><i class="fa fa-grip-vertical"></i></span>
+                <h5 class="mb-0">
+                    <div class="form-gro up m-form__g roup row no-pad">
+
+                        <div class="col-lg-12">
+                            <span class="m-list-timeline__time hidden">
+                                <span class="m-menu__link-badge">
+                                    <m-add-attachment (AddAgendaAttachmentsEmiter)="addAgendaAttachments($event,i)" [attachments]="agenda.agenda_attachments" [can_upload]="can_upload"
+                                        [canEdit]="canEditMeeting"></m-add-attachment>
+
+
+                                </span>
+                            </span>
+
+                            <span class="m-list-timeline__time">
+                                <span class="m-menu__link-badge">
+                                    <span class="m-badge m-badge--btn editBadge deleteBadge" (click)="removeAgenda(i)"
+                                        [hidden]="!canEditMeeting">
+                                        <i class="la la-trash"></i>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </h5>
+
+                <div class="row m-b-15">
+                    <div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+                        <div class="form-group m-form__group row" *ngIf="isArabic">
+                            <label class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.AGENDATITLEAR' | translate}}
+                                <span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <input class="form-control m-input"
+                                    placeholder="{{'MEETINGS.AGENDA.ADD.ENTERAGENDATITLE' | translate}}" type="text"
+                                    #agendatitlear="ngModel" name="{{'agendatitlear'+i}}"
+                                    [(ngModel)]="agenda.agenda_title_ar" required [disabled]="!canEditMeeting">
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendatitlear'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.AGENDA_TITLE_AR' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row" *ngIf="!isArabic">
+                            <label class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.AGENDATITLEEN' | translate}}
+                                <span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <input class="form-control m-input"
+                                    placeholder="{{'MEETINGS.AGENDA.ADD.ENTERAGENDATITLE' | translate}}" type="text"
+                                    #agendatitleen="ngModel" name="{{'agendatitleen'+i}}"
+                                    [(ngModel)]="agenda.agenda_title_en" required [disabled]="!canEditMeeting">
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendatitleen'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.AGENDA_TITLE_EN' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row">
+                            <label class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.AGENDAMIN' | translate}}
+                                <span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <div class="input-group">
+                                    <input class="form-control m-input" type="number" name="{{'agendatime'+i}}"
+                                        [min]="1" [disabled]="!canEditMeeting"
+                                        placeholder="{{'MEETINGS.AGENDA.ADD.MIN' | translate}}" #agendatime="ngModel"
+                                        [(ngModel)]="agenda.agenda_time_in_min" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">
+                                            <i class="la la-clock-o"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendatime'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.AGENDA_TIME' | translate}}
+                                </div>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendatime'+i, 'min')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.AGENDA_TIME_MIN' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label for="MOM_MEMBERS" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.AGENDAMEMBERS' | translate}}
+                                <span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <ng-select [compareWith]="compareFn" placeholder="{{'MEETINGS.AGENDA.ADD.AGENDAMEMBERS' | translate}}" [hideSelected]="true"
+                                    name="{{'agendaMembers'+i}}" [searchable]="true" [(ngModel)]='agenda.participants' [multiple]="true"
+                                    [hideSelected]="true" required [disabled]="!canEditMeeting"
+                                    (ngModelChange)="participantsChanged($event, agenda)">
+                                    <!-- Members -->
+                                    <ng-option *ngFor="let participant of participants; let index = rowIndex" id="{{index}}"
+                                        [value]="getParticipantValue(participant, agenda.id)">
+                                        {{getParticipantsLabel(participant)}}
+                                    </ng-option>
+                                </ng-select>
+
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendaMembers'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.MEMBERS' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label for="MOM_TITLE_AR" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.AGENDAPRESENTERS' | translate}}
+                                <span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+
+                                <ng-select [compareWith]="compareFn" placeholder="{{'MEETINGS.AGENDA.ADD.ENTERPRESENTERS' | translate}}"
+                                    [hideSelected]="true" name="{{'agendapresenters'+i}}" [searchable]="true"
+                                    [(ngModel)]='agenda.presenters' [multiple]="true" [hideSelected]="true" required
+                                    [disabled]="!canEditMeeting"
+                                    >
+                                    <!-- Participants -->
+                                    <ng-option *ngFor="let participant of agenda.participants; let index = rowIndex" id="{{index}}" [value]="participant">
+                                        {{getPresentersLabel(participant)}}
+                                    </ng-option>
+                                </ng-select>
+
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendapresenters'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.PRESENTERS' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label for="agendaPurpose" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.SELECTPURPOSE' | translate}}
+                                <span class="MandatoryAsterisk"></span>
+                            </label>
+                            <div class="col-lg-9">
+                                <ng-select [searchable]="true"
+                                    placeholder="{{'MEETINGS.AGENDA.ADD.SELECTAGENDAPURPOSE' | translate}}"
+                                    [clearable]="false" [(ngModel)]="agenda.agenda_purpose_id"
+                                    name="{{'agendaPurpose'+i}}" #agendaPurpose="ngModel" required
+                                    [items]="agendaPurposes" [bindLabel]="agendaPurposeBindLabel" bindValue="id"
+                                    [disabled]="!canEditMeeting">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <span [title]="item.name" class="ng-option-label">{{isArabic?
+                                            item.purpose_name_ar : (item.purpose_name_en? item.purpose_name_en :
+                                            item.purpose_name_ar)}}</span>
+                                    </ng-template>
+                                </ng-select>
+
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendaPurpose'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.AGENDA_PURPOSE' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row">
+                            <label for="agendaPurpose" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.SELECTAGENDATEMPLATE' | translate}}
+                            </label>
+                            <div class="col-lg-9">
+                                <ng-select [searchable]="true"
+                                    placeholder="{{'MEETINGS.AGENDA.ADD.SELECTAGENDATEMPLATE' | translate}}"
+                                    [clearable]="true" [(ngModel)]="agenda.agendaTempId"
+                                    (change)="autoFillDesc(agenda,agenda.agendaTempId)" name="{{'agendaTemplate'+i}}"
+                                    #agendaTemplete="ngModel" [items]="agendaTemplates"
+                                    [bindLabel]="agendaTemplatebindLabel" bindValue="id" [disabled]="!canEditMeeting">
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <span [title]="item.name" class="ng-option-label">{{isArabic?
+                                            item.agenda_template_name_ar : (item.agenda_template_name_en?
+                                            item.agenda_template_name_en : item.agenda_template_name_ar)}}</span>
+                                    </ng-template>
+                                </ng-select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row" *ngIf="isArabic">
+                            <label for="agendaPurpose" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.DESCRIPTION_AR' | translate}}
+                                <span class="MandatoryAsterisk"></span>
+                            </label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control m-input" name="{{'agendadescar'+i}}"
+                                    [disabled]="!canEditMeeting" #agendadescar="ngModel"
+                                    [(ngModel)]="agenda.agenda_description_ar" [maxlength]="1000" required></textarea>
+
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendadescar'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.DESCRIPTION_AR' | translate}}
+                                </div>
+                                <div class="error text-danger form-control-feedback"
+                                    *ngIf="agenda.agenda_description_ar?.length == 1000">
+                                    {{'MEETINGS.AGENDA.VALIDATION.DESCRIPTION_AR_LENGTH'|translate}}</div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row" *ngIf="!isArabic">
+                            <label for="agendaPurpose" class="col-lg-3 col-form-label">
+                                {{'MEETINGS.AGENDA.ADD.DESCRIPTION_EN' | translate}}
+                                <span class="MandatoryAsterisk"></span>
+                            </label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control m-input" name="{{'agendadescen'+i}}"
+                                    [disabled]="!canEditMeeting" #agendadescen="ngModel"
+                                    [(ngModel)]="agenda.agenda_description_en" [maxlength]="1000" required></textarea>
+                                <div class="error text-danger form-control-feedback"
+                                    *ngIf="agenda.agenda_description_en?.length == 1000">
+                                    {{'MEETINGS.AGENDA.VALIDATION.DESCRIPTION_EN_LENGTH'|translate}}</div>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(agendaPurposeForm,'agendadescen'+i, 'required')">
+                                    {{'MEETINGS.AGENDA.VALIDATION.DESCRIPTION_EN' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Start Agenda Attachment from server Row  -->
+                <div class="row attachment-row"
+                    *ngFor="let attachment of agenda.agenda_attachments; let iattachment = index; trackBy: trackAttachment">
+                    <span class="m-list-timeline__time">
+                        <span class="m-menu__link-badge">
+                            <span class="m-badge m-badge--btn editBadge deleteBadge" style="top: 0;"
+                                [hidden]="!canEditMeeting" (click)="deleteAttachment(i,iattachment)">
+                                <i class="la la-trash"></i>
+                            </span>
+                        </span>
+                    </span>
+                    <div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+                        <h5 class="mb-0">
+                            <div class="form-gro up m-form__g roup row no-pad">
+                                <div class="col-lg-6">
+                                    <div class="file_name-detail-row">
+                                        <div class="file_name-name">
+                                            <span>{{attachment.attachment_name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </h5>
+                    </div>
+                </div>
+                <!-- End Attachment Row -->
+
+                <!-- Start Agenda Attachment from dropzone Row  -->
+                <div class="row attachment-row"
+                    *ngFor="let file of agenda.files; let ifile = index; trackBy: trackFile">
+                    <span class="m-list-timeline__time">
+                        <span class="m-menu__link-badge">
+                            <span class="m-badge m-badge--btn editBadge deleteBadge" style="top: 0;"
+                                [hidden]="!canEditMeeting" (click)="deleteFile(i,ifile)">
+                                <i class="la la-trash"></i>
+                            </span>
+                        </span>
+                    </span>
+                    <div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+                        <h5 class="mb-0">
+                            <div class="form-gro up m-form__g roup row no-pad">
+                                <div class="col-lg-6">
+                                    <div class="file_name-detail-row">
+                                        <div class="file_name-name">
+                                            <span>{{file.name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </h5>
+                    </div>
+                </div>
+                <!-- End Attachment Row -->
+                <div class="error text-danger form-control-feedback"
+                    *ngIf="(agenda?.files?.length + agenda?.agenda_attachments?.length) > 5">
+                    {{'MEETINGS.AGENDA.VALIDATION.ATTACHMENT_MAX_NUMBER'|translate}}</div>
+
+            </div>
+
+        </div>
+
+        <div class="m-form__actions m-form__actions--solid">
+            <div class="row">
+                <div class="col-lg-12 m--align-left">
+                    <button type="submit" class="btn btn-primary" [disabled]="submitted" *ngIf="canEditMeeting">
+                        {{'BUTTON.SAVE' | translate}}
+                        <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="saveMeetingVersion(agendaPurposeForm)"
+                        [disabled]="submitted" *ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+                        {{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+                        <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+                    </button>
+                    <button type="reset" (click)="redirect()" class="btn btn-secondary">
+                        {{'BUTTON.CANCEL' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>

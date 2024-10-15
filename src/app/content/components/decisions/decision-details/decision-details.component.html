@@ -1,0 +1,212 @@
+<div class="decision-card card-opened">
+	<div class="d-flex decision-header justify-content-between mx-3 pt-4">
+		<div class="d-flex align-items-center">
+			<div class="d-flex" data-cy="creatorAvatar">
+				<figure class="avatar-placeholder m-0"><img alt="m" class="avatar medium no-border"
+						src="./assets/app/media/img/users/placeholder.847553a4.svg"
+						style="border-color: rgb(255, 255, 255);">
+					<p class="avatar-shortname medium"><span>m</span></p>
+				</figure>
+			</div>
+			<div class="d-flex flex-column px-3">
+				<div class="d-flex">
+					<h5 class="" data-cy="cardTypeContainer">Decision created by</h5>
+					<span class="mx-2">by</span>
+					<h5 class="" data-cy="cardCreatorContainer" title="m">m </h5>
+				</div>
+				<span class="text-muted">about 8 hours ago</span>
+			</div>
+		</div>
+		<div class="decision-status">
+			<span class="mx-2 mt-3 mb-4 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': decision.decision_status_id == decisionStatuses.APPROVED,
+							'm-badge--danger' : decision.decision_status_id == decisionStatuses.REJECTED
+							}">
+				{{isArabic? decision.decision_status_name_ar : (decision.decision_status_name_en? decision.decision_status_name_en : decision.decision_status_name_ar)}}
+			</span>
+		</div>
+	</div>
+	<div class="px-4 mx-2">
+		<div class="decision-card-title mb-4">
+			<div class="d-flex flex-column" readonly="">
+				<div class=""
+					style="outline: none; white-space: pre-wrap; overflow-wrap: break-word;">
+					<div>
+						<span>
+							as a member should be able to approval decision or disapproval
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="decision-time-container">
+
+			<div class="d-flex flex-wrap justify-content-between align-items-center  mb-3 mt-2 ">
+				<div class="d-flex ">
+				<div class="">
+					<span class="text-muted">Start date:</span>
+					<span class="mx-2">{{decision.created_at}}</span>
+				</div>
+				<div class="enddate"><span class="text-muted">تاريخ النهاية:</span><span class="mx-2">2020-11-19 09:02:50</span></div>
+				</div>
+					<div data-cy="set-deadline-btn" class="deadline-badge">
+						<i class="fas fa-clock time-constraint"></i>
+							<div data-cy="deadline-container" class="deadline-text">Due: in a month</div>
+					</div>
+			</div>
+		</div>
+		<div class="optional-message-container pb-3">
+				<span class="formatted-text">
+					The member that invited to
+					decision shall able to approve the decision or disapprove regarding the type: -Approval /
+					disapproval / abstain
+				</span>
+		</div>
+
+		<div class="optional-media-container mb-4">
+			<!--begin::m-widget4-->
+			<div class="m-widget4 attachment-widget-row">
+				<div class="m-widget4__item media-container" *ngFor="let attachment of meeting.meeting_attachments">
+					<div class="m-widget4__img m-widget4__img--icon">
+						<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+							src="./assets/app/media/img/files/doc.svg" alt="">
+						<img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+							src="./assets/app/media/img/files/jpg.svg" alt="">
+						<img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+							src="./assets/app/media/img/files/pdf.svg" alt="">
+						<img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+							src="./assets/app/media/img/files/ppt.svg" alt="">
+						<img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+							src="./assets/app/media/img/files/xls.svg" alt="">
+							<img *ngIf="checkFileType(attachment.attachment_url) == 'video'"
+							src="./assets/app/media/img/files/mp4.svg" alt="mp4" >
+					</div>
+					<div class="m-widget4__info">
+						<span class="m-widget4__text">
+							<a target="_blank" rel="noopener noreferrer"
+								href="{{imagesBaseURL+attachment.attachment_url}}">
+								{{attachment.attachment_name}}
+							</a>
+						</span>
+					</div>
+					<div class="m-widget4__ext">
+						<a (click)="downloadFile(imagesBaseURL+attachment.attachment_url,attachment.attachment_name)"
+							class="m-widget4__icon">
+							<i class="la la-download"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<!--end::Widget 4-->
+		</div>
+
+
+
+
+		<!-----VOTE AREA ----->
+		<div class="decision-items__cont pb-4 pt-4 mt-3">
+
+			<div class="decision-item decision-item__title px-0">
+				<div aria-label="Button group with nested dropdown" class="btn-group w-50 d-flex flex-row row"
+					role="group">
+					<label class="d-flex align-items-center col">
+						<span class="m-vote-btn-group w-50">
+							<input class="ng-untouched ng-pristine ng-valid" type="radio" name="decision">
+							<div class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
+								<div></div>
+								<h5 class="m--font-boldest my-2"> 1</h5>
+							</div>
+							<span>
+							</span>
+						</span>
+						<h5 class="bold mx-2">موافق </h5>
+					</label>
+					<label class="d-flex align-items-center col">
+						<span class="m-vote-btn-group w-50">
+							<!---->
+							<!----><input class="ng-untouched ng-pristine ng-valid" type="radio" name="decision">
+							<div class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
+								<div></div>
+								<h5 class="m--font-boldest my-2"> 1</h5>
+							</div>
+							<span></span>
+						</span>
+						<h5 class="bold mx-2">ارفض </h5>
+					</label>
+					<label class="d-flex align-items-center col">
+						<span class="m-vote-btn-group w-50">
+							<!---->
+							<!----><input class="ng-untouched ng-pristine ng-valid" type="radio" name="decision">
+							<div class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
+								<div></div>
+								<h5 class="m--font-boldest my-2">1</h5>
+							</div>
+							<span></span>
+						</span>
+						<h5 class="bold mx-2">امتنع </h5>
+					</label>
+
+				</div>
+
+			</div>
+			<div data-cy="participationData" class="participation-data d-flex flex-column pb-3">
+				<div class="d-flex align-items-center">
+					<span data-cy="participation-Voted" class="participation-voted">Participation Voted:</span>
+					<div data-cy="participantsGroup" class="avatar-group mx-2">
+						<div class="voter-no">+4</div>
+					</div>
+				</div>
+
+				<div class="voter-details-card">
+					<!-- <h3 class="m-portlet__head-text py-1"> الأصوات </h3> -->
+					<div class="m-widget4">
+						<!---->
+						<div class="m-widget4__item">
+							<div class="m-widget4__img m-widget4__img--pic">
+								<!---->
+								<!----><img alt=""
+									src="http://134.122.87.251/mjlsi/wp-mjlsi/app/BackEnd/public/uploads/users/1594196377_welcome-vector.png">
+							</div>
+							<div class="m-widget4__info"><span class="m-widget4__title"> الاستاذ </span><span
+									class="m-widget4__title"> Marwa Attef </span><br>
+								<!----><span class="m-widget19_ _time"> ارفض </span>
+								<!---->
+							</div>
+						</div>
+						<div class="m-widget4__item">
+							<div class="m-widget4__img m-widget4__img--pic">
+								<!---->
+								<!----><img alt=""
+									src="http://134.122.87.251/mjlsi/wp-mjlsi/app/BackEnd/public/uploads/users/1603882756_kilua.jpg">
+							</div>
+							<div class="m-widget4__info"><span class="m-widget4__title"> </span><span
+									class="m-widget4__title"> ايمان محمد </span><br>
+								<!----><span class="m-widget19_ _time"> امتنع </span>
+								<!---->
+							</div>
+						</div>
+						<div class="m-widget4__item">
+							<div class="m-widget4__img m-widget4__img--pic">
+								<!---->
+								<!----><img alt=""
+									src="http://134.122.87.251/mjlsi/wp-mjlsi/app/BackEnd/public/uploads/users/1594283141_geek-eyeglasses-main-banner.jpg">
+							</div>
+							<div class="m-widget4__info"><span class="m-widget4__title"> الاستاذ </span><span
+									class="m-widget4__title"> Jaidaa Hany </span><br>
+								<!----><span class="m-widget19_ _time"> موافق </span>
+								<!---->
+							</div>
+						</div>
+						<!---->
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<!-----VOTE AREA ----->
+
+
+	</div>
+
+</div>

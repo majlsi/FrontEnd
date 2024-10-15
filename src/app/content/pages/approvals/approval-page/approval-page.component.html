@@ -1,0 +1,53 @@
+
+
+<div class="main-portlet">
+
+    <!-- start::Header -->
+    <div class="m-subheader pb-3 pt-5">
+        <h3 class="mb-0 font-size-20 font-weight-500">
+            {{ approvalId? ('APPROVAL.ADD.EDIT_APPROVAL' | translate) : ('APPROVAL.ADD.ADD_APPROVAL' | translate)}}
+        </h3>
+    </div>
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: mPortletBody) -->
+    <div class="tabsWrabber">
+        <ul ngbNav #nav="ngbNav" class="nav-pills" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+            <li ngbNavItem="approvalInfo">
+                <button ngbNavLink>{{'APPROVAL.ADD.APPROVAL_STEP1'|translate}}</button>
+                <ng-template ngbNavContent>
+                    <!-- <m-meeting (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting"
+                        [meeting]="meetingData" (getMeetingEmitter)="getMeeting()" [allCommittees]="allCommittees"
+                        [proposals]="proposals" [reminders]="reminders" [momTemplates]="momTemplates"
+                        [selectedTimeZone]="selectedTimeZone"
+                        [userOnlineConfigurations]="userOnlineConfigurations"></m-meeting> -->
+                    <m-approval (tabChanged)="changeTab($event)"></m-approval>
+
+                </ng-template>
+            </li>
+            <li ngbNavItem="setSignatureAreas" [disabled]="addMode">
+                <button ngbNavLink>{{'APPROVAL.ADD.APPROVAL_STEP2' | translate}}</button>
+                <ng-template ngbNavContent>
+                    <m-approval-step-two (tabChanged)="changeTab($event)"></m-approval-step-two>
+                    <!-- <m-organisers (tabChanged)="changeTab($event)" [canEditMeeting]="meetingData.can_edit_meeting"
+                        [organisers]="meetingData.meeting_organisers" [users]="users" (getMeetingEmitter)="getMeeting()"
+                        [meetingStatusId]="meetingData.meeting_status_id"></m-organisers> -->
+                </ng-template>
+            </li>
+            <li ngbNavItem="approvalSummary" [disabled]="addMode">
+                <button ngbNavLink>{{'APPROVAL.ADD.APPROVAL_STEP3'|translate}}</button>
+                <ng-template ngbNavContent>
+                    <m-step3-approval-summary (tabChanged)="changeTab($event)"></m-step3-approval-summary>
+                    <!-- <m-participants (tabChanged)="changeTab($event)"
+                        [showSendSignButton]="meetingData.show_send_sign_button"
+                        [canEditMeeting]="meetingData.can_edit_meeting" [participants]="participants" [users]="users"
+                        (getMeetingEmitter)="getMeeting()"
+                        [meetingStatusId]="meetingData.meeting_status_id"></m-participants> -->
+                </ng-template>
+            </li>
+        </ul>
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+    <!-- end::Body -->
+
+</div>

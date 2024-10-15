@@ -1,0 +1,20 @@
+<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+<div class="d-flex flex-lg-wrap flex-wrap-reverse justify-content-between align-items-center mx-4 px-4 mt-4 mb-4">
+	<div class="mr-auto">
+        <h3 class="m-portlet__head-text">
+			{{'CIRCULAR_DECISIONS.DETAILS.TITLE' | translate}}
+		</h3> 
+    </div>
+    <div class="align-items-center text-left">
+        <a (click)="back()" class="px-2">
+            {{'CIRCULAR_DECISIONS.DETAILS.BACK' | translate}}
+            <i class="fa fa-arrow-left" ></i>
+        </a>
+    </div>
+</div>
+<!-- end::Header -->
+
+
+<div class="px-5 pt-4 pb-5">
+	<m-circular-decision-details></m-circular-decision-details>
+</div>

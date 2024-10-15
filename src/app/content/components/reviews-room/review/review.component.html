@@ -1,0 +1,185 @@
+<m-portlet [options]="{headLarge: true}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ documentId? ('REVIEWS_ROOM.ADD.EDIT_NEW_DOC' | translate) : ('REVIEWS_ROOM.ADD.ADD_NEW_DOC' | translate)}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate
+				#reviewDocForm="ngForm" (ngSubmit)="save(reviewDocForm)" mScrollInvalid [form]="reviewDocForm">
+				<div class="form-group m-form__group row" joyrideStep="addDocumentData" [title]="'TUTORIALGUIDE.ADD_DOCUMENT_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_DOCUMENT_DATA_BODY' | translate" [stepPosition]="'bottom'">
+					<div class="col-lg-12 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.SUBJECT' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<input type="text" class="form-control form-control-solid" id="doc_subject" name="subject" placeholder="{{'REVIEWS_ROOM.ADD.SUBJECT' | translate}}"
+						 	#subject="ngModel" [(ngModel)]="document.document_subject_ar"required />
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'subject', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.SUBJECT' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12 mb-3">
+						<label>{{ 'REVIEWS_ROOM.ADD.DESCRIPTION' | translate }}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000"
+							placeholder="{{ 'REVIEWS_ROOM.ADD.DESCRIPTION' | translate }}" id="doc_description" name="description"
+							#description="ngModel" [(ngModel)]="document.document_description_ar"></textarea>
+
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'description', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.DESCRIPTION' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.COMMITTEES' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" name="committee" #committee="ngModel"
+								placeholder="{{'REVIEWS_ROOM.ADD.SELECT_COMMITTEE' | translate}}" [(ngModel)]="document.committee_id"
+								(change)="getCommitteeUsers(true)" required>
+								<ng-option *ngFor="let committee of committees" [value]="committee.id" [hidden]="true">
+									{{isArabic? committee.committee_name_ar : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'committee', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.COMMITTEE' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'REVIEWS_ROOM.ADD.ASSIGN_TO' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" [disabled]="committeeUsers.length == 0" [multiple]="true" [hideSelected]="true" required
+								name="users" #users="ngModel" placeholder="{{'REVIEWS_ROOM.ADD.SELECT_ASSIGN_TO' | translate}}" [(ngModel)]="document.document_users_ids">
+								<ng-option *ngFor="let item of committeeUsers" [value]="item.id">
+									{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name : item.name_ar)}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'users', 'required') || !edit">
+							{{'REVIEWS_ROOM.VALIDATION.ASSIGN_TO' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.START_DATE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" required
+								   [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle();endDate.close();$event.stopPropagation();" (dateSelect)="startDate.close()" (document:click)="decideClosure($event,startDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="startTime" [(ngModel)]="startTimeModel"
+											(ngModelChange)="changeTime()" [meridian]="_startTimemeridian"
+											 class="time-picker-direction">
+							</ngb-timepicker>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'startDate', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.START_DATE' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback" *ngIf="timeToError">
+                            {{'REVIEWS_ROOM.VALIDATION.SCHEDULEVALIDATION' | translate}}
+                        </div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'REVIEWS_ROOM.ADD.END_DATE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" required
+								   [(ngModel)]="endDateModel" ngbDatepicker #endDate="ngbDatepicker" [minDate]="startDateModel">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle();startDate.close();$event.stopPropagation();" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="endTime" [(ngModel)]="endTimeModel"
+											(ngModelChange)="changeTime()" [meridian]="_endTimemeridian"
+											class="time-picker-direction">
+							</ngb-timepicker>
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'endDate', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.END_DATE' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12 mb-3">
+						<label>{{'REVIEWS_ROOM.ADD.UPLOAD_FILE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk">*</span>
+						</label>
+						<div class="input-group ">
+							<label
+								class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" [ngClass]="{'not-allowed': document.document_status_id && documentStatuses.new != document.document_status_id}"
+								for="thefile">
+								<input type="file" class="d-none" id="thefile" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf"
+								 (change)="fileChangeEvent($event)" #file="ngModel" name="file" (ngModel)="documentUrl" [required]="!documentId" [disabled]="document.document_status_id && documentStatuses.new != document.document_status_id"/>
+
+								<span id="fileName" *ngIf="!documentUrl">{{ 'REVIEWS_ROOM.ADD.NO_CHOSEN_FILE' | translate }}</span>
+								<span id="fileName" *ngIf="documentUrl">{{documentUrl}}</span>
+								<span class="btn btn-default px-0 mx-0" [ngClass]="{'not-allowed': document.document_status_id && documentStatuses.new != document.document_status_id}">{{'REVIEWS_ROOM.ADD.BROWSE' | translate}}</span>
+							</label>
+						</div>
+						<span class="form-text text-muted">{{ 'REVIEWS_ROOM.ADD.UPLOAD_GUIDE' | translate }}</span>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(reviewDocForm,'file', 'required')">
+							{{'REVIEWS_ROOM.VALIDATION.UPLOAD_FILE' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback"
+							*ngIf="fileTypeError">
+							{{'REVIEWS_ROOM.VALIDATION.UPLOAD_FILE_TYPE' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback"
+							*ngIf="documentSizeError">
+							{{documentSizeError}}
+						</div>
+					</div>
+				</div>
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row mt-5">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" [disabled]="submitted" [stepPosition]="isArabic?'left': 'right'"
+							joyrideStep="saveDocument" [title]="'TUTORIALGUIDE.SAVE_DOCUMENT_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_DOCUMENT_BODY' | translate">
+								{{'BUTTON.SAVE' | translate}} <i class="fa fa-check" aria-hidden="true"></i>
+								<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+							</button>
+							<button type="reset" (click)="redirect()"
+								class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</ng-container>
+
+</m-portlet>

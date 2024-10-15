@@ -1,0 +1,74 @@
+#m_login {
+::-webkit-input-placeholder {
+    color:#999999!important;
+ }
+ 
+ :-moz-placeholder { /* Firefox 18- */
+    color:#999999!important; 
+ }
+ 
+ ::-moz-placeholder {  /* Firefox 19+ */
+    color:#999999!important; 
+ }
+ 
+ :-ms-input-placeholder {  
+    color:#999999!important;
+ }
+}
+span.chevron{
+   margin-right:4px;
+}
+
+.mjlsi--signup .m-form label {
+    color: #172B4D;
+    display: inline-block;
+    margin-bottom: 8px;
+    line-height: 18px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.mat-form-field-infix {
+    padding: 0!important;
+    border-top: 0!important;
+}
+
+.m-form.m-form--fit .m-form__content, .m-form.m-form--fit .m-form__heading, .m-form.m-form--fit .m-form__group {
+   padding: 15px 0px;
+}
+
+
+.m-form .form-control-label, .m-form label {
+   font-weight: 300;
+}
+
+.m-form {
+   .m-form__actions {
+      border-radius: 0 0 15px 15px;
+      border-top: 0px solid #ebedf2;
+      padding: 5px 0 0;
+      margin: 15px 0 5px;
+   }
+   .m-portlet {
+      .m-portlet__head {
+         height: 3.1rem;
+      }
+      
+   }
+   .m-portlet.m-portlet--full-height{
+      height: auto;
+   }
+   .m-portlet.m-portlet--rounded-force {
+      border: 1px solid #cac6a1;
+      background: rgba(247, 247, 241, 0.5);
+      /* margin-bottom: 0; */
+      margin-bottom: 0;
+      border-radius: 8px;
+
+      
+
+      .m-portlet__body{
+         padding: 15px;
+      }
+   }
+}

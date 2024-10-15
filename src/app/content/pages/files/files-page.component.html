@@ -1,0 +1,24 @@
+<div class="row m-files-page mr-4 ml-0">
+    <div class="col-12 col-lg-2 pr-lg-2 col-xxl-2 px-4 pl-lg-2 d-flex bg-white flex-column flex-md-row flex-lg-column align-items-start align-items-md-center align-items-lg-start justify-content-start h-100vh">
+        <div class="position-lg-fixed d-flex flex-column align-items-lg-center w-sm-100">
+            <div class="t-ms-h w-lg-100">
+                <div class="py-3 pr-0 pr-md-5 px-3 px-lg-0 pr-lg-0 d-flex flex-lg-column align-items-center align-items-lg-start position-md-fixed w-100 bg-white justify-content-between">
+                    <a [routerLink]="['/files/my']" class="d-flex fileMenu py-2 px-4" [routerLinkActive]="['fileMenu-active']">
+                        <p class="tabHead-fontSize my-0"><i class="fas fa-copy"></i> {{'FILES.MYFILES'|translate}}</p>
+                    </a>
+                    <a [routerLink]="['/files/shared']" class="d-flex fileMenu py-2 px-4" [routerLinkActive]="['fileMenu-active']">
+                        <p class="tabHead-fontSize my-0"><i class="fas fa-users"></i> {{'FILES.SHAREDWITHME'|translate}}</p>
+                    </a>
+                    <a [routerLink]="['/files/recent']" class="d-flex fileMenu py-2 px-4" [routerLinkActive]="['fileMenu-active']">
+                        <p class="tabHead-fontSize my-0"><i class="fas fa-history"></i> {{'FILES.RECENT'|translate}}</p>
+                    </a>
+                </div>
+            </div>
+            <m-available-storage class="w-lg-100"></m-available-storage>
+        </div>
+      </div>
+      <div class="col-12 col-lg-10 col-xxl-10 pl-lg-4">
+        <router-outlet></router-outlet>
+      </div>
+</div>
+<m-shared-loading></m-shared-loading>

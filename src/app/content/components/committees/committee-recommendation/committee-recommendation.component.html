@@ -1,0 +1,221 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ "COMMITTEES.RECOMMENDATIONS.TITLE" | translate }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form id="committeeRecommendationForm" name="committeeRecommendationForm" #committeeRecommendationForm="ngForm"
+        (ngSubmit)="save(committeeRecommendationForm);">
+        <div class="d-flex">
+            <div class="flex-grow-1">
+                <label class="col-form-label">
+                    {{ "COMMITTEES.RECOMMENDATIONS.SECTION_TITLE" | translate }}
+                </label>
+            </div>
+            <div *ngIf="recommend == null" class="flex-shrink">
+                <button type="button" (click)="addNewRow()" class="btn btn-dark m-0">
+                    <i class="fa fa-plus"></i>&nbsp;
+                    {{ "COMMITTEES.RECOMMENDATIONS.NEW_RECOMMENDATION_BTN" | translate }}
+                </button>
+            </div>
+        </div>
+        <div>
+            <div class="card card-row card-header p-b-0 mb-3"
+                *ngFor="let user of newRecommendations; let index = index;">
+                <span *ngIf="index != 0 || newRecommendations.length > 1" class="m-list-timeline__time">
+                    <span class="m-menu__link-badge">
+                        <span class="m-badge m-badge--btn deleteBadge" (click)="deleteRow(index)">
+                            <i class="la la-trash"></i>
+                        </span>
+                    </span>
+                </span>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "COMMITTEES.RECOMMENDATIONS.RECOMMEND" | translate }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                        <div class="input-group mb-0">
+                            <input type="text" name="{{'recommend' + index }}"
+                                class="form-control align-content-start text-truncate"
+                                placeholder="{{ 'COMMITTEES.RECOMMENDATIONS.SECTION_BODY_COLUMN' | translate }}"
+                                [(ngModel)]="newRecommendations[index].recommendation_body" required />
+                        </div>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(committeeRecommendationForm,'recommend'+index, 'required')">
+                            {{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name:
+                            'COMMITTEES.RECOMMENDATIONS.SECTION_BODY_COLUMN' | translate } }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY" | translate }}*
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                        <div class="input-group mb-0">
+                            <input type="text" [id]="'recommendationResponsibleParty' + index"
+                                [name]="'recommendationResponsibleParty' + index"
+                                class="form-control align-content-start text-truncate"
+                                placeholder="{{ 'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY' | translate }}"
+                                [(ngModel)]="newRecommendations[index].responsible_party" required />
+                        </div>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(committeeRecommendationForm,'recommendationResponsibleParty'+index, 'required')">
+                            {{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name:
+                            'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY' | translate } }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "MEETINGS.RECOMMENDATION.ADD.RECOMMENDATIONDATE" | translate }}*
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                        <div class="input-group mb-0">
+                            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd"
+                                [name]="'recommendationDate' + index"
+                                [(ngModel)]="newRecommendations[index].recommendationDateModel" ngbDatepicker
+                                [readonly]="true" [id]="'recommendationDate' + index" #finalOutputDate="ngbDatepicker"
+                                required />
+                            <div class="input-group-append position-relative">
+                                <span class="clear-input" (click)="clearDate(index)">
+                                    <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                                </span>
+                                <button class="btn btn-outline-secondary calendar" type="button"
+                                    (click)="finalOutputDate.toggle();$event.stopPropagation()"
+                                    (dateSelect)="finalOutputDate.close()"
+                                    (document:click)="decideClosure($event, finalOutputDate)">
+                                    <i class="fa fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(committeeRecommendationForm, 'recommendationDate' + index, 'required')">
+                            {{ "MEETINGS.RECOMMENDATION.VALIDATION.RECOMMENDATIONDATE" | translate }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER" | translate }}*
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                            <ng-select
+                            [compareWith]="compareFn" [searchable]="true" [appendTo]="'body'"
+                            placeholder="{{ 'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER' | translate }}"
+                            [hideSelected]="true" name="{{ 'recommendationResponsibleUser' + index }}"
+                            [(ngModel)]="newRecommendations[index].responsible_user" [multiple]="false" required>
+                            <!-- Participants -->
+                            <ng-option *ngFor="let participant of participants; let index = rowIndex"
+                                id="{{ index }}" [value]="getParticipantValue(participant)">
+                                {{ getParticipantsLabel(participant) }}
+                            </ng-option>
+                        </ng-select>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(committeeRecommendationForm,'recommendationResponsibleUser' + index, 'required')">
+                            {{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name:
+                            'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER' | translate } }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT" | translate }}*
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                        <ng-select [compareWith]="compareFn" [searchable]="true" [appendTo]="'body'"
+                            placeholder="{{ 'COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT' | translate }}" [hideSelected]="true"
+                            name="{{ 'recommendationFinalOutput' + index }}"
+                            [(ngModel)]="newRecommendations[index].committee_final_output_id" [multiple]="false">
+                            <!-- Participants -->
+                            <ng-option *ngFor="let finalOutput of committee.final_outputs; let index = rowIndex" id="FinalOutput{{ index }}"
+                                [value]="finalOutput.id">
+                                {{ finalOutput.name }}
+                            </ng-option>
+                        </ng-select>
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-3">
+                        <div class="attendee-detail-row">
+                            <div class="attendee-item-name">
+                                <div class="attendee-name">
+                                    {{ "COMMITTEES.RECOMMENDATION_STATUS.LABEL" | translate }}*
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 d-flex flex-column p-0">
+                        <ng-select [searchable]="true" [appendTo]="'body'" [hideSelected]="true"
+                            [placeholder]="'COMMITTEES.RECOMMENDATION_STATUS.PLACEHOLDER' | translate"
+                            [name]="'recommendationStatus' + index" [multiple]="false"
+                            [(ngModel)]="newRecommendations[index].recommendation_status_id" required>
+                            <!-- Statuses -->
+                            <ng-option *ngFor="let statusItem of recommendationStatues;" [value]="statusItem.id">
+                                {{ isArabic ? statusItem.recommendation_status_name_ar : statusItem.recommendation_status_name_en }}
+                            </ng-option>
+                        </ng-select>
+                        <div class="error text-danger form-control-feedback"
+                            [hidden]="!hasError(committeeRecommendationForm, 'recommendationStatus' + index, 'required')">
+                            {{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'COMMITTEES.RECOMMENDATION_STATUS.LABEL' | translate } }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer px-0 pb-0">
+            <button *ngIf="recommend == null" class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+                {{'COMMITTEES.ADD.ADD' | translate}}
+                <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+            </button>
+            <button *ngIf="recommend != null" class="btn btn-primary" (click)="editRecommend(committeeRecommendationForm)" mat-button type="button"
+                cdkFocusInitial>
+                {{'BUTTON.EDIT' | translate}}
+                <i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="dismiss()">
+                {{'BUTTON.CANCEL' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

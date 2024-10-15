@@ -1,0 +1,204 @@
+.decision-card{
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: rgba(0, 38, 97, 0.15) 0px 3px 6px 0px, rgba(0, 38, 97, 0.2) 0px 35px 30px -20px;
+        background-color: white;
+        position: relative;
+        z-index: 1;
+	.avatar-placeholder {
+		position: relative;
+		display: inline-block;
+		.avatar-shortname {
+			position: absolute;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			color: #fff;
+			font-weight: 600;
+			text-transform: uppercase;
+			&.medium {
+				font-size: 18px;
+			}
+			span {
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+			}
+		}
+
+	}
+	.avatar.medium {
+		width: 40px;
+		height: 40px;
+	}
+
+
+	.decision-card-title {
+		font-weight: 600;
+		font-size: 32px;
+		line-height: 44px;
+		color: rgb(43, 53, 72);
+		border: none;
+		resize: none;
+		overflow: hidden;
+		padding: 0px;
+		caret-color: rgb(0, 209, 224);
+		margin-top: 8px;
+		display: block;
+		vertical-align: top;
+		background-color: transparent;
+	}
+}
+
+
+
+
+.media-container{
+	background-color: white;
+    border: 1px solid #e2e5eb;
+    position: relative;
+    display: flex;
+    padding: 5px 15px;
+	align-items: center;
+
+	&:not(:first-child) {
+		margin-top: 14px;
+	}
+	.m-widget4__text {
+		font-size: 19px;
+		line-height: 24px;
+		color: rgb(43, 53, 72);
+		max-height: 24px;
+		overflow: hidden;
+		word-break: break-all;
+		padding-right: 24px;
+	}
+
+	.m-widget4__info {
+		display: flex;
+		flex-flow: column nowrap;
+		padding: 12px;
+	}
+	.m-widget4__ext{
+		.m-widget4__icon > i {
+			font-size: 24px;
+			line-height: 25px;
+			color: #758093;
+			font-weight: 700;
+		}
+	}
+}
+
+
+.formatted-text {
+    color: rgb(86, 96, 115);
+    font-weight: normal;
+    font-size: 19px;
+    line-height: 24px;
+}
+
+.enddate{
+	margin-right: 14px;
+    padding-right: 16px;
+    border-right: 1px solid #ddd;
+}
+.deadline-badge {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    background: rgb(255, 243, 193);
+    border-radius: 12px;
+    padding: 4px 8px 4px 4px;
+	white-space: nowrap;
+	.deadline-text {
+		color: rgb(86, 96, 115);
+		font-size: 16px;
+		letter-spacing: 0.5px;
+		line-height: 1;
+	}
+}
+
+.hgmNEI {
+    transition: all 0.5s ease-in 0s;
+    padding: 4px;
+    border-radius: 20px;
+    display: flex;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    background-image: linear-gradient(270deg, rgb(251, 251, 252) 0%, rgb(240, 244, 250) 100%);
+}
+.onDuu {
+    transition: all 0.5s ease-in 0s;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 24px;
+    padding: 2px 8px;
+    background-color: transparent;
+    border-radius: 20px;
+}
+.bDDQWN {
+    font-weight: 800;
+    font-size: 18px;
+    color: rgb(86, 96, 115);
+    line-height: 28px;
+    white-space: nowrap;
+}
+.geOcME {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: flex-start;
+    font-weight: 500;
+    font-size: 21px;
+    color: rgb(86, 96, 115);
+    line-height: 28px;
+}
+
+.csLkoL > * {
+    width: 200px;
+}
+
+
+.vote-btn.m-badge.m-badge--wide {
+    transition: all 0.5s ease-in 0s;
+    padding: 4px 15px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    background-image: linear-gradient(270deg, #fbfbfc 0%, #f0f4fa 100%);
+}
+
+.voter-no {
+    background: rgb(230, 241, 255);
+    font-weight: 600;
+    color: rgb(76, 148, 255);
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    border: 2px solid rgb(255, 255, 255);
+    min-width: 14px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 0px 5px;
+    border-radius: 24px;
+}
+.voter-details-card{
+	background: #f9f9f9;
+    padding: 0 15px;
+	margin: 10px 0 0;
+	border-radius: 4px;
+}
+.time-constraint {
+	color: #F0B800;
+	margin: 5px;
+}

@@ -1,0 +1,371 @@
+<div class="m-portlet__head-title">
+  <h3 class="m-portlet__head-text m-4 p-3"> {{'MOM_TEMPLATE_PAGE.TEMPLATE_TITLE' | translate}} </h3>
+</div>
+
+<div class="m-portlet__body">
+
+
+  <div class="m-4 bg-white shadow-sm border rounded p-3">
+    <form (ngSubmit)="save(tempForm)" #tempForm="ngForm" novalidate mScrollInvalid [form]="tempForm" [haveHeader]="true"
+      class="m-form m-form--p-top-bottom-10 m-form--profile m-form--label-align-right mb-5">
+
+      <div class="m-form__section m-form__section--first mt-2 mb-4 separator separator-dashed" joyrideStep="addMomTemplateData" [stepPosition]="'bottom'"
+				[title]="'TUTORIALGUIDE.ADD_MOM_TEMPLATE_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_MOM_TEMPLATE_DATA_BODY' | translate">
+        <div class="m-form__heading mb-4 d-flex">
+          <h3 class="m-form__heading-title"><span class="number_block">1</span>&nbsp;&nbsp;{{'MOM_TEMPLATE_PAGE.LOAD_LOGO' | translate}}</h3>
+          
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-1">
+						<div class="org_avtr imgLogo mx-3">
+							<div>
+								<img *ngIf="image_url" [src]="image_url" class="rounded">
+							</div>
+							<div class="">
+								<i class="fa fa-image" (click)="file.click()"></i>
+								<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)"
+									#file name="file" (ngModel)="image_url">
+							</div>
+							<span class="enz_editImg updateLogo"
+								(click)="file.click()">{{'ORGANIZATIONS.ADD.EDITIMAGE' | translate}}</span>
+						</div>
+
+					</div>
+					<div class="col-md-11">
+						<h3>{{'MOM_TEMPLATE_PAGE.MOM_TEMPLATE_LOGO' | translate}}</h3>
+						<p>{{'MOM_TEMPLATE_PAGE.DESCRIPTION' | translate}}</p>
+						<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+							{{logoImageSizeError }}</div>
+						<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+							{{ 'MOM_TEMPLATE_PAGE.TEMPLATE_LOGO_INVALID' | translate }}</div>
+					</div>
+        </div>
+      </div>
+
+      <div class="m-form__section m-form__section--first mt-2 mb-3 ">
+        <div class="m-form__heading mb-4 d-flex">
+          <h3 class="m-form__heading-title"><span class="number_block">2</span>&nbsp;&nbsp;{{'MOM_TEMPLATE_PAGE.TITLE' | translate}}</h3>
+          
+        </div>
+
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <label>{{'MOM_TEMPLATE_PAGE.ARABIC' | translate}}</label>
+            <input type="text" class="form-control" name="templateNameAR" #templateNameAR="ngModel"
+              placeholder="{{'MOM_TEMPLATE_PAGE.ARABICTITLE'| translate}}" [(ngModel)]="momTemplate.template_name_ar"
+              required>
+            <div class="error text-danger form-control-feedback"
+              [hidden]="!hasError(tempForm,'templateNameAR', 'required')">
+              {{'MOM_TEMPLATE_PAGE.VALIDATION.MOMTEMPLATENAMEAR' | translate}}
+            </div>
+
+          </div>
+          <div class="col-lg-6">
+            <label>{{'MOM_TEMPLATE_PAGE.ENGLISH' | translate}}</label>
+            <input type="text" class="form-control" placeholder="{{'MOM_TEMPLATE_PAGE.ENGLISHTITLE'| translate}}"
+              class="form-control" name="templateNameEn" #templateNameEn="ngModel"
+              [(ngModel)]="momTemplate.template_name_en" required>
+            <div class="error text-danger form-control-feedback"
+              [hidden]="!hasError(tempForm,'templateNameEn', 'required')">
+              {{'MOM_TEMPLATE_PAGE.VALIDATION.MOMTEMPLATENAMEEN' | translate}}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="separator separator-dashed my-4"></div>
+
+      <div class="m-form__section m-form__section--first mt-2 mb-3">
+        <div class="m-form__heading mb-4">
+          <h3 class="m-form__heading-title">{{'MOM_TEMPLATE_PAGE.HEADER' | translate}}</h3>
+        </div>
+
+
+        <div class="checkbox-list">
+          <div class="row d-flex ">
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showMomHeader" [(ngModel)]="momTemplate.show_mom_header"
+                  #showMomHeader="ngModel">
+                <span></span>
+                {{'MOM_TEMPLATE_PAGE.SHOWHEADER' | translate}}
+
+              </label>
+            </div>
+          </div>
+
+          <div class="separator separator-dashed mt-2 mb-2"></div>
+
+          <div class="row d-flex">
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showNick"
+                  [(ngModel)]="momTemplate.show_participant_nickname" #showNick="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWNICK' | translate}}
+              </label>
+
+            </div>
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showJob" [(ngModel)]="momTemplate.show_participant_job"
+                  #showJob="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWJOB' | translate}}
+              </label>
+
+            </div>
+
+          </div>
+
+          <div class="row d-flex">
+
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showTitle"
+                  [(ngModel)]="momTemplate.show_participant_title" #showTitle="ngModel">
+
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWTITLE' | translate}}
+              </label>
+
+            </div>
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showRecommendation"
+                  [(ngModel)]="momTemplate.show_recommendation" #showRecommendation="ngModel">
+
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOW_RECOMMEDN' | translate}}
+              </label>
+
+            </div>
+
+
+          </div>
+
+          <div class="separator separator-dashed mt-2 mb-2"></div>
+
+          <div class="row d-flex ">
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showAgenda" [(ngModel)]="momTemplate.show_agenda_list"
+                  #showAgenda="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWAGENDA' | translate}}
+              </label>
+
+            </div>
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showTime" [(ngModel)]="momTemplate.show_timer"
+                  #showTime="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWTIME' | translate}}
+              </label>
+
+            </div>
+
+
+          </div>
+          <div class="row d-flex ">
+
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showPresenters" [(ngModel)]="momTemplate.show_presenters"
+                  #showPresenters="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWPRESENTER' | translate}}
+              </label>
+
+            </div>
+
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showPurpose" [(ngModel)]="momTemplate.show_purpose"
+                  #showPurpose="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOWPURPOSE' | translate}}
+              </label>
+
+            </div>
+
+
+          </div>
+
+          <div class="row d-flex ">
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showVote" [(ngModel)]="momTemplate.show_vote_results"
+                  #showVote="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOW_VOTE' | translate}}
+              </label>
+
+            </div>
+            <div class="col-3">
+              <label class="checkbox ">
+                <input class="mr-2 ml-4" type="checkbox" name="showVoteStatus" [(ngModel)]="momTemplate.show_vote_status"
+                  #showVote="ngModel">
+                <span></span>{{'MOM_TEMPLATE_PAGE.SHOW_VOTE_STATUS' | translate}}
+              </label>
+
+            </div>
+          </div>
+          <div class="separator separator-dashed mt-2 mb-2"></div>
+
+
+          <div class="row d-flex ">
+
+            <div class="col-3">
+              <label class="checkbox">
+                <input class="mr-2 ml-4" type="checkbox" name="showConclusion" [(ngModel)]="momTemplate.show_conclusion"
+                  #showConclusion="ngModel">
+                <span></span>
+                {{'MOM_TEMPLATE_PAGE.SHOWCONC' | translate}}
+
+              </label>
+            </div>
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+      <div class="separator separator-dashed mt-2 mb-3"></div>
+
+
+      <div class="m-form__section m-form__section--first  mb-0 ">
+        <div class="m-form__heading mb-4">
+          <h3 class="m-form__heading-title">{{'MOM_TEMPLATE_PAGE.INTRODUCTION'| translate}}</h3>
+
+        </div>
+        <div class="row d-flex flex-column">
+
+          <!-- <div class="form-group mr-2 ml-4"> -->
+          <div class="col-12">
+            <div class="form-group pb-4 mb-0">
+              <textarea class="form-control  mb-2" required rows="3" [maxlength]="1000"
+                placeholder="{{'MOM_TEMPLATE_PAGE.INTRO_AR' | translate}}" name="introAr" #introAr="ngModel"
+                [(ngModel)]="momTemplate.introduction_template_ar"></textarea>
+                <u><p  class="text-primary" (click)="isCollapsed1 = !isCollapsed1" [attr.aria-expanded]="!isCollapsed1" aria-controls="collapse1">
+                  {{'MOM_TEMPLATE_PAGE.KEYWORDS' | translate}}
+                </p></u>
+                <p id="collapse1" [ngbCollapse]="!isCollapsed1">
+                  {{'MOM_TEMPLATE_PAGE.INTROHINTS_AR'| translate}}
+                </p>
+              <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'introAr', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.INTRO_AR' | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="form-group pb-4 mb-0">
+              <textarea class="form-control  mb-2" [maxlength]="1000" name="introEn" #introEn="ngModel" required
+                rows="3" placeholder="{{'MOM_TEMPLATE_PAGE.INTRO_EN' | translate}}"
+                [(ngModel)]="momTemplate.introduction_template_en"></textarea>
+
+              <u><p  class="text-primary" (click)="isCollapsed2 = !isCollapsed2" [attr.aria-expanded]="!isCollapsed2" aria-controls="collapse2">
+                {{'MOM_TEMPLATE_PAGE.KEYWORDS' | translate}}
+              </p></u>
+              <p id="collapse2" [ngbCollapse]="!isCollapsed2">
+                {{'MOM_TEMPLATE_PAGE.INTROHINTS_EN'| translate}}
+              </p>
+
+
+              <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'introEn', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.INTRO_EN' | translate}}
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="separator separator-dashed my-4"></div>
+
+
+      <div class="m-form__section m-form__section--first mt-2 mb-3">
+        <div class="m-form__heading mb-4">
+          <h3 class="m-form__heading-title">{{'MOM_TEMPLATE_PAGE.PARTICIPANT_INTRODUCTION' | translate}}</h3>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group pb-4">
+              <textarea class="form-control mb-2" name="introPartAr" #introPartAr="ngModel" [maxlength]="1000"
+                [(ngModel)]="momTemplate.member_list_introduction_template_ar" required rows="3" cols="2"
+                placeholder="{{'MOM_TEMPLATE_PAGE.PARTICIPANT_INTRODUCTION_AR' | translate}}"></textarea>
+
+              <div class="error text-danger form-control-feedback"
+                [hidden]="!hasError(tempForm,'introPartAr', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.MEMBERINTROAR' | translate}}
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group pb-4">
+              <textarea class="form-control mb-2" name="introPartEn" #introPartEn="ngModel"
+                [(ngModel)]="momTemplate.member_list_introduction_template_en" required [maxlength]="1000" rows="3"
+                cols="2" placeholder="{{'MOM_TEMPLATE_PAGE.PARTICIPANT_INTRODUCTION_EN' | translate}}"></textarea>
+
+              <div class="error text-danger form-control-feedback"
+                [hidden]="!hasError(tempForm,'introPartEn', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.MEMBERINTROEN' | translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+      <div class="separator separator-dashed my-4"></div>
+
+
+      <div class="m-form__section m-form__section--first mt-2 mb-3">
+        <div class="m-form__heading mb-4">
+          <h3 class="m-form__heading-title">{{'MOM_TEMPLATE_PAGE.CONCLUSION' | translate}}</h3>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group pb-4">
+              <textarea class="form-control mb-2" [required]="momTemplate.show_conclusion"
+                placeholder="{{'MOM_TEMPLATE_PAGE.CONCLUSION_AR' | translate}}" name="concAr" #concAr="ngModel"
+                [(ngModel)]="momTemplate.conclusion_template_ar"></textarea>
+
+              <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'concAr', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.CONCLUSIONAR' | translate}}
+              </div>
+
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group pb-4">
+              <textarea class="form-control mb-2" [maxlength]="1000" name="concEn" #concEn="ngModel" rows="3"
+                [required]="momTemplate.show_conclusion" placeholder="{{'MOM_TEMPLATE_PAGE.CONCLUSION_EN' | translate}}"
+                [(ngModel)]="momTemplate.conclusion_template_en"></textarea>
+
+
+              <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'concEn', 'required')">
+                {{'MOM_TEMPLATE_PAGE.VALIDATION.CONCLUSIONEN' | translate}}
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+
+        <button class="btn btn-primary mt-4" type="submit" joyrideStep="saveMomTemplate" [stepPosition]="isArabic?'left':'right'"
+        [title]="'TUTORIALGUIDE.SAVE_MOM_TEMPLATE_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_MOM_TEMPLATE_BODY' | translate">{{'BUTTON.SAVE' | translate}} <i aria-hidden="true"
+            class="fa fa-check"></i>
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="redirect()">{{'BUTTON.CANCEL' | translate}}</button>
+      </div>
+
+    </form>
+
+
+
+
+  </div>
+</div>

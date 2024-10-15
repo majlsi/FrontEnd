@@ -1,0 +1,111 @@
+<ng-template #content let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{'ORGANIZATIONS.LIST.ORGANIZTIONACTIVATION' | translate}}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="close ();d('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<form name="memberForm" #memberForm="ngForm" (ngSubmit)="save(memberForm); memberForm.valid && c('Save click');" novalidate>
+
+		<div class="modal-body py-3">
+			<div class="form-group m-form__group row">
+				<div class="col-lg-12">
+					<label for="expiryDateFrom">{{'ORGANIZATIONS.ADD.EXPIRYDATE' | translate}}</label>
+					<div class="input-group">
+						<input class="form-control m-input" placeholder="{{'MEETINGS.LIST.DATEFROM' | translate}}" name="expiryDateFrom" [(ngModel)]="expiryDateFrom" ngbDatepicker #dTo="ngbDatepicker" [readonly]="true" (ngModelChange)="setDateModel()" required>
+						<div class="input-group-append">
+							<button class="btn btn-outline-secondary calendar" (click)="dTo.toggle()" type="button">
+								<i class="fa fa-calendar-alt"></i>
+							</button>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'expiryDateFrom', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.EXPIRYDATE' | translate}}</div>
+					</div>
+				</div>
+
+				<div class="col-lg-12">
+					<label for="licenseDuration">{{'ORGANIZATIONS.ADD.NUMBEROFDAYSFOREXPIRATION' | translate}}</label>
+					<input type="number" [max]="maxLicenseDurationNum" class="form-control" name="licenseDuration"
+						placeholder="{{'ORGANIZATIONS.ADD.NUMBEROFDAYSFOREXPIRATION' | translate}}" autocomplete="off"
+						[(ngModel)]="activateData.licenseDuration" #licenseDuration="ngModel" [min]="1" (ngModelChange)="setDateModel()">
+
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'licenseDuration', 'min')">
+						{{('ORGANIZATIONS.VALIDATION.MINNUMBEROFDAYSFOREXPIRATION' | translate) + ' ' + maxLicenseDurationNum}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'licenseDuration', 'max')">
+							{{('ORGANIZATIONS.VALIDATION.MINNUMBEROFDAYSFOREXPIRATION' | translate) + ' ' + maxLicenseDurationNum}}</div>
+
+					<div class="form-control-feedback" *ngIf="activateData.licenseDuration">
+						{{'ORGANIZATIONS.ADD.EXPIRYDATETO' | translate}} :
+						{{expiryDateTo | date }}</div>
+				</div>
+				<div class="col-lg-12">
+					<label for="usersNo">{{'ORGANIZATIONS.ADD.USERSNUMBER' | translate}}</label>
+					<input type="number" class="form-control" name="usersNo" placeholder="{{'ORGANIZATIONS.ADD.USERS_NUMBER' | translate}}" autocomplete="off" [(ngModel)]="activateData.organization_number_of_users" #usersNo="ngModel" [min]="1" [max]="9999999" required>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'usersNo', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.USERSNUMBER' | translate}}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'usersNo', 'max')">
+						{{'ORGANIZATIONS.VALIDATION.USERSNUMBERVALIDATIONMAX' | translate}}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'usersNo', 'min')">
+						{{'ORGANIZATIONS.VALIDATION.USERSNUMBERVALIDATION' | translate}}</div>
+				</div>
+
+				<div class="col-lg-12">
+					<label for="directory_quota">{{'ORGANIZATIONS.ADD.DIRECTORYQUOTA' | translate}}</label>
+					<input type="number" class="form-control" name="directory_quota" placeholder="{{'ORGANIZATIONS.ADD.DIRECTORYQUOTA' | translate}}" autocomplete="off" [(ngModel)]="activateData.directory_quota" #directory_quota="ngModel" [min]="storageQuota.min" [max]="storageQuota.max" required>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'directory_quota', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.DIRECTORYQUOTA' | translate}}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'directory_quota', 'max')">
+						{{'ORGANIZATIONS.VALIDATION.MAXDIRECTORYQUOTA' | translate:{'value':storageQuota.max} }}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'directory_quota', 'min')">
+						{{'ORGANIZATIONS.VALIDATION.MINDIRECTORYQUOTA' | translate:{'value':storageQuota.min} }}</div>
+				</div>
+
+				<div class="col-lg-12">
+					<label for="stakeholderEnabled">{{'ORGANIZATIONS.ADD.STAKEHOLDER_ENABLED' | translate}}</label><br>
+					<input type="radio" [value]="1" id="stakeholderEnabled" name="stakeholderEnabled" [(ngModel)]="activateData.is_stakeholder_enabled" #stakeholderEnabled="ngModel">
+					{{'ORGANIZATIONS.ADD.YES' | translate}}
+					<input type="radio" [value]="0" id="stakeholderEnabled" name="stakeholderEnabled" [(ngModel)]="activateData.is_stakeholder_enabled" #stakeholderEnabled="ngModel">
+					{{'ORGANIZATIONS.ADD.NO' | translate}}
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'stakeholderEnabled', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_ENABLED' | translate}}</div>
+				</div>
+
+				<div class="col-lg-12">
+					<label for="usersNo">{{'ORGANIZATIONS.ADD.STAKEHOLDERS_COUNT' | translate}}</label>
+					<input type="number" class="form-control" name="stakeholdersCount" placeholder="{{'ORGANIZATIONS.ADD.STAKEHOLDERS_COUNT' | translate}}" autocomplete="off" [(ngModel)]="activateData.stakeholders_count" #stakeholdersCount="ngModel" [min]="1" [max]="9999999" [required]="activateData.is_stakeholder_enabled" [disabled]="!activateData.is_stakeholder_enabled">
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'stakeholdersCount', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.STAKEHOLDERS_NUMBER' | translate}}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'stakeholdersCount', 'max')">
+						{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_NUMBER_VALIDATION_MAX' | translate}}</div>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm,'stakeholdersCount', 'min')">
+						{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_NUMBER_VALIDATION' | translate}}</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<div class="modal-footer">
+			<button class="btn btn-secondary" mat-button (click)="close();d('Cross click')">{{'BUTTON.CANCEL' |
+                translate}}</button>&nbsp;
+			<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>{{'ORGANIZATIONS.DELETE.ACTIVEBUTTON' | translate}}
+				<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+			</button>
+		</div>
+	</form>
+</ng-template>
+
+<!-- <button type="button" class="btn btn-secondary btn-link" (click)="open(content)">
+    <i class="fa fa-plus"></i>{{'COMMITTEES.ADD.ADDMEMBER' | translate}}
+</button> -->
+
+<button class="btn btn-link" *ngIf="!organization" [disabled]="!activeDeactiveGroup" (click)="open(content)">
+	<i class="fa fa-check"></i>
+	{{'BUTTON.ACTIVATEALL' | translate}}
+</button>
+
+
+<button type="button" *ngIf="organization" (click)="open(content)" class="btn btn-sky" matTooltip="{{'BUTTON.ACTIVATE' | translate}}">
+	<i class="fa fa-check"></i>
+</button>

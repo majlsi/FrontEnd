@@ -1,0 +1,95 @@
+
+
+<!--- START:: USERS GUIDE --->
+<div id="user_guide mb-5 pb-5">
+	<h3 class="mt-5 pb-2">
+		{{'WELCOME_SPLACH.USER_GUIDE' | translate}}
+	</h3>
+	<div class="row">
+		<div class="col-6 col-lg-3" *ngIf="mjlsiSystemBeforeMeetingVideoUrl">
+			<iframe width="100%" height="193" [src]="mjlsiSystemBeforeMeetingVideoUrl | safe:'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+		<div class="col-6 col-lg-3" *ngIf="explainCreateMeetingVideoUrl">
+			<iframe width="100%" height="193" [src]="explainCreateMeetingVideoUrl | safe:'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+		<div class="col-6 col-lg-3" *ngIf="manageBoardMeetingVideoUrl">
+			<iframe width="100%" height="193" [src]="manageBoardMeetingVideoUrl | safe:'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+		<div class="col-6 col-lg-3" *ngIf="manageBoardMeetingExtraVideoUrl">
+			<iframe width="100%" height="193" [src]="manageBoardMeetingExtraVideoUrl | safe:'resourceUrl'" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+	</div>
+</div>
+<!--- END:: USERS GUIDE  --->
+
+<!--- START:: user_guide_docs --->
+<div id="user_guide_docs mb-5 pb-5">
+	<h3 class="mt-5 mb-3 pb-2">
+		{{'WELCOME_SPLACH.USER_GUIDE_DOCUMENTS' | translate}}
+	</h3>
+	<div class="row">
+		<div class="col-12 bg-light p-4">
+			<div class="doc-row flex-wrap">
+				<div class="d-flex align-items-center" *ngIf="introductionArabicPdfUrl">
+					<img class="" src="./assets/app/media/img/icons/pdf.png" alt="file icon">
+					<div class="my-1 mx-3">
+						<h4>{{introductionArabicPdfUrlName.split('/').pop()}}</h4>
+						<!-- <p class="m-0">
+							<span> 10/12/2019 </span>
+							<span> - </span>
+							<span> 20MB </span>
+						</p> -->
+					</div>
+				</div>
+
+				<button class="btn-icon btn-primary-outline p-3 uk-border-rounded" (click)="download(introductionArabicPdfUrl,introductionEnglishPdfUrlName)">
+					<i class="fa fa-download"></i>
+				</button>
+			</div>
+			<div class="doc-row flex-wrap" *ngIf="introductionEnglishPdfUrl">
+				<div class="d-flex align-items-center">
+					<img class="" src="./assets/app/media/img/icons/pdf.png" alt="file icon">
+					<div class="my-1 mx-3">
+						<h4>{{introductionEnglishPdfUrlName.split('/').pop()}}</h4>
+						<!-- <p class="m-0">
+							<span> 10/12/2019 </span>
+							<span> - </span>
+							<span> 20MB </span>
+						</p> -->
+					</div>
+				</div>
+
+				<button class="btn-icon btn-primary-outline p-3 uk-border-rounded" (click)="download(introductionEnglishPdfUrl,introductionEnglishPdfUrlName)">
+					<i class="fa fa-download"></i>
+				</button>
+			</div>
+			<div class="doc-row flex-wrap" *ngIf="thirdPdfUrl">
+				<div class="d-flex align-items-center">
+					<img class="" src="./assets/app/media/img/icons/pdf.png" alt="file icon">
+					<div class="my-1 mx-3">
+						<h4>{{thirdPdfUrlName.split('/').pop()}}</h4>
+						<!-- <p class="m-0">
+							<span> 10/12/2019 </span>
+							<span> - </span>
+							<span> 20MB </span>
+						</p> -->
+					</div>
+				</div>
+
+				<button class="btn-icon btn-primary-outline p-3 uk-border-rounded" (click)="download(thirdPdfUrl,thirdPdfUrlName)">
+					<i class="fa fa-download"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--- END:: user_guide_docs --->
+
+<!--- START:: Not FIND HELP --->
+<div class="row text-center mt-5 mb-5 pb-5">
+	<div class="col-12">
+		<h3>{{'WELCOME_SPLACH.NOT_FIND_HELP' | translate}}</h3>
+		<a class="btn btn-green btn-primary-lg" [href]="'mailto:'+supportMail">{{'WELCOME_SPLACH.CONTACT_SUPPORT' | translate}}</a>
+	</div>
+</div>
+<!--- END:: Not FIND HELP --->

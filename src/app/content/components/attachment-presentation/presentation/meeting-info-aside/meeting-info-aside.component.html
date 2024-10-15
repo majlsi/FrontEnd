@@ -1,0 +1,329 @@
+<div class="meeting-summary">
+	<div class="meeting-summary-panel__title">
+		{{'PRESENTATION.DETAILS' | translate}}
+	</div>
+	<div class="meeting-summary-panel__body">
+		<h2> {{isArabic? (meeting.meeting_title_ar? meeting.meeting_title_ar : meeting.meeting_title_en) : (meeting.meeting_title_en? meeting.meeting_title_en : meeting.meeting_title_ar)}}
+			- {{isArabic?  meeting.committee_name_ar : meeting.committee_name_en }}
+		</h2>
+		<h3>{{meeting.meeting_schedule_from | date: 'h:mm a'}} -
+			{{meeting.meeting_schedule_to| date: 'h:mm a'}}
+		</h3>
+		<h3>
+			{{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en) : (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
+		</h3>
+
+		<p
+			*ngIf="meeting.meeting_status_id == meetingStatuses.STARTED && meeting.is_online_meeting_enable && meeting.online_meeting_type_id == onlineMeetingAppsEnum.zoom">
+			<img src="./assets/app/media/img/icons/zoom.png" alt="" width="20">
+			<a class="mt-0 mb-2 m-link map-link-sm" [href]="meeting.online_meeting_join_url" target='_blank'>&nbsp;
+				{{'MEETINGS.INFO.STATUS.JOIN_ZOOM_MEETING' | translate}}</a>
+		</p>
+		<p
+			*ngIf="meeting.meeting_status_id == meetingStatuses.STARTED && meeting.is_online_meeting_enable && meeting.online_meeting_type_id == onlineMeetingAppsEnum.microsoftTeams">
+			<img src="./assets/app/media/img/icons/microsoft_teams.png" alt="" width="20">
+			<a class="mt-0 mb-2 m-link map-link-sm" [href]="meeting.online_meeting_join_url" target='_blank'>&nbsp;
+				{{'MEETINGS.INFO.STATUS.JOIN_MICROSOFT_TEAMS_MEETING' | translate}}</a>
+		</p>
+	</div>
+</div>
+<div class="meeting-info-accrodions">
+	<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0">
+		<ngb-panel id="ngb-panel-Agenda">
+			<ng-template ngbPanelTitle>
+				<div>
+					<i class="fa fa-folder folder-icon"></i>
+					<span class="accordion-title-lg ml-2">{{'PRESENTATION.AGENDAS' | translate}}</span>
+				</div>
+				<div>
+					<i class="fa fa-chevron-up"></i>
+				</div>
+
+			</ng-template>
+			<ng-template ngbPanelContent>
+				<div class="px-3">
+					<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0"
+						*ngFor="let agenda of meeting.meeting_agendas;let indx = index">
+						<ngb-panel id="ngb-panel-Agenda-items" *ngIf="agenda.can_access">
+							<ng-template ngbPanelTitle>
+								<div class="agenda-item__title d-flex align-items-center"
+									title="{{isArabic? (agenda.agenda_title_ar? agenda.agenda_title_ar : agenda.agenda_title_en) : agenda.agenda_title_en? agenda.agenda_title_en : agenda.agenda_title_ar}}">
+									<i class="fa fa-sort-up"></i>
+									<i class="fa fa-folder folder-icon mx-2"></i>
+									<span >
+										{{isArabic? (agenda.agenda_title_ar? agenda.agenda_title_ar : agenda.agenda_title_en) : agenda.agenda_title_en? agenda.agenda_title_en :
+											agenda.agenda_title_ar}}
+									</span>
+								</div>
+
+							</ng-template>
+							<ng-template ngbPanelContent>
+								<div class="m-badge px-2">
+									<i class="fa fa-clock px-2"></i>
+									<span>{{agenda.agenda_time_in_min}}</span>
+									<span>{{'PRESENTATION.MINUTE' | translate}}</span>
+								</div>
+								<div class="m-badge mx-2 px-2">
+									<span>{{isArabic? agenda.agenda_purpose.purpose_name_ar : agenda.agenda_purpose.purpose_name_en?
+									agenda.agenda_purpose.purpose_name_en : agenda.agenda_purpose.purpose_name_ar}}</span>
+								</div>
+
+								<div class="m-widget19 m-widget-agenda p-0">
+									<div class="m-widget19__content">
+										<div class="m-widget19__body my-3">
+											<span class=""
+												*ngIf="agenda.presenters_agenda.length === 1">{{'VIEW_MEETING.PRESENTER' | translate}}:
+											</span>
+
+											<span class="" *ngIf="agenda.presenters_agenda.length > 1">
+												{{'VIEW_MEETING.PRESENTERS' | translate}}: </span>
+
+											<div class="m-widget4 d-flex">
+
+												<div class="m-widget4__item m-widget--has-bg m-0 mr-2">
+													<div class="m-widget4__img m-widget4__img--logo">
+														<img alt=""
+															src="{{imagesBaseURL+agenda.presenters_agenda[0].image_url}}">
+													</div>
+													<h5 class="m-widget4__info m-widget__member-name">
+														{{isArabic? (agenda.presenters_agenda[0].name_ar? agenda.presenters_agenda[0].name_ar : agenda.presenters_agenda[0].name) : (agenda.presenters_agenda[0].name? agenda.presenters_agenda[0].name : agenda.presenters_agenda[0].name_ar)}}
+													</h5>
+												</div>
+												<div class="m-widget--has-bg m-0 d-flex align-items-center"
+													*ngIf="agenda.presenters_agenda.length > 1">
+													<span>+{{agenda.presenters_agenda.length-1}}</span>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+								<span class=""> {{'PRESENTATION.ATTACHMENTS' | translate}}: </span>
+								<div class="agenda__items m-widget4 meeting-attachments__cont">
+
+									<div class="m-widget4__item ng-star-inserted"
+										*ngFor="let agendaAttachment of agenda.agenda_attachments">
+										<div class="m-widget4__img m-widget4__img--icon">
+
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'doc'"
+												src="./assets/app/media/img/files/doc.svg" class="ng-star-inserted"
+												alt="">
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'image'"
+												src="./assets/app/media/img/files/jpg.svg" class="ng-star-inserted"
+												alt="">
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'pdf'"
+												src="./assets/app/media/img/files/pdf.svg" class="ng-star-inserted"
+												alt="">
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'ppt'"
+												src="./assets/app/media/img/files/ppt.svg" class="ng-star-inserted"
+												alt="">
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'xls'"
+												src="./assets/app/media/img/files/xls.svg" class="ng-star-inserted"
+												alt="">
+											<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'video'"
+												src="./assets/app/media/img/files/mp4.svg" alt="mp4" class="ng-star-inserted">
+
+										</div>
+										<div class="m-widget4__info">
+											<span class="m-widget4__text">
+												<a (click)="downloadFile(imagesBaseURL+agendaAttachment.attachment_url ,agendaAttachment.attachment_name)"
+													class="m-widget4__icon"
+													title="{{agendaAttachment.attachment_name}}">
+													{{agendaAttachment.attachment_name}}
+												</a>
+											</span>
+										</div>
+										<div class="m-widget4__ext d-flex">
+											<span (click)="presentAttachment(agenda.id,agendaAttachment.id)"
+												*ngIf="checkFileType(agendaAttachment.attachment_url) != 'video' && !agendaAttachment.presenter_id"
+												class="m-widget4__icon  mx-3">
+												<i id="spinner_{{agendaAttachment.id}}" class='fa fa-spinner fa-spin'
+													style="display: none;"></i>
+												<i id="{{agendaAttachment.id}}" *ngIf="!agendaAttachment.presenter_id"
+													class="fa fa-play-circle"></i>
+											</span>
+											<span (click)=" endPresentAttachment(agenda.id,agendaAttachment.id)"
+												*ngIf="checkFileType(agendaAttachment.attachment_url) != 'video' && agendaAttachment.presenter_id"
+												class="m-widget4__icon  mx-3">
+												<i id="spinner_{{agendaAttachment.id}}" class='fa fa-spinner fa-spin'
+													style="display: none;"></i>
+												<i id="{{agendaAttachment.id}}" class="fa fa-stop-circle"></i>
+											</span>
+										</div>
+									</div>
+								</div>
+							</ng-template>
+						</ngb-panel>
+					</ngb-accordion>
+				</div>
+
+			</ng-template>
+		</ngb-panel>
+		<ngb-panel id="ngb-panel-Attachments">
+			<ng-template ngbPanelTitle>
+				<div class="d-flex justify-content-between w-100">
+					<div>
+						<i class="fa fa-folder folder-icon"></i>
+						<span class="accordion-title-lg ml-2">{{'PRESENTATION.ATTACHMENTS' | translate}} </span>
+					</div>
+					<div>
+						<i class="fa fa-chevron-up"></i>
+					</div>
+
+				</div>
+			</ng-template>
+			<ng-template ngbPanelContent>
+				<div class="d-block mx-auto mb-5 pt-2 text-center" *ngIf="meeting.meeting_attachments.length == 0">
+					<img class="mx-auto mb-2 w-50" src="./assets/app/media/img/icons/empty-attachments.png" />
+					<h5>
+						{{'PRESENTATION.NO_ATTACHMENTS' | translate}}
+					</h5>
+				</div>
+				<div class="meeting-attachments__cont bg-grey">
+
+					<div class="m-widget4">
+						<div class="m-widget4__item" *ngFor="let attachment of meeting.meeting_attachments"
+							(click)="downloadFile(imagesBaseURL+attachment.attachment_url,attachment.attachment_name)">
+							<div class="m-widget4__img m-widget4__img--icon">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+									src="./assets/app/media/img/files/doc.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+									src="./assets/app/media/img/files/jpg.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+									src="./assets/app/media/img/files/pdf.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+									src="./assets/app/media/img/files/ppt.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+									src="./assets/app/media/img/files/xls.svg" alt="">
+
+							</div>
+							<div class="m-widget4__info">
+								<span class="m-widget4__text"><a rel="noopener noreferrer">
+										{{attachment.attachment_name}} </a>
+								</span>
+							</div>
+							<div class="m-widget4__ext">
+								<a class="m-widget4__icon"><i class="la la-download"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</ng-template>
+		</ngb-panel>
+		<ngb-panel id="ngb-panel-Attendans" class="attendands-panel">
+			<ng-template ngbPanelTitle>
+				<div class="d-flex justify-content-between w-100">
+					<div>
+						<i class="fa fa-folder folder-icon"></i>
+						<span class="accordion-title-lg ml-2">{{'PRESENTATION.PARTICIPANTS' | translate}} </span>
+					</div>
+					<div>
+						<i class="fa fa-chevron-up"></i>
+					</div>
+
+				</div>
+
+			</ng-template>
+			<ng-template ngbPanelContent>
+				<ul ngbNav #nav="ngbNav" class="nav-tabs">
+					<li ngbNavItem>
+						<button ngbNavLink class="bg-white">{{'PRESENTATION.ATTEND' | translate}}</button>
+						<ng-template ngbNavContent>
+							<div class="d-block mx-auto mb-5 pt-2 text-center"
+								*ngIf="!meeting.grouped_meeting_participants[MeetingAttendanceStatuses.ATTEND]">
+								<img class="mx-auto w-50 mb-2"
+									src="./assets/app/media/img/icons/empty-attendance.png" />
+								<h5>
+									{{'PRESENTATION.NO_ATTENDANCE' | translate}}
+								</h5>
+							</div>
+							<div class="attendance-list__cont my-3"
+								*ngFor="let participant of meeting.grouped_meeting_participants[MeetingAttendanceStatuses.ATTEND]">
+								<div class="m-widget4">
+									<div class="m-widget4__item  m-widget--has-bg">
+										<div class="m-widget4__img m-widget4__img--pic">
+											<img *ngIf="participant.image == null"
+												[src]="imagesBaseURL+participant.organization.logo_image.image_url"
+												alt="">
+											<img *ngIf="participant.image != null"
+												[src]="imagesBaseURL+participant.image.image_url" alt="">
+										</div>
+										<div class="m-widget4__info m-widget__member-name"
+											title="{{isArabic? participant.user_title_ar : (participant.user_title_en? participant.user_title_en : participant.user_title_ar)}} {{isArabic? (participant.name_ar? participant.name_ar : participant.name) : (participant.name? participant.name : participant.name_ar)}}">
+											<span class="m-widget4__sub text-small">
+												{{isArabic? participant.user_title_ar : participant.user_title_en? participant.user_title_en : participant.user_title_ar}}
+											</span>
+											<span class="m-widget4__title">
+												{{isArabic? (participant.name_ar? participant.name_ar : participant.name) : participant.name? participant.name : participant.name_ar}}
+											</span>
+											<span
+												class="m-widget19_ _time">{{isArabic? participant.job_title_ar : participant.job_title_en? participant.job_title_en : participant.job_title_ar}}</span>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</ng-template>
+					</li>
+					<li ngbNavItem>
+						<button ngbNavLink class="bg-white">{{'PRESENTATION.ABSENT' | translate}}</button>
+						<ng-template ngbNavContent>
+							<div class="d-block mx-auto mb-5 pt-2 text-center"
+								*ngIf="!meeting.grouped_meeting_participants[MeetingAttendanceStatuses.ABSENT]">
+								<img class="mx-auto mb-2 w-50"
+									src="./assets/app/media/img/icons/empty-attendance.png" />
+								<h5>
+									{{'PRESENTATION.NO_ABSENCE' | translate}}
+								</h5>
+							</div>
+							<div class="attendance-list__cont my-3 m-widget4"
+								*ngFor="let participant of meeting.grouped_meeting_participants[MeetingAttendanceStatuses.ABSENT]">
+
+								<div class="m-widget4__item  m-widget--has-bg">
+									<div class="m-widget4__img m-widget4__img--pic">
+										<img *ngIf="participant.image == null"
+											[src]="imagesBaseURL+participant.organization.logo_image.image_url" alt="">
+										<img *ngIf="participant.image != null"
+											[src]="imagesBaseURL+participant.image.image_url" alt=""> </div>
+									<div class="m-widget4__info m-widget__member-name">
+										<span class="m-widget4__sub">
+											{{isArabic? participant.user_title_ar : participant.user_title_en? participant.user_title_en : participant.user_title_ar}}
+										</span>
+										<span class="m-widget4__title">
+											{{isArabic? (participant.name_ar? participant.name_ar : participant.name) : participant.name? participant.name : participant.name_ar}}
+										</span><br>
+										<span
+											class="m-widget19_ _time">{{isArabic? participant.job_title_ar : participant.job_title_en? participant.job_title_en : participant.job_title_ar}}</span>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</li>
+				</ul>
+				<div [ngbNavOutlet]="nav" class="mt-2"></div>
+			</ng-template>
+		</ngb-panel>
+
+		<!-- <ngb-panel id="ngb-panel-conversation" class="d-lg-none d-flex attendands-panel">
+			<ng-template ngbPanelTitle>
+				<div class="d-flex justify-content-between w-100">
+					<div>
+						<i class="fa fa-folder folder-icon"></i>
+						<span class="accordion-title-lg ml-2">المحادثات</span>
+					</div>
+					<div>
+						<i class="fa fa-chevron-down"></i>
+					</div>
+
+				</div>
+
+			</ng-template>
+			<ng-template ngbPanelContent>
+				<m-collapsible-chat-widget [meetingId]="meetingId" [isArabic]="isArabic"></m-collapsible-chat-widget>
+			</ng-template>
+		</ngb-panel> -->
+
+
+	</ngb-accordion>
+</div>

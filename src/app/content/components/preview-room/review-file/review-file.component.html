@@ -1,0 +1,233 @@
+<!--============================= START:: Review Room HTML ==================================-->
+<div class="presentation-container review-room-container no-aside-container">
+
+	<m-header></m-header>
+
+	<div class="presentation-container">
+		<div class="d-flex presentation-content ">
+
+			<button class="btn btn-icon btn-toggle-menu position-fixed"
+				[ngClass]="{'toggled': showRevisionsMenu , '': !showRevisionsMenu}"
+				(click)="showRevisionsMenu=!showRevisionsMenu"><i class="fas fa-bars text-black"></i></button>
+			<div class="col-xl-2 col-lg-2 aside-shadow votes-comments--aside d-mobile-fixed  pt-4 pb-3 px-1 d-flex flex-column justify-content-between"
+				*ngIf="showRevisionsMenu">
+				<div class=" aside col-12">
+					<div class="height-calc-minus-header">
+						<div class="d-block d-lg-none">
+							<button class="btn btn-secondary aside-toggler-btn my-2 mx-0" mat-button
+								(click)="showRevisionsMenu=false">
+								<i class="fa fa-times"></i>
+							</button>&nbsp;
+						</div>
+						<div
+							class="meeting-summary-panel__title d-flex flex-column justify-content-between mt-n3 ml-2 py-0 px-0 pl-5">
+							<h4 class="mt-1">{{'REVIEWS_ROOM.REVIEW.REVIEWS_LIST' | translate}}</h4>
+	
+						</div>
+						<div class="panel__body p-3" >
+							<div class="meeting-summary-panel__body position-relative " *ngFor="let annotation of documentAnnotations; let annotationIndex = index;" (click)="openAnnotationData(annotation,annotation.page_number -1,annotationIndex)" [ngClass]="{'active-border': annotationIndex == selectedAnnotation}">
+								<div class="d-flex justify-content-between">
+									<div>
+										<span class="icon-badge-sm-yellow" [ngStyle]="{'background': annotation.color_code}"><i class="far fa-comment-alt"></i></span>
+										<span class="font-weight-600">{{isArabic? annotation.name_ar : (annotation.name? annotation.name : annotation.name_ar)}}</span>
+									</div>
+									<button type="button" 
+									(click)="deleteAnnotation(annotation);$event.stopPropagation()" 
+									class="btn btn-sm btn-icon-dark-sm position-absolute m-btn m-btn--icon m-btn--outline-2x" matTooltip="{{'BUTTON.DELETE' | translate}}" *ngIf="annotation.can_edit && document.document_status_id != documentStatusEnm.complete && document.document_status_id != documentStatusEnm.delay && !document.is_completed">
+										<i class="flaticon-delete-2"></i>
+									</button>
+								</div>
+								<div class="d-flex justify-content-between">
+									<div class="text-muted" ngbDropdown #myDrop="ngbDropdown" container="body">
+										<small>{{annotation.creation_date | date: 'd MMMM y, h:mm a'}}</small>
+									</div>
+								</div>
+								<p class="mt-2 mb-0 mx-2">
+									{{annotation.annotation_text}}
+								</p>
+							</div>
+						</div>
+					</div>
+	
+					<div class="panel-footer p-3">
+						<div class="actions ">
+							<button type="button" class="btn btn-block btn-sm btn-primary m-btn m-btn--icon m-btn--outline-2x" (click)="download(document,'original')"
+								matTooltip="{{'REVIEWS_ROOM.LIST.DOWNLOAD_ORIGINAL_DOCUMENT' | translate}}">
+								<i class="fas fa-download"></i> {{'REVIEWS_ROOM.REVIEW.ORIGINAL_DOCUMENT' | translate}}
+							</button>
+							<button type="button" class="btn-block btn btn-sm btn-primary m-btn m-btn--icon m-btn--outline-2x" (click)="download(document,'modified')"
+								matTooltip="{{'REVIEWS_ROOM.LIST.DOWNLOAD_MODIFIED_DOCUMENT' | translate}}">
+								<i class="fas fa-download"></i> {{'REVIEWS_ROOM.REVIEW.MODIFIED_DOCUMENT' | translate}}
+							</button>
+						</div>
+					</div>
+				</div>
+			
+			</div>
+
+			<div class="canvas-area p-0 col-12"
+				[ngClass]="{'col-lg-8': showRevisionsMenu , 'col-lg-10': !showRevisionsMenu}">
+				<!----------------------------------------->
+				<!-- Start Header -->
+				<!-- Navigation -->
+				<div [ngClass]="{'has-menu': showRevisionsMenu}" class="page-title justify-content-between d-md-flex d-flex flex-wrap border-bottom-light-grey mt-0 mb-3 align-items-center"
+					id="headerHeigh">
+					<div class="order-0 order-lg-0">
+						<h4 class="mb-0"> {{document?.document_subject_ar}} </h4>
+					</div>
+					<div class="order-2 order-lg-1">
+						<button class="btn btn-white-primary-text text-black" mat-button type="button" (click)="addText()" *ngIf="document.document_status_id != documentStatusEnm.complete && document.document_status_id != documentStatusEnm.delay && !document.is_completed">
+							{{'REVIEWS_ROOM.REVIEW.ADD_COMMENT' | translate }}<i class="far fa-comment-alt"></i>
+						</button>
+						<button class="btn btn-primary mx-3" mat-button type="button" (click)="completeReview()" *ngIf="document.document_status_id != documentStatusEnm.complete && document.document_status_id != documentStatusEnm.delay && !document.is_completed">
+							{{'REVIEWS_ROOM.REVIEW.FINISH_REVIEW' | translate}}
+						</button>
+					</div>
+					<div class="order-1 order-lg-2">
+						<button class="btn btn-default btn-sm text-right" type="button" (click)="back()">
+							<i class="la la-arrow-left"></i>
+							{{'REVIEWS_ROOM.REVIEW.RETURN_TO_REVIEWS_PAGE' | translate}}
+						</button>
+					</div>
+				</div>
+				<!-- End Header -->
+				<!----------------------------------------->
+
+				<div class="d-flex presentation-content pt-0">
+
+
+					<div class="canvas-area p-0 col-12">
+
+						<!----------------------------------------->
+						<!----------------------------------------->
+						<!-- Start Canvas -->
+						<div class="d-block my-0" *ngFor="let documentSlide of documentSlides; let key = index">
+							<!-- Content Column -->
+							<!-- width="1200" height="600" -->
+							<div class="canvas-cont d-flex w-100 justify-content-center" id="canvas_parrent_{{key}}">
+								<canvas #myCanvas [ngStyle]="{'cursor': isDrawing ? 'text' : '' }" id="viewport_{{key}}" class="canvas_{{key}}"
+									(swipe)="isFreeHand && onSwipe($event)">
+								</canvas>
+							</div>
+
+						</div>
+
+						<!-- End Canvas -->
+					</div>
+
+				</div>
+
+			</div>
+
+
+
+			<!------------>
+			<div class="col-xl-2 col-lg-2 aside-shadow votes-comments--aside d-none d-lg-flex">
+				<div class="aside col-12 px-sm-0">
+					<div class="d-block d-lg-none">
+						<button class="btn btn-secondary aside-toggler-btn my-2 mx-0" mat-button>
+							<i class="fa fa-times"></i>
+						</button>&nbsp;
+					</div>
+					<ul class=" side bar sidebar-or ange accordion list-unstyled flex-column" id="accordionSidebar"
+						[ngClass]="show ? 'd-flex' : 'd-none'">
+						<li id="slides" class="nav-item m-3 "
+							*ngFor="let documentSlide of documentSlides; let i = index">
+							<img class="mw-100" id="img_{{i}}" src="{{ imagesBaseURL + documentSlide.url}}"
+								(load)="scaleToFit(documentSlide,i)"
+								(click)="scroleTo(i);">
+						</li>
+					</ul>
+				</div>
+
+			</div>
+			<!------------>
+		</div>
+	</div>
+
+
+	<div class="m-grid__item m-grid__item--fluid m-grid m-grid--hor enz--presentation-grid">
+
+		<ng-template #content let-c="close" let-d="dismiss">
+			<div class="modal-header">
+				<h4 class="modal-title" id="modal-basic-title">{{'REVIEWS_ROOM.REVIEW.COMMENT' | translate}}
+				</h4>
+				<button type="button" class="close" aria-label="Close" (click)="close();d('Cross click')">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form name="textForm" #textForm="ngForm"
+				(ngSubmit)="saveAnnotaion(textForm);textForm.valid && c('Save click');" novalidate>
+				<div class="form-group m-form__group">
+
+					<input type="text" name="note" #note="ngModel" [(ngModel)]="textNotes"
+						placeholder="{{'REVIEWS_ROOM.REVIEW.COMMENT_NOTE' | translate}}" class="form-control" required/>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(textForm,'note', 'required')">
+						{{'REVIEWS_ROOM.VALIDATION.COMMENT' | translate}}
+				</div>
+					</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary" mat-button type="submit"
+						cdkFocusInitial>{{'BUTTON.SAVE' | translate}}
+						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+					</button>
+					<button class="btn btn-secondary" mat-button
+						(click)="close();d('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+				</div>
+			</form>
+		</ng-template>
+	</div>
+
+</div>
+
+<!--============================= END:: Review Room HTML ==================================-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <m-portlet [options]="{headLarge: false}"> -->
+<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+<!-- <ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				مراجعة الملفات </h3>
+
+
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container> -->
+<!-- end::Header -->
+<!-- start::Body (attribute: mPortletBody) -->
+<!-- <ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15"> -->
+
+<!--============================= Start new presentation HTML ==================================-->
+
+<!--============================= End new presentation HTML ==================================-->
+
+
+<!-- </div> -->
+<!-- end: BOTTOM -->
+<!-- </ng-container> -->
+
+<!-- end::Body -->
+<!-- </m-portlet> -->

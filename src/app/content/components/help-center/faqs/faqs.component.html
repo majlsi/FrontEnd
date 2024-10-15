@@ -1,0 +1,82 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'HELP_CENTER.FAQS.TITLE' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+
+		<div class="bg-white--content" *ngFor="let section of faqTree;let i =index">
+
+			<h2 class="border-bottom m--padding-15 d-flex align-items-center">
+				<span>{{isArabic ? section.faq_section_name_ar: section.faq_section_name_en}}</span>
+			</h2>
+			<div class="px-3 mb-2">
+				<ngb-accordion  activeIds="ngb-panel-0">
+
+
+				<ngb-panel id="ngb-panel-{{ (i * section.child_sections.length) + x }}" *ngFor="let childSection of section.child_sections;let x= index" >
+					<ng-template ngbPanelTitle>
+						<div>
+							<i class="fa fa-folder folder-icon"></i>
+							<span class="accordion-title-lg ml-2">{{isArabic ? childSection.faq_section_name_ar: childSection.faq_section_name_en}}</span>
+						</div>
+						<div>
+							<i class="fa fa-chevron-down"></i>
+						</div>
+
+					</ng-template>
+					<ng-template ngbPanelContent>
+							<ngb-accordion  id="ngb-panel-{{(i * section.child_sections.length) + x}}-content" [closeOthers]="true" activeIds="ngb-panel-0-content-1">
+								<ngb-panel id="ngb-panel-{{(i * section.child_sections.length) + x}}-content-{{j+1}}" *ngFor="let faq of childSection.faqs; let j = index">
+									<ng-template ngbPanelTitle>
+										<div class="agenda-item__title d-flex w-100 justify-content-between align-items-center" title="jh">
+											<span>
+												<i class="la la-file-text font-size-18"></i>{{isArabic ? faq.faq_question_ar: (faq.faq_question_en? faq.faq_question_en: faq.faq_question_ar)}}											</span>
+
+											<i class="fas fa-plus"></i>
+											<i class="fas fa-minus"></i>
+										</div>
+
+									</ng-template>
+									<ng-template ngbPanelContent>
+										<div class="m-0 mx-1 px-1">
+											<p class="m-0">
+												{{isArabic ? faq.faq_answer_ar: (faq.faq_answer_en? faq.faq_answer_en : faq.faq_answer_ar)}}												</p>
+										</div>
+									</ng-template>
+								</ngb-panel>
+							</ngb-accordion>
+
+					</ng-template>
+				</ngb-panel>
+			  </ngb-accordion>
+
+			</div>
+
+
+		</div>
+		<div class="bg-white--content  d-flex flex-column align-items-center  px-3 py-4" *ngIf="faqTree.length == 0">
+			<p class="m-0 mb-2">{{'HELP_CENTER.NO_QUESTION_EXITS' | translate}}</p>
+		</div>
+
+
+		<!-- <a class="bg-white--content d-flex flex-column align-items-center  px-3 py-4">
+			<img src="./assets/app/media/img/icons/forward_to_inbox_black_24dp.svg" alt="" />
+			<h4 class="mb-2 mt-3">هل ما زلت بحاجة للمساعدة؟</h4>
+			<p class="m-0 mb-2">أرسل للدعم الفني</p>
+		</a> -->
+
+	</ng-container>
+
+</m-portlet>
+
+

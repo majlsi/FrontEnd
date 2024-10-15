@@ -1,0 +1,102 @@
+<div class="m-portlet__head-title mt-4">
+	<h3 class="m-portlet__head-text">
+		{{'USERS.ADD.NEWUSERPROFILE' | translate}}
+	</h3>
+</div>
+
+<div [hidden]="!showError" *ngFor="let error of errors">
+	<span>
+		<span *ngIf="isArabic">
+			<div
+				class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+				role="alert" *ngFor="let err of error">
+				{{err.error_ar}}
+			</div>
+		</span>
+		<span *ngIf="!isArabic">
+			<div
+				class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+				role="alert" *ngFor="let err of error">
+					{{err.error}}
+			</div>
+		</span>
+	</span>
+</div>
+
+<form class="m-form m-form--fit m-form--label-align-right" novalidate #userForm="ngForm"
+	(ngSubmit)="save(userForm)">
+
+	<div class="form-group m-form__group row align-items-end pb-4" *ngFor="let user of users; let i = index">
+		<div class="col-lg-3 col-12" *ngIf="isArabic">
+			<label>{{'USERS.ADD.ARABICNAME' | translate}}</label>
+			<input type="text" placeholder="{{'USERS.ADD.ARABIC_NAME' | translate}}" class="form-control"
+				name="{{'namear'+i}}" [(ngModel)]="user.name_ar" #namear="ngModel" required>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'namear'+i, 'required')">
+				{{'USERS.VALIDATION.USERNAMEAR' | translate}}</div>
+		</div>
+		<div class="col-lg-3 col-12" *ngIf="!isArabic">
+			<label>{{'USERS.ADD.NAME_EN' | translate}}</label>
+			<input type="text" placeholder="{{'USERS.ADD.NAME' | translate}}" class="form-control" name="{{'name'+i}}"
+				[(ngModel)]="user.name" #name="ngModel" required>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'name'+i, 'required')">
+				{{'USERS.VALIDATION.USERNAME_EN' | translate}}</div>
+		</div>
+		<div class="col-lg-3 col-12">
+			<label class="">{{'USERS.ADD.EMAIL' | translate}}</label>
+			<input type="email" placeholder="{{'USERS.ADD.USER_EMAIL' | translate}}" class="form-control"
+				name="{{'email'+i}}" [(ngModel)]="user.email" #email="ngModel" email="true"
+				pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$" required>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'email'+i, 'required')">
+				{{'USERS.VALIDATION.EMAIL' | translate}}
+			</div>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'email'+i, 'pattern')">
+				{{'USERS.VALIDATION.EMAILVALIDATION' | translate}}</div>
+		</div>
+		<div class="col-lg-2 col-6">
+			<label>{{'USERS.ADD.PHONE_NUMBER' | translate}}</label>&nbsp;<span class="MandatoryAsterisk">*</span>
+			<input type="text" class="form-control" name="{{'PhoneNo'+i}}" required
+				placeholder="{{'USERS.ADD.PHONE_NUMBER' | translate}}" autocomplete="off" [(ngModel)]="user.user_phone"
+				#PhoneNo="ngModel" pattern="[0-9]+">
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'PhoneNo'+i, 'pattern')">
+				{{'USERS.VALIDATION.PHONENO_INVALID' | translate}}</div>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'PhoneNo'+i, 'required')">
+				{{'AUTH.VALIDATION.PHONENO_REQUIRED' | translate}}
+			</div>
+		</div>
+		<div class="col-lg-2 col-6">
+			<label>{{'USERS.ADD.ROLE' | translate}}</label>
+			<ng-select [searchable]="true" [(ngModel)]="user.role_id" name="{{'role'+i}}" #role="ngModel" required
+				[items]="roles" [bindLabel]="bindLabel" bindValue="id" placeholder="{{'USERS.LIST.ROLE' | translate}}">
+				<!--<ng-option *ngFor="let role of roles" [value]="role.id">{{isArabic? role.role_name_ar : (role.role_name? role.role_name : role.role_name_ar)}}</ng-option>-->
+				<ng-template ng-option-tmp let-item="item">
+					<span [title]="item.name"
+						class="ng-option-label">{{isArabic? item.role_name_ar : (item.role_name? item.role_name : item.role_name_ar)}}</span>
+				</ng-template>
+			</ng-select>
+			<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'role'+i, 'required')">
+				{{'USERS.VALIDATION.ROLE' | translate}}
+			</div>
+		</div>
+
+		<div class="col-lg-2 col-12">
+			<button type="button" (click)="delete(i)" class="btn btn-default m-btn m-btn--icon m-btn--outline-2x text-center"
+				matTooltip="{{'BUTTON.DELETE' | translate}}">
+				<i class="flaticon-delete-2"></i>
+			</button>
+
+		</div>
+
+	</div>
+
+	<button type="button" class="btn btn-link title-action-btn" (click)="addUser()">
+		<i class="fa fa-plus"></i>&nbsp;{{'USERS.ADD.NEWUSERPROFILE' | translate}}
+	</button>
+
+	<div class="row justify-content-between align-items-center m-0 steps-action  m-0 my-5 pt-3">
+		<button class="btn btn-default primary-font bold" mat-button matStepperPrevious>{{'GENERAL.Back' | translate}}</button>
+		<button type="submit"  [disabled]="submitted" class="btn btn-primary btn-primary-lg" mat-button>
+			<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>{{'GENERAL.NEXT' | translate}}
+		</button>
+	</div>
+</form>
+

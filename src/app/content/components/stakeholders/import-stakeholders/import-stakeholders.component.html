@@ -1,0 +1,86 @@
+<div class="modal-header border-bottom">
+  <div>
+    <h4 id="modal-basic-title" class="modal-title">{{'STAKEHOLDER.IMPORT.IMPORT_STAKEHOLDER' | translate}}</h4>
+  </div>
+  <button type="button" (click)="close()" class="close"><span aria-hidden="true">×</span></button>
+</div>
+<div class="modal-body enz-padding-top-50 upload-modal px-5">
+  <ng-container>
+      <div [hidden]="!showError"
+        class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+        role="alert" *ngFor="let error of errors">
+        <span>
+          {{isArabic? error.message_ar : error.message}}
+        </span>
+      </div>
+  </ng-container>
+  <ng-container>
+    <div class="enz-table-cont">
+      <table mat-table [dataSource]="dataSource"
+        class="table table-bordered m-table table-hover table-scroll clickable ">
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef> {{'STAKEHOLDER.LIST.STAKEHOLDERNAME' | translate}} </th>
+          <td *matCellDef="let stakeholder">
+            <p class="text-blue" *ngIf="stakeholder.name">{{stakeholder.name}}</p>
+            <p *ngIf="!stakeholder.name">-</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th *matHeaderCellDef>{{'USERS.LIST.EMAIL' | translate}}</th>
+          <td *matCellDef="let stakeholder">
+            <p *ngIf="stakeholder.email">{{stakeholder.email}}</p>
+            <p *ngIf="!stakeholder.email">-</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="date_of_birth">
+          <th *matHeaderCellDef>{{'STAKEHOLDER.LIST.DATEOFBIRTH' | translate}}</th>
+          <td *matCellDef="let stakeholder">
+            <p *ngIf="stakeholder.date_of_birth">{{stakeholder.date_of_birth}}</p>
+            <p *ngIf="!stakeholder.date_of_birth">-</p>
+          </td>
+
+        </ng-container>
+        <ng-container matColumnDef="identity_number">
+          <th *matHeaderCellDef>{{'STAKEHOLDER.LIST.IDENTITYNUMBER' | translate}}</th>
+          <td *matCellDef="let stakeholder">
+            <p *ngIf="stakeholder.identity_number">{{stakeholder.identity_number}}</p>
+            <p *ngIf="!stakeholder.identity_number">-</p>
+          </td>
+
+
+        </ng-container>
+        <ng-container matColumnDef="share">
+          <th *matHeaderCellDef>{{'STAKEHOLDER.LIST.SHARE_PLACEHOLDER' | translate}}</th>
+          <td *matCellDef="let stakeholder">
+            <p *ngIf="stakeholder.share">{{stakeholder.share}}</p>
+            <p *ngIf="!stakeholder.share">-</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef>{{'STAKEHOLDER.IMPORT.STATUS' | translate}}</th>
+          <td *matCellDef="let stakeholder">
+            <span *ngIf="stakeholder.status" class="m-badge m-badge--sm m-badge--wide  m-badge--success">{{'STAKEHOLDER.IMPORT.SUCCESS' | translate}}</span>
+            <span *ngIf="!stakeholder.status"
+              class="m-badge m-badge--sm font-13  m-badge--danger">{{stakeholder.errorMessage}}</span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky:true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    <div class="d-flex justify-content-center w-100 pt-5 font-18">
+      <p>{{'STAKEHOLDER.IMPORT.SUCCESS_CREATE' | translate}} : <span class="text-success enz--font-weight-600">{{successCount}}</span>
+      </p>
+      <p class="mx-3">-</p>
+      <p>{{'STAKEHOLDER.IMPORT.FAILED_CREATE' | translate}} : <span class="text-danger enz--font-weight-600">{{failedCount}}</span></p>
+    </div>
+  </ng-container>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="close()">{{'BUTTON.CANCEL' | translate}}</button>
+  <button type="button" class="btn main-btn" [disabled]="successCount==0" (click)="confirm()">
+    <span class="mr-2">{{'BUTTON.CONFIRM' | translate}}</span>
+    <i *ngIf="spinnerFlag" class='fa fa-spinner fa-spin'></i>
+  </button>
+</div>

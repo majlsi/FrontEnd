@@ -1,0 +1,188 @@
+@import "../theme";
+@import "../mixins";
+
+.form-control.focus,
+.form-control:focus {
+	border-color: $secondary-color;
+}
+.m-form .form-control-label,
+.m-form label {
+	font-size: 14px;
+}
+.m-form .m-form__actions {
+	border-radius: 0 0 15px 15px;
+	border-top: 1px solid #ebedf2;
+	padding: 20px 0;
+	margin: 15px 0 5px;
+	background-color: #fff;
+	.btn {
+		font-size: 14px;
+		padding: 2px 20px;
+	}
+}
+.m-form {
+	.m-form__actions.m-form__actions--solid {
+		background-color: #fff;
+	}
+}
+.m-form {
+	.m-form__group--org_avtr {
+		// .form-control-feedback {
+		// 	margin: 0 auto;
+		// 	position: relative;
+		// 	text-align: center;
+		// }
+	}
+	.form-control-feedback {
+		position: absolute;
+	}
+}
+
+.form-link {
+	a {
+		text-decoration: underline;
+		color: #000;
+	}
+}
+
+.radio-buttons
+{
+	margin-top: 20px;
+	.mat-radio-label-content
+	{
+		padding-right: 10px;
+	}
+	.mat-radio-button
+	{
+		margin-bottom: 10px;
+	}
+}
+
+.clearBTN,
+.style-btn {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	min-width: 70px !important;
+	height: 42px;
+	font-size: 14px;
+	@media only screen and (max-width: 768px) {
+		top: 10px;
+		left: 10px;
+	}
+}
+.style-btn {
+	min-width: 120px !important;
+}
+.signature-form {
+	signature-pad {
+		border-radius: 4px;
+	}
+	.form-group {
+		label {
+			font-weight: 400;
+			font-size: 16px;
+		}
+	}
+	input,
+	textarea {
+		background: #f2f3f7;
+		border: 0;
+		border-radius: 4px;
+	}
+	textarea {
+		height: 85px;
+	}
+}
+.upload-button {
+	position: relative;
+	.custom-file-input {
+		position: absolute;
+		opacity: 0;
+	}
+	.upload-btn {
+		width: 244px;
+		height: 42px;
+		font-size: 14px;
+		line-height: 42px;
+	}
+}
+
+.upload-img-container {
+	position: relative;
+	overflow: hidden;
+	padding: 20px;
+	height: 155px;
+	max-height: 300px;
+	border: 2px dashed #dedede;
+	background: #f7f8fa;
+
+	&.scrollable {
+		overflow-y: auto;
+		&::-webkit-scrollbar {
+			width: 6px;
+		}
+		&::-webkit-scrollbar-track {
+			background: #f1f1f1;
+		}
+		&::-webkit-scrollbar-thumb {
+			background: #888;
+			border-radius: 6px;
+		}
+	}
+	.uploaded-img {
+		position: absolute;
+		top: 8px;
+		left: 0;
+		height: 90%;
+		height: 264;
+		width: auto;
+		-o-object-fit: cover;
+		object-fit: cover;
+		right: 0;
+		margin: auto;
+	}
+	&.small {
+		height: 168px;
+	}
+	p {
+		font-size: 20px;
+		font-weight: 400;
+		margin-bottom: 20px;
+	}
+	&.no-border {
+		border: 0;
+	}
+
+	.font-change {
+		font-size: 36px;
+	}
+	.icon {
+		width: 80px;
+		height: 80px;
+		background: white;
+		border-radius: 50%;
+		img {
+			width: 50px;
+			height: 50px;
+		}
+	}
+	.signature-img {
+		height: 80px;
+		width: 80px;
+		border-radius: 5px;
+		object-fit: contain;
+		margin-left: 10px;
+		margin-top: 10px;
+		border: solid 1px lightgray;
+	}
+
+	.selected-signature-img {
+		border: solid 3px $primary-color;
+	}
+}
+
+.ng-select.custom .ng-select-container {
+	min-height: 44px;
+	height: 44px;
+}

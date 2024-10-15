@@ -1,0 +1,27 @@
+.m-portlet .m-portlet__head .m-portlet__head-caption .m-portlet__head-title .m-portlet__head-text {
+	font-size: 20px;
+    font-style: inherit;
+    font-weight: 700;
+    /* letter-spacing: -.01em;
+    line-height: 1.16666667;
+    margin-top: 44px; */
+    color: rgb(67, 108, 125);
+}
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link {
+    font-size: 14px;
+    font-style: inherit;
+    font-weight: 700;
+    /* letter-spacing: 0;
+    line-height: 1.16666667; */
+    /* margin-top: 8px; */
+    color: rgb(67, 108, 125);
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link i {
+    color: #000;
+}
+
+.m-portlet .bg-white--content {
+	border: 1px solid #ebedf2;
+    background: white;
+}

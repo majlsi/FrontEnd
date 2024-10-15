@@ -1,0 +1,162 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'ROLES.ADD.ADDNEWROLE' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-sepera tor-dashed" novalidate
+				#roleForm="ngForm" (ngSubmit)="save(roleForm)" >
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="rolenamear">{{'ROLES.ADD.ROLEARABICNAME' | translate}}</label>
+						<input type="text" placeholder="{{'ROLES.LIST.ROLE_ARABIC_NAME' | translate}}" [disabled]="role.is_read_only"
+							class="form-control" id="rolenamear" name="rolenamear" [(ngModel)]="role.role_name_ar"
+							#rolenamear="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(roleForm,'rolenamear', 'required')">
+							{{'ROLES.VALIDATION.ROLENAMEARREQUIRED' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="exampleInputEmail1">{{'ROLES.LIST.ROLENAME' | translate}} </label>
+						<input type="text" class="form-control m-input" id="rolename" name="rolename" [disabled]="role.is_read_only"
+							placeholder="{{'ROLES.LIST.ROLENAME' | translate}}" [(ngModel)]="role.role_name"
+							#rolename="ngModel">
+					</div>
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12">
+						<div class="row">
+								<div class="col">
+										<label>{{'ROLES.ADD.PERMISSIONS' | translate}}</label>
+									</div>
+									<div class="col ml-auto text-right">
+											<label style="margin-right:0;" class="col-md-12">
+													<input type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll()" [disabled]="role.is_read_only"
+														name="selectall" selectall="ngModel">
+													{{'ROLES.ADD.ENABLEDALL' | translate}}
+													
+												</label>
+									  </div>
+						</div>
+
+						<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0" [destroyOnHide]="false">
+							
+								<ngb-panel *ngFor="let module of modules">
+								  <ng-template ngbPanelTitle class="d-flex">
+											<span class="m-portlet__head-text">
+											{{isArabic? module.module_name_ar : (module.module_name? module.module_name : module.module_name_ar)}}
+											
+											</span>
+
+											<div>
+												<i class="fa fa-chevron-up"></i>
+											</div>
+										
+								  </ng-template>
+								  <ng-template ngbPanelContent>
+										<div>
+												<label style="margin-right:0;" class="col-md-3" *ngFor="let right of module.rights">
+													<!-- {{module.rights.length}} -->
+													<!-- <span *ngIf="module.rights.length > 0"> -->
+														<span>
+														
+															<input type="checkbox" [(ngModel)]="right.is_selected" [disabled]="role.is_read_only"
+															[checked]="isChecked(right.id)" (change)="updateRights(right)"
+															name="rights" #rights="ngModel">
+														{{isArabic? right.right_name_ar : (right.right_name? right.right_name : right.right_name_ar)}}
+
+													</span>
+														
+														<!-- <div *ngIf="!module.rights.length > 0">
+																<p>No messages</p>
+															</div> -->
+													</label>
+													<input type="text" [(ngModel)]="rightsRequired" name="check" #check="ngModel"
+														required hidden>
+													<!-- <br> -->
+											</div>
+											
+											
+								  </ng-template>
+								</ngb-panel>
+	
+								
+	
+							  </ngb-accordion>
+
+							  <div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(roleForm,'check', 'required')">
+									{{'ROLES.VALIDATION.PERMISSIONSREQUIRED' | translate}}
+								</div>
+					</div>
+				</div>
+
+				
+
+				
+
+				<!-- <div class="form-group m-form__group row">
+					<div class="col-lg-12">
+						<m-portlet [options]="{headLarge: false}">
+							<ng-container mPortletHeadTitle>
+								<div class="m-portlet__head-title">
+									<h3 class="m-portlet__head-text">
+										{{'ROLES.ADD.PERMISSIONS' | translate}}
+									</h3>
+								</div>
+							</ng-container>
+							<ng-container mPortletHeadTools>
+								<label style="margin-right:0;" class="col-md-12">
+									<input type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll()"
+										name="selectall" selectall="ngModel">
+									{{'ROLES.ADD.ENABLEDALL' | translate}}
+								</label>
+							</ng-container>
+							<ng-container mPortletBody>
+								<div *ngFor="let module of modules" title="{{module.module_name}}">
+									<div>
+										<label style="margin-right:0;" class="col-md-4"
+											*ngFor="let right of module.rights">
+											<input type="checkbox" [(ngModel)]="right.is_selected"
+												[checked]="isChecked(right.id)" (change)="updateRights(right)"
+												name="rights" #rights="ngModel">
+											{{isArabic? right.right_name_ar : (right.right_name? right.right_name : right.right_name_ar)}}
+										</label>
+										<input type="text" [(ngModel)]="rightsRequired" name="check" #check="ngModel"
+											required hidden>
+									</div>
+								</div>
+							</ng-container>
+						</m-portlet>
+					</div>
+				</div> -->
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" *ngIf="!role.is_read_only"
+								[disabled]="submitted">{{'BUTTON.SAVE' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i></button>
+							<button type="reset" (click)="redirect()"
+								class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

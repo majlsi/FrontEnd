@@ -1,0 +1,56 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <form name="locationForm" #locationForm="ngForm" (ngSubmit)="save(locationForm); locationForm.valid"
+        novalidate>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{'MEETINGS.INFO.ADD.LOCATION'| translate}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body p-0">
+        <div class="form-group m-form__group row m-map-form">
+            <div class="col-lg-12">
+
+                    <div class="form-group mb-0">
+                            <div class="m-input-icon m-input-icon--left">
+                                    <input class="form-control" ngx-google-places-autocomplete #placesRef="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+                                <span class="m-input-icon__icon m-input-icon__icon--left">
+                                    <span><i class="la la-search"></i></span>
+                                </span>
+                            </div>
+                        </div>
+
+                <agm-map [zoom]="zoom" [latitude]="location_lat" [longitude]="location_lng"
+                    [disableDefaultUI]="true" [zoomControl]="true" (mapReady)="mapReady($event)" style="height: 300px;">
+
+                        <agm-marker [latitude]="location_lat" [longitude]="location_lng"
+                            [markerDraggable]="canEdit"
+                            (dragEnd)='markerDragEnd($event,true)'>
+
+                        </agm-marker>
+
+
+                </agm-map>
+
+
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" mat-button (click)="d('Cross click')">{{'BUTTON.CANCEL' |
+                translate}}</button>&nbsp;
+            <button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>{{'MEETINGS.INFO.ADD.SELECT_LOCATION'
+                | translate}}</button>
+        </div>
+
+
+
+
+    </form>
+</ng-template>
+
+
+<a class="mt-0 mb-2 m-link map-link-sm" (click)="open(content)" >
+    <i class="fa fa-map-marker-alt"></i>&nbsp;{{'MEETINGS.INFO.ADD.SELECT_LOCATION' | translate}}
+</a>

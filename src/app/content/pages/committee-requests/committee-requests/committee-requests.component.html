@@ -1,0 +1,50 @@
+<div class="main-portlet">
+	<div class="m-subheader">
+		<div class="d-flex align-items-center">
+			<div class="mr-auto" *ngIf="!meetingId">
+				<h3 class="m-subheader__title">{{ "COMMITTEES.GENERAL.COMMITTEEREQUEST" | translate }}</h3>
+			</div>
+		</div>
+	</div>
+	<div class="tabsWrabber">
+		<ul ngbNav #nav="ngbNav" [(activeId)]="activeIdString" (navChange)="beforeChange($event)" class="nav-pills">
+			<li ngbNavItem="committeeRequests">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.NEWCOMMITTEEREQUEST" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-new-committee-requests (tabChanged)="changeTab($event)"></m-new-committee-requests>
+				</ng-template>
+			</li>
+			<!-- <li ngbNavItem="updateCommitteeRequests">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.UPDATE_COMMITTEE_REQUEST" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-update-committee-requests (tabChanged)="changeTab($event)"></m-update-committee-requests>
+				</ng-template>
+			</li> -->
+			<li ngbNavItem="addUserRequests" [disabled]="addMode">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.USERREQUESTS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-new-committee-member-requests (tabChanged)="changeTab($event)"></m-new-committee-member-requests>
+				</ng-template>
+			</li>
+			<li ngbNavItem="deleteUserRequests" [disabled]="addMode">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.DELETEUSERREQUESTS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-new-delete-member-requests (tabChanged)="changeTab($event)"></m-new-delete-member-requests>
+				</ng-template>
+			</li>
+			<li ngbNavItem="deleteDocumentRequests" [disabled]="addMode">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.DELETEDOCUMENTREQUESTS" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-new-delete-document-requests (tabChanged)="changeTab($event)"></m-new-delete-document-requests>
+				</ng-template>
+			</li>
+			<li ngbNavItem="unfreezeUserRequests" [disabled]="addMode">
+				<button ngbNavLink>{{ "COMMITTEES.GENERAL.UNFREEZEUSERREQUEST" | translate }}</button>
+				<ng-template ngbNavContent>
+					<m-unfreeze-member-requests-list (tabChanged)="changeTab($event)"></m-unfreeze-member-requests-list>
+				</ng-template>
+			</li>
+		</ul>
+		<div [ngbNavOutlet]="nav" class="mt-2"></div>
+	</div>
+</div>

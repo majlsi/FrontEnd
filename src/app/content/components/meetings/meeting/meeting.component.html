@@ -1,0 +1,426 @@
+<div class="m--padd ing-15 m--paddi ng-top-0 p-0">
+
+
+	<div [hidden]="!showError"
+		class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+		role="alert">
+		<span>
+			{{errors}}
+		</span>
+	</div>
+	<div *ngIf="displayWarning()"
+		class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-warning" role="alert">
+		<p>
+			{{'MEETINGS.INFO.ADD.ONLINE_CONFIG_WARNING' | translate}}
+		</p>
+	</div>
+	<div class="bg-white--content m--padding-15">
+
+		<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate
+			#meetingForm="ngForm" (ngSubmit)="save(meetingForm)">
+
+			<div class="form-group m-form__group row pt-4 pb-0 mb-3"  joyrideStep="addMeetingInfo" [title]="'TUTORIALGUIDE.MEETING_INFO_TITLE' | translate" [text]="'TUTORIALGUIDE.MEETING_INFO_BODY' | translate" [stepPosition]="'bottom'">
+				<label for="meetingtype"
+					class="col-lg-2 col-form-label">{{'MEETINGS.INFO.ADD.MEETINGCOMMITTEE' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span></label>
+				<div class="col-lg-7">
+
+					<ng-select [searchable]="true" [clearable]="false"
+						placeholder="{{'MEETINGS.INFO.ADD.MEETINGCOMMITTEE' | translate}}"
+						[(ngModel)]="meeting.committee_id" name="meetingCommittee" #meetingCommittee="ngModel" required
+						[disabled]="(!canEditMeeting) || main || meeting.id">
+
+						<ng-option *ngFor="let committee of allCommittees" [value]="committee.id" [hidden]="true">
+							{{isArabic? committee.committee_name_ar : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)}}
+						</ng-option>
+
+					</ng-select>
+						<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingCommittee', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.MEETINGCOMMITTEE' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row">
+				<label for="meetingtype" class="col-lg-2 col-form-label">{{'PROPOSALS.ADD.MEETINGPROPOSAL' | translate}}
+					&nbsp;</label>
+				<div class="col-lg-7">
+					<ng-select [searchable]="true" [clearable]="false"
+						placeholder="{{'PROPOSALS.ADD.MEETINGPROPOSAL' | translate}}" [(ngModel)]="meeting.proposal_id"
+						name="meetingProposal" #meetingProposal="ngModel" [items]="proposals"
+						[bindLabel]="proposalBindLabel" bindValue="id"
+						[disabled]="!canEditMeeting">
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.name" class="ng-option-label">{{item.proposal_title }}</span>
+						</ng-template>
+					</ng-select>
+
+				</div>
+			</div>
+			<div class="form-group m-form__group row">
+				<label for="onlineConfiguration" class="col-lg-2 col-form-label">{{'MEETINGS.INFO.ADD.ONLINE_CONFIGURATION' | translate}}
+					&nbsp;</label>
+				<div class="col-lg-7">
+					<ng-select [clearable]="true" [searchable]="true"
+						placeholder="{{'MEETINGS.INFO.ADD.ONLINE_CONFIGURATION' | translate}}" [(ngModel)]="meeting.online_configuration_id"
+						name="onlineConfiguration" #onlineConfiguration="ngModel" [items]="userOnlineConfigurations"
+						[bindLabel]="onlineConfigurationBindLabel" bindValue="id"
+						[disabled]="!canEditMeeting">
+						<ng-template ng-label-tmp let-item="item">
+							{{isArabic? (item.configuration_name_ar? item.configuration_name_ar : item.configuration_name_en) : (item.configuration_name_en? item.configuration_name_en : item.configuration_name_ar) }}
+						</ng-template>
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.name" class="ng-option-label">{{isArabic? (item.configuration_name_ar? item.configuration_name_ar : item.configuration_name_en) : (item.configuration_name_en? item.configuration_name_en : item.configuration_name_ar) }}</span>
+						</ng-template>
+					</ng-select>
+
+				</div>
+			</div>
+
+
+			<div class="form-group m-form__group row" *ngIf="isArabic">
+				<label for="meetingtitlear" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.MEETINGTITLEAR' | translate}}&nbsp;<span class="MandatoryAsterisk"></span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" class="form-control m-input" id="meetingtitlear" name="meetingtitlear"
+						[disabled]="!canEditMeeting"
+						placeholder="{{'MEETINGS.INFO.ADD.MEETING_TITLE_AR' | translate}}" #meetingtitlear="ngModel"
+						[(ngModel)]="meeting.meeting_title_ar" required>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingtitlear', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.MEETINGTITLEAR' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" *ngIf="!isArabic">
+				<label for="meetingtitleen" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.MEETINGTITLE' | translate}}&nbsp;<span class="MandatoryAsterisk"></span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" class="form-control m-input" id="meetingtitleen" name="meetingtitleen"
+						[disabled]="!canEditMeeting"
+						placeholder="{{'MEETINGS.INFO.ADD.MEETING_TITLE_EN' | translate}}" #meetingtitleen="ngModel"
+						[(ngModel)]="meeting.meeting_title_en" required>
+						<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingtitleen', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.MEETINGTITLE' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row">
+				<label for="schedule" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.SCHEDULE' | translate}}&nbsp;<span class="MandatoryAsterisk"></span>
+				</label>
+				<div class="col-lg-7">
+					<div class="form-group row">
+						<div class="input-group col-lg-12 m-b-1">
+							<input class="form-control m-input" placeholder="Schedule From"
+								[disabled]="!canEditMeeting"
+								name="schedulefrom" [(ngModel)]="meeting.meeting_schedule_from_date" ngbDatepicker
+								#d="ngbDatepicker" [readonly]="true" (ngModelChange)="setToDateEqualFrom()">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar"
+									(click)="d.toggle();$event.stopPropagation();" (dateSelect)="d.close()"
+									type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="scheduleTimeFrom" [(ngModel)]="meeting.meeting_schedule_from_time"
+								(ngModelChange)="changeMeetingTime()" [meridian]="_schedulFrommeridian"
+								[disabled]="!canEditMeeting" class="time-picker-direction">
+							</ngb-timepicker>
+
+						</div>
+
+						<div class="input-group col-lg-12">
+							<input class="form-control m-input" placeholder="Schedule To"
+								[disabled]="!canEditMeeting"
+								name="scheduleto" [(ngModel)]="meeting.meeting_schedule_to_date" ngbDatepicker
+								#dTo="ngbDatepicker" [minDate]="meeting.meeting_schedule_from_date" [readonly]="true">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar"
+									(click)="dTo.toggle();$event.stopPropagation();" (dateSelect)="dTo.close()"
+									type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<ngb-timepicker name="scheduleTimeTo" [(ngModel)]="meeting.meeting_schedule_to_time"
+								[meridian]="_schedulTomeridian" (ngModelChange)="changeMeetingTime()"
+								[disabled]="!canEditMeeting" class="time-picker-direction">
+							</ngb-timepicker>
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="input-group col-lg-4">
+							<div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(meetingForm,'schedulefrom', 'required')">
+								{{'MEETINGS.INFO.VALIDATION.SCHEDULEFROM' | translate}}
+							</div>
+						</div>
+						<div class="input-group col-lg-3">
+						</div>
+						<div class="input-group col-lg-4">
+							<div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(meetingForm,'scheduleto', 'required')">
+								{{'MEETINGS.INFO.VALIDATION.SCHEDULETO' | translate}}
+							</div>
+							<div class="error text-danger form-control-feedback" *ngIf="meetingTimeToError">
+								{{'MEETINGS.INFO.VALIDATION.SCHEDULEVALIDATION' | translate}}
+							</div>
+						</div>
+
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(meetingForm,'scheduleto', 'minDate')">
+							{{'MEETINGS.INFO.VALIDATION.SCHEDULEDATEVALIDATION' | translate}}
+						</div>
+
+
+
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="form-group m-form__group row">
+				<label for="timezone" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.TIMEZONE' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+
+					<input type="text" class="form-control"
+						value="{{isArabic? selectedTimeZone?.description_ar : (selectedTimeZone?.description_en? selectedTimeZone?.description_en : selectedTimeZone?.description_ar)}} {{selectedTimeZone?.diff_hours > 0? '+'+selectedTimeZone?.diff_hours : selectedTimeZone?.diff_hours}} GMT"
+						[disabled]="true">
+
+						<div class="error text-danger form-control-feedback"
+							[hidden]="hasTimeZone">
+							{{'MEETINGS.INFO.VALIDATION.TIMEZONE' | translate}}
+						</div>
+
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row" *ngIf="isArabic">
+				<label for="venuear" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.VENUEAR' | translate}}&nbsp;<span class="MandatoryAsterisk"></span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.VENUE_AR' | translate}}" class="form-control"
+						id="venuear" name="venuear" #venuear="ngModel" [(ngModel)]="meeting.meeting_venue_ar" required
+						[disabled]="!canEditMeeting">
+					<m-meeting-location [location_lat]="meeting.location_lat" [location_lng]="meeting.location_long"
+						[canEdit]="canEditMeeting" (meetingLocationEmiter)="updateMeetingLocation($event);">
+					</m-meeting-location>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'venuear', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.VENUEAR' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" *ngIf="!isArabic">
+				<label for="venueen" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.VENUE' | translate}}&nbsp;<span class="MandatoryAsterisk"></span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.VENUE_EN' | translate}}" class="form-control"
+						id="venueen" name="venueen" #venueen="ngModel" [(ngModel)]="meeting.meeting_venue_en" required
+						[disabled]="!canEditMeeting">
+					<m-meeting-location [location_lat]="meeting.location_lat" [location_lng]="meeting.location_long"
+						[canEdit]="canEditMeeting" (meetingLocationEmiter)="updateMeetingLocation($event);">
+					</m-meeting-location>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'venueen', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.VENUE' | translate}}
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group m-form__group row">
+				<label for="meetingtype" class="col-lg-2 col-form-label">{{'MEETINGS.INFO.ADD.MOMTEMPLATE_TITLE' | translate}}
+					&nbsp;</label>
+				<div class="col-lg-7">
+					<ng-select [clearable]="true" [searchable]="true" [clearable]="false"
+						placeholder="{{'MEETINGS.INFO.ADD.MOMTEMPLATE' | translate}}" [(ngModel)]="meeting.meeting_mom_template_id"
+						name="momTemplates" #meetingMomTemplates="ngModel" [items]="momTemplates"
+						[bindLabel]="momTemplatelBindLabel" bindValue="id" required
+						[disabled]="!canEditMeeting">
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.name" class="ng-option-label">
+								{{isArabic? item.template_name_ar : (item.template_name_en? item.template_name_en : item.template_name_ar)}}
+							</span>
+						</ng-template>
+					</ng-select>
+
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'momTemplates', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.MOMTEMPLATE' | translate}}
+					</div>
+
+				</div>
+			</div>
+			
+			<div class="form-group m-form__group row" *ngIf="!stakeholdersSelected()">
+				<label for="attendancePercentage" class="col-lg-2 col-form-label">{{'MEETINGS.INFO.ADD.ATTENDANCE_PERCNTAGE' | translate}}
+					&nbsp;<span class="MandatoryAsterisk"></span></label>
+				<div class="col-lg-4">
+					<div class="input-group">
+						<input type="number" class="form-control m-input" id="meetingattendancepercentage" name="meetingattendancepercentage"
+							[disabled]="!canEditMeeting"
+							placeholder="{{'MEETINGS.INFO.ADD.ATTENDANCE_PERCNTAGE' | translate}}" #meetingattendancepercentage="ngModel"
+							[(ngModel)]="meeting.meeting_attendance_percentage" [min]="0" [max]="100">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2">
+									%
+								</span>
+							</div>
+						</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingattendancepercentage', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.ATTENDANCE_PERCNTAGE' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingattendancepercentage', 'min')">
+						{{'MEETINGS.INFO.VALIDATION.INVALID_ATTENDANCE_PERCNTAGE' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingattendancepercentage', 'max')">
+						{{'MEETINGS.INFO.VALIDATION.INVALID_ATTENDANCE_PERCNTAGE' | translate}}
+					</div>
+				</div>
+			</div>
+			
+			<div class="form-group m-form__group row" *ngIf="stakeholdersSelected()">
+				<label for="meetingStakeholderPercentage" class="col-lg-2 col-form-label">{{'MEETINGS.INFO.ADD.STAKEHOLDERS_PERCNTAGE' | translate}}
+					&nbsp;<span class="MandatoryAsterisk"></span></label>
+				<div class="col-lg-4">
+					<div class="input-group">
+						<input required type="number" class="form-control m-input" id="meetingStakeholderPercentage" name="meetingStakeholderPercentage"
+							[disabled]="!canEditMeeting"
+							placeholder="{{'MEETINGS.INFO.ADD.STAKEHOLDERS_PERCNTAGE_PLACEHOLDER' | translate}}" #meetingStakeholderPercentage="ngModel"
+							[(ngModel)]="meeting.meeting_stakeholders_percentage" [min]="0" [max]="100">
+							<div class="input-group-append">
+								<span class="input-group-text" id="basic-addon2">
+									%
+								</span>
+							</div>
+						</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingStakeholderPercentage', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.STAKEHOLDERS_PERCNTAGE' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingStakeholderPercentage', 'min')">
+						{{'MEETINGS.INFO.VALIDATION.INVALID_STAKEHOLDERS_PERCNTAGE' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'meetingStakeholderPercentage', 'max')">
+						{{'MEETINGS.INFO.VALIDATION.INVALID_STAKEHOLDERS_PERCNTAGE' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row">
+				<label for="reminder" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.SENDREMINDER' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+					<div class="row">
+						<div class="col-lg-6">
+							<ng-select id="reminders" placeholder="{{'MEETINGS.INFO.ADD.REMINDERS'  | translate}}"
+								[hideSelected]="true" name="reminders" [searchable]="true"
+								[disabled]="!canEditMeeting"
+								[(ngModel)]='meeting.meeting_reminders' [multiple]="true" [maxSelectedItems]="3"
+								[items]="reminders" [bindLabel]="remindersBindLabel" bindValue="id">
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.name"
+										class="ng-option-label">{{isArabic? item.reminder_description_ar : (item.reminder_description_en? item.reminder_description_en : item.reminder_description_ar)}}</span>
+								</ng-template>
+
+							</ng-select>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row" *ngIf="isArabic">
+				<label for="descriptionar" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.DESCRIPTIONAR' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.DESCRIPTION_AR' | translate}}"
+						class="form-control" id="descriptionar" name="descriptionar" #descriptionar="ngModel"
+						[(ngModel)]="meeting.meeting_description_ar" required
+						[disabled]="!canEditMeeting">
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'descriptionar', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.DESCRIPTIONAR' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" *ngIf="!isArabic">
+				<label for="descriptionen" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.DESCRIPTION' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.DESCRIPTION_EN' | translate}}"
+						class="form-control" id="descriptionen" name="descriptionen" #descriptionen="ngModel"
+						[(ngModel)]="meeting.meeting_description_en" required
+						[disabled]="!canEditMeeting">
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'descriptionen', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.DESCRIPTIONEN' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row" *ngIf="isArabic">
+				<label for="notesar" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.NOTESAR' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.NOTES_AR' | translate}}" class="form-control"
+						id="notesar" name="notesar" #notesar="ngModel" [(ngModel)]="meeting.meeting_note_ar"
+						[disabled]="!canEditMeeting">
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(meetingForm,'notesar', 'required')">
+						{{'MEETINGS.INFO.VALIDATION.NOTESAR' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" *ngIf="!isArabic">
+				<label for="notesen" class="col-lg-2 col-form-label">
+					{{'MEETINGS.INFO.ADD.NOTES' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span>
+				</label>
+				<div class="col-lg-7">
+					<input type="text" placeholder="{{'MEETINGS.INFO.ADD.NOTES' | translate}}" class="form-control"
+						id="notesen" name="notesen" #notesen="ngModel" [(ngModel)]="meeting.meeting_note_en"
+						[disabled]="!canEditMeeting">
+				</div>
+			</div>
+
+
+
+			<div class="m-form__actions m-form__actions--solid">
+				<div class="row">
+					<div class="col-lg-12 m--align-left">
+						<button type="submit" class="btn btn-primary" [disabled]="submitted"
+							*ngIf="canEditMeeting" joyrideStep="saveMeetingInfo" [title]="'TUTORIALGUIDE.SAVE_MEETING_INFO_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_MEETING_INFO_BODY' | translate" [stepPosition]="isArabic?'left':'right'">
+							{{meetingId? ('BUTTON.SAVE' | translate) : ('MEETINGS.INFO.ADD.NEWMEETING' | translate)}}
+							<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+						</button>
+						<button type="button" class="btn btn-primary" (click)="saveMeetingVersion(meetingForm)" [disabled]="submitted"
+							*ngIf="canEditMeeting && meetingId && meeting.meeting_status_id != meetingStatuses.DRAFT">
+							{{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+							<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+						</button>
+						<button type="reset" (click)="redirect()"
+							class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

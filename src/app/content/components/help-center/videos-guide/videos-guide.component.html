@@ -1,0 +1,48 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'HELP_CENTER.VIDEOS.TUTORIALS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<!-- <div [hidden]="!showError"
+			class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+			role="alert" *ngFor="let error of errors">
+			<span>
+				{{error}}
+			</span>
+		</div> -->
+		<div class="row m-0 tutorials-cards pt-3">
+			<!-- <h2 class="col-12 mb-4">{{'TUTORIALS.PAGEDESC' | translate}}</h2> -->
+			<div class="tutorial-card col-lg-4 mb-3" [ngClass]="{'pointer':video.video_url}" *ngFor="let video of videosGuide">
+				<div class="enz-card p-2 mh-auto " (click)="openTutorial(video)">
+					<div class="d-flex h-100">
+						<div class="d-flex  align-items-center justify-content-center tutorial-icon">
+							<i *ngIf="video.video_icon?.video_icon_url" class="{{video.video_icon.video_icon_url}}"></i>
+						</div>
+						<div class="tutorial-info p-3">
+							<h4 class="m--font-bolder">{{isArabic? video.video_name_ar : (video.video_name_en? video.video_name_en : video.video_name_ar)}}</h4>
+						</div>
+						<span>
+						</span>
+					</div>
+
+				</div>
+
+				<div class="hover-btns" *ngIf="video.video_url">
+					<button class="btn btn-outline-danger  btn-sm m-btn--icon  m-btn--outline-2x m-btn--pill" (click)="openTutorial(video)">
+						<i class="la la-play"></i> {{'TUTORIALS.VIDEOBTN' | translate}}</button>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+</m-portlet>

@@ -1,0 +1,141 @@
+<!--Begin::Section-->
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ "DASHBOARD.DASHBOARD" | translate }}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools> </ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="row">
+			<div class="col-12 col-xl-6">
+				<div class="bg-white--content" style='min-height: 360px;'>
+					<div class="row">
+						<div class="col-12">
+							<div class="m-widget17 my-5">
+								<div class="m-widget17__stats">
+									<div class="m-widget17__items m-widget17__items-col1">
+										<div class="m-widget17__item">
+											<span class="m-widget17__icon grey-blue">
+												<!-- <i class="flaticon-truck m--font-brand"></i> -->
+												<img src="./assets/app/media/img/icons/group-meeting.svg"
+													style="width:14%;" />
+												<div style='    font-weight: 600;
+												font-size: 1.8rem;
+												margin: 8px 0 0;'>+{{numOfMeetings}}</div>
+											</span>
+											<span class="m-widget17__subtitle">
+												{{ "DASHBOARD.MEETINGS" | translate }}
+											</span>
+											<span class="m-widget17__desc">
+
+												{{ "DASHBOARD.NUMOFMEETINGS" | translate }}
+
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-xl-6">
+				<div class="bg-white--content" style='min-height: 360px;'>
+					<div class="row m-row--no-padding m-row--col-separator-xl">
+						<div class="col-xl-12" style="direction:ltr;">
+							<!--begin:: Widgets/Profit Share-->
+							<div class="m-widget14">
+								<div class="m-widget14__header">
+									<h3 class="m-widget14__title">
+
+
+										{{ "DASHBOARD.MEETING_STATISTICS" | translate }}
+
+									</h3>
+									<span class="m-widget14__desc">
+
+										{{ "DASHBOARD.MEETINGS_STATISTICS_DESC" | translate }}
+
+									</span>
+								</div>
+								<div class="row align-items-center m-widget14__chart">
+									<div
+										class="col ngx-charts-advanced-pie-chart-col ngx-charts-advanced-pie-chart-col-sm" style="height: 220px !important;">
+										<ngx-charts-advanced-pie-chart [view]="view"
+											[results]="isArabic? participantMeetingStatisticsAr : participantMeetingStatisticsEn"
+											[scheme]="{domain: ['#30E07B','#E75691','#00C0FF','#5D6A75','#e299bf']}">
+										</ngx-charts-advanced-pie-chart>
+										<img *ngIf="isNoMeetings"
+											src="assets/demo/default/media/img/logo/empty-pie-chart.png"
+											style=" margin-top: 40px;" alt="Logo">
+
+									</div>
+								</div>
+							</div>
+
+							<!--end:: Widgets/Profit Share-->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<div class="row">
+				<div class="col">
+					<h4 class="m-portlet__head-text mb-4">
+						{{ "DASHBOARD.CALENDAR" | translate }}
+					</h4>
+				</div>
+			</div>
+
+			<div *ngIf="options">
+				<full-calendar #fullcalendar [options]="options" [(eventsModel)]="events"
+					(eventClick)="eventClick($event.detail)" (eventDrop)="updateEvent($event.detail)"
+					(eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"
+					(eventRender)="eventrender($event.detail)" (eventMouseOver)="mouseOver($event.detail)"
+					(eventMouseOut)="mouseOut($event.detail)">
+				</full-calendar>
+			</div>
+
+			<!-- 	<ng-container *ngIf="isHidden" #calendarPopover>
+					<h1>Heba</h1>
+				</ng-container> -->
+			<div class="d-flex align-items-center pb-4 mt-4">
+				<div class="m-widget14__legends d-flex flex-wrap">
+					<div class="m-widget14__legend col" *ngFor="let meetingStatus of meetingStatuses">
+						<span class="m-widget14__legend-bullet " [ngStyle]="{
+								'background-color': meetingStatus.color
+							}"></span>
+						<span class="m-widget14__legend-text">
+							{{
+								isArabic
+									? meetingStatus.meeting_status_name_ar
+									: meetingStatus.meeting_status_name_en
+									? meetingStatus.meeting_status_name_en
+									: meetingStatus.meeting_status_name_ar
+							}}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>
+<!--End::Section-->

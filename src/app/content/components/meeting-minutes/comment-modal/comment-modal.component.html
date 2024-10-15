@@ -1,0 +1,25 @@
+
+  <div class="signature-modal">
+	<div class="modal-header">
+		<h4 class="modal-title text-center" id="modal-basic-title">{{'SIGNATURE.ADD_COMMENT' | translate}}</h4>
+		<button type="button"  [disabled]="submitted" class="close" aria-label="Close" (click)="activeModal.close('Close click')">
+		  <span aria-hidden="true">&times;</span>
+		</button>
+	  </div>
+	  <div class="modal-body">
+		<div class="form-group m-form__group">
+		  <label for="exampleTextarea" class="m--font-bold">
+		<span> {{'SIGNATURE.ADD_COMMENT' | translate}}</span>
+
+		  </label>
+		  <textarea [(ngModel)]="rejectComment" class="form-control m-input m-input--solid" id="exampleTextarea" rows="3"></textarea>
+		</div>
+	  </div>
+	  <div class="modal-footer justify-content-between">
+		<button type="button"  [disabled]="submitted" class="btn btn-outline-dark btn-lg" (click)="activeModal.close('Close click')">{{'BUTTON.EXIT' | translate}}</button>
+		<button type="button"  [disabled]="submitted" class="btn btn-primary btn-lg" (click)="save()">{{'BUTTON.ADD' | translate}}</button>
+	  </div>
+
+  </div>
+
+

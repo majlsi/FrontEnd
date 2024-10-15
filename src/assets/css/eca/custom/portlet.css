@@ -1,0 +1,16 @@
+.m-portlet .m-portlet__head .m-portlet__head-caption .m-portlet__head-title .m-portlet__head-text {
+    color: #000;
+}
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link {
+
+    color: #000;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link i {
+    color: #000;
+}
+
+.m-portlet .bg-white--content {
+	border: 1px solid #ebedf2;
+    background: white;
+}

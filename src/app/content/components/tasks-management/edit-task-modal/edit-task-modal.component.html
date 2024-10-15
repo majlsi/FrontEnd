@@ -1,0 +1,10 @@
+<div class="modal-header d-flex justify-content-between">
+	<h4 class="modal-title">{{ 'TASKS_MANAGEMENT.EDIT_TASK' | translate }}</h4>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+		<span aria-hidden="true">&times;</span>
+	</button>
+
+</div>
+<div class="modal-body">
+	<m-task [taskStatus]="taskStatus" [users]="users" [agendas]="agendas" [task]="task" [taskId]="taskId" (closeModal)="activeModal.close('Save click')"></m-task>
+</div>

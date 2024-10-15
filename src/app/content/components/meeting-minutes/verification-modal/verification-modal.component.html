@@ -1,0 +1,47 @@
+<div class="signature-modal">
+    <div class="modal-header">
+
+        <h4 class="modal-title text-center" id="modal-basic-title">{{"SIGNATURE.VERIFICATION" | translate}}
+        </h4>
+        <button type="button" class="close" aria-label="Close" (click)="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p class="font-size-20 text-center">
+            {{"SIGNATURE.ENTER_CODE" | translate}}
+            <span *ngIf="useSms">{{"SIGNATURE.SHORT_MESSAGE" | translate}}</span>
+            <span *ngIf="useEmail && useSms">{{"SIGNATURE.OR" | translate}}</span>
+            <span *ngIf="useEmail">{{"SIGNATURE.EMAIL" | translate}}</span>
+        </p>
+
+        <div class="form mt-5">
+            <div class="form-group">
+                <input class="form-control form-control-md" [(ngModel)]="verificationCode.VerificationCode" (keyup)="OnInput($event)" placeholder="{{'SIGNATURE.ADD_CODE' | translate}}">
+                <small class="form-text text-danger" *ngIf="wrongVerificationCode">
+                    {{"SIGNATURE.WRONG_CODE" | translate}}
+                </small>
+                <small class="form-text text-danger" *ngIf="hasEmptyCode">
+                    {{"SIGNATURE.MUST_ENTER" | translate}}
+                </small>
+            </div>
+            <div class="form-group mt-4">
+                <p class="form-link font-16">
+                    {{"SIGNATURE.CODE_RECIEVE" | translate}}
+                    <a href="javascript:void(0);" (click)="resend()" class="font-weight-600"> {{"SIGNATURE.RESEND_CODE" | translate}}</a>
+                </p>
+            </div>
+            <small class="form-text text-success" *ngIf="codeResent">
+                {{"SIGNATURE.CODE_RESENT" | translate}}
+            </small>
+
+        </div>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-dark btn-lg" (click)="close()">
+            {{"SIGNATURE.CANCEL" | translate}}
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="verifyCode()">
+            {{"SIGNATURE.SEND" | translate}}
+        </button>
+    </div>

@@ -1,0 +1,105 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{videoGuideId? ('VIDEOS_GUIDE.ADD.EDIT_TITLE' | translate) : ('VIDEOS_GUIDE.ADD.ADD_TITLE' | translate)}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #videoGuideForm="ngForm" (ngSubmit)="save(videoGuideForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="videoNameAr">{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_NAME_AR' | translate}}</label>
+					<input type="text" placeholder="{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_NAME_AR' | translate}}" class="form-control" id="videoNameAr"
+					name="videoNameAr" [(ngModel)]="videoGuide.video_name_ar"
+						#videoNameAr="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(videoGuideForm,'videoNameAr', 'required')">{{'VIDEOS_GUIDE.VALIDATION.VIDEO_GUIDE_NAME_AR' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="videoNameEn">{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_NAME_EN' | translate}}</label>
+					<input type="text" class="form-control m-input" id="videoNameEn"
+					name="videoNameEn" placeholder="{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_NAME_EN' | translate}}" [(ngModel)]="videoGuide.video_name_en"
+					#videoNameEn="ngModel">
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="videoUrl">{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_URL' | translate}}</label>
+						<input type="text" placeholder="{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_URL' | translate}}" class="form-control" id="videoUrl"
+						name="videoUrl" [(ngModel)]="videoGuide.video_url"
+							#videoUrl="ngModel" >
+							<!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(videoGuideForm,'videoUrl', 'required')">{{'VIDEOS_GUIDE.VALIDATION.VIDEO_GUIDE_URL' | translate}}
+							</div> -->
+					</div>
+					<div class="col-lg-6">
+						<label for="videoIcon">{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_ICON' | translate}}</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" name="videoIcon" #videoIcon="ngModel"
+								placeholder="{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_ICON' | translate}}" [(ngModel)]="videoGuide.video_icon_id">
+								<ng-option *ngFor="let videoIcon of videoIcons" [value]="videoIcon.id">
+									{{isArabic? videoIcon.video_icon_name_ar : videoIcon.video_icon_name_en}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(videoGuideForm,'videoIcon', 'required')"> {{'VIDEOS_GUIDE.VALIDATION.VIDEO_GUIDE_ICON' | translate}}</div> -->
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="guideStep">{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_STEP' | translate}}</label>
+						<div class="input-group">
+							<ng-select class="bg-light w-100" name="guideStep" #guideStep="ngModel"
+								placeholder="{{'VIDEOS_GUIDE.LIST.VIDEO_GUIDE_STEP' | translate}}" [(ngModel)]="videoGuide.tutorial_step_tag">
+								<ng-option *ngFor="let tutorialStep of tutorialSteps" [value]="tutorialStep.tutorial_step_tag">
+									{{isArabic? tutorialStep.tutorial_step_name_ar : tutorialStep.tutorial_step_name_en}}
+								</ng-option>
+							</ng-select>
+						</div>
+						<!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(videoGuideForm,'guideStep', 'required')"> {{'VIDEOS_GUIDE.VALIDATION.VIDEO_GUIDE_STEP' | translate}}</div> -->
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="descriptionAr">{{ 'VIDEOS_GUIDE.ADD.DESCRIPTION_AR' | translate }}</label>
+						<textarea class="form-control form-control-solid"  rows="2" [maxlength]="1000"
+							placeholder="{{ 'VIDEOS_GUIDE.ADD.DESCRIPTION_AR' | translate }}" id="descriptionAr" name="descriptionAr"
+							#descriptionAr="ngModel" [(ngModel)]="videoGuide.video_description_ar"></textarea>
+
+						<!-- <div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(videoGuideForm,'descriptionAr', 'required')">
+							{{'VIDEOS_GUIDE.VALIDATION.DESCRIPTION_AR' | translate}}
+						</div> -->
+					</div>
+					<div class="col-lg-6">
+						<label for="descriptionEn">{{ 'VIDEOS_GUIDE.ADD.DESCRIPTION_EN' | translate }}</label>
+						<textarea class="form-control form-control-solid" rows="2" [maxlength]="1000"
+							placeholder="{{ 'VIDEOS_GUIDE.ADD.DESCRIPTION_EN' | translate }}" id="descriptionEn" name="descriptionEn"
+							#descriptionEn="ngModel" [(ngModel)]="videoGuide.video_description_en"></textarea>
+					</div>
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted">{{'BUTTON.SAVE' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

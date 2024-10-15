@@ -1,0 +1,92 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ "COMMITTEES.LIST.COMMITTEESLIST" | translate }}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<!-- <a [routerLink]="['/permissions/add']" mat-raised-button color="primary" matTooltip="Create new Uers">New Permission</a> -->
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{ "BUTTON.SHOWFILTER" | translate }}
+		</button>
+		<a [routerLink]="['add']" type="button" class="btn btn-primary" *ngIf="addFlag">
+			{{ "COMMITTEES.LIST.ADDNEWCOMMITTEE" | translate }}
+			<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+		</a>
+		<button *ngIf="canExport" type="button" (click)="exportCommittees()" class="btn btn-primary" matTooltip="{{ 'COMMITTEES.LIST.EXPORTCOMMITTEESDATA' | translate }}">
+			<i class="fa fa-file-download"></i>
+			{{ "COMMITTEES.ADD.EXPORTCOMMITTEEDATA" | translate }}
+		</button>
+	</ng-container>
+	<!-- end::Header -->
+	<!--! filter  -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #committeeForm="ngForm" (ngSubmit)="getList()">
+						<table class="table table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{ "COMMITTEES.LIST.ENGLISHNAME" | translate }}</th>
+									<th>{{ "COMMITTEES.LIST.ARABICNAME" | translate }}</th>
+									<th *ngIf="!removeCommitteeCode">{{ "COMMITTEES.LIST.COMMITTEECODE" | translate }}</th>
+									<th>{{ "GENERAL.OPERATIONS" | translate }}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{ 'COMMITTEES.LIST.ENGLISHNAME' | translate }}" class="form-control form-filter input-sm" id="committeename" name="committeename" [(ngModel)]="filterObject.SearchObject.committee_name_en" #committeename="ngModel" />
+									</td>
+									<td>
+										<input type="text" placeholder="{{ 'COMMITTEES.LIST.ARABICNAME' | translate }}" class="form-control form-filter input-sm" id="committeenamear" name="committeenamear" [(ngModel)]="filterObject.SearchObject.committee_name_ar" #committeenamear="ngModel" />
+									</td>
+									<td *ngIf="!removeCommitteeCode">
+										<input type="text" placeholder="{{ 'COMMITTEES.LIST.COMMITTEECODE' | translate }}" class="form-control form-filter input-sm" id="committeecode" name="committeecode" [(ngModel)]="filterObject.SearchObject.committee_code" #committeecode="ngModel" />
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"><i class="la la-search"></i> {{ "BUTTON.SEARCH" | translate }}</button>
+											<button type="button" class="btn btn-secondary m-btn--icon" (click)="resetSearch()"><i class="la la-close"></i>{{ "BUTTON.RESET" | translate }}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<!--! here  -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<!--! table -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content tabsWrabber">
+			<ul ngbNav #nav="ngbNav" class="nav-pills" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+				<li ngbNavItem="currentCommittees">
+					<button ngbNavLink>{{ "COMMITTEES.tabs.CURRENTCOMMITTEES" | translate }}</button>
+					<ng-template ngbNavContent>
+						<m-committee-table [filterObject]="filterObject" [loadingSubject]="loadingSubject" [paginatorTotal$]="paginatorTotal$" [dataSourceLength]="dataSourceLength" [dataSource]="dataSource" [activeIdString]="activeIdString" [actions]="true"></m-committee-table>
+					</ng-template>
+				</li>
+				<li ngbNavItem="pendingCommittees">
+					<button ngbNavLink>{{ "COMMITTEES.tabs.PENDINGCOMMITTEES" | translate }}</button>
+					<ng-template ngbNavContent>
+						<m-committee-table [filterObject]="filterObject" [loadingSubject]="loadingSubject" [paginatorTotal$]="paginatorTotal$" [dataSourceLength]="dataSourceLength" [dataSource]="dataSource" [activeIdString]="activeIdString" [actions]="false"></m-committee-table>
+					</ng-template>
+				</li>
+			</ul>
+			<div [ngbNavOutlet]="nav" class=""></div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

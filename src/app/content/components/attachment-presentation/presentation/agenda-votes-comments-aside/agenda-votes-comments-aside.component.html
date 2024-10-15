@@ -1,0 +1,142 @@
+<ul ngbNav #nav="ngbNav" class="nav-tabs">
+	<li ngbNavItem *ngIf="isVoteEnabled">
+		<button ngbNavLink>{{'PRESENTATION.VOTE' | translate}}</button>
+		<ng-template ngbNavContent>
+				<m-add-vote [vote_participants]="vote_participants" [meetingId]="meetingId" [decisionTypes]="decisionTypes" [agendas]="meeting.meeting_agendas" [agendaId]="meeting.current_agenda.id" [hidden]="!meeting.can_add_vote" ></m-add-vote>
+
+			<div class="d-block mx-auto mb-5 pt-2 text-center" *ngIf="meeting.current_agenda?.agenda_votes.length == 0">
+				<img class="mx-auto mb-2 w-50" src="./assets/app/media/img/icons/no-votes.png" />
+				<h5 class="text-white">
+					{{'PRESENTATION.NO_NOTES' | translate}}
+				</h5>
+			</div>
+			<div class="meeting-info-accrodions">
+				<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0" [activeIds]="panelActive"
+					(panelChange)="panelChanges($event)"
+					*ngFor="let vote of meeting.current_agenda?.agenda_votes; let y = index">
+					<ngb-panel id="ngb-panel-votes-{{vote.id}}">
+						<ng-template ngbPanelTitle>
+							<div class="text-overflow-hidden">
+								<span
+									class="accordion-title-lg ml-2">{{isArabic? (vote.vote_subject_ar? vote.vote_subject_ar : vote.vote_subject_en) : vote.vote_subject_en? vote.vote_subject_en : vote.vote_subject_ar}}</span>
+							</div>
+							<div>
+								<i class="fa fa-chevron-down"></i>
+							</div>
+						</ng-template>
+						<ng-template ngbPanelContent>
+							<div class="vote-items__cont mb-3">
+								<div class="vote-item vote-item__title px-0">
+									<div class="decision-status">
+
+										<span class="mx-0 mt-1 mb-3 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': vote.vote_result_status_id == voteResultStatusesEnum.approved,
+											'm-badge--danger' : vote.vote_result_status_id == voteResultStatusesEnum.rejected,
+											'm-badge--accent': vote.vote_result_status_id == voteResultStatusesEnum.balanced,
+											'm-badge--metal': vote.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+											'm-badge--warning': vote.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+											{{isArabic? vote.vote_result_status_name_ar : (vote.vote_result_status_name_en? vote.vote_result_status_name_en : vote.vote_result_status_name_ar)}}
+									</span>
+									</div>
+									<h6 class="">
+										{{isArabic? (vote.vote_subject_ar? vote.vote_subject_ar : vote.vote_subject_en) : vote.vote_subject_en? vote.vote_subject_en : vote.vote_subject_ar}}
+									</h6>
+									<div aria-label="Button group with nested dropdown " class="btn-group w-100" role="group"
+										*ngIf="meeting.can_attend && vote.is_voted_now">
+										<label class="m-vote-btn-group w-100"
+											*ngFor="let voteStatus of voteStatuses; let x = index">
+											<input *ngIf="vote.vote_results.length  == 0" type="radio" class=""
+												(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
+												[value]='voteStatus.id' type="radio" name="{{'vote'+voteStatus.id+y}}">
+
+											<input *ngIf="vote.vote_results.length > 0" type="radio" class=""
+												(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
+												[value]='voteStatus.id' type="radio" name="{{'vote'+voteStatus.id+y}}"
+												[(ngModel)]="vote.vote_results[0].vote_status_id">
+
+											<div class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
+												<h5>{{isArabic? voteStatus.vote_status_name_ar : voteStatus.vote_status_name_en}}
+												</h5>
+												<h5 *ngIf="voteStatus.id == voteStatusEnum.YES && (!vote.is_secret || meeting.can_add_vote)" class="m--font-boldest">
+													{{vote.yes_votes}}</h5>
+												<h5 *ngIf="voteStatus.id == voteStatusEnum.NO && (!vote.is_secret || meeting.can_add_vote)" class="m--font-boldest">
+													{{vote.no_votes}}</h5>
+												<h5 *ngIf="voteStatus.id == voteStatusEnum.MAYATTEND && (!vote.is_secret || meeting.can_add_vote)"
+													class="m--font-boldest">{{vote.abstained_votes}}</h5>
+											</div>
+											<span></span>
+
+										</label>
+									</div>
+									<m-vote-results [meetingId]="meetingId" [voteId]="vote.id" *ngIf="!vote.is_secret || meeting.can_add_vote"></m-vote-results>
+									<div class="d-flex justify-content-between my-3" *ngIf="meeting.can_start_vote">
+										<button *ngIf="!vote.is_voted_now" class="btn btn-primary btn-block m-0 py-1"
+											(click)="startVote(vote.id)">{{'BUTTON.STARTVOTE'|translate}}</button>
+										<button *ngIf="vote.is_voted_now" class="btn btn-primary btn-block m-0 py-1"
+											(click)="endVote(vote.id)">{{'BUTTON.ENDVOTE'|translate}}</button>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</ngb-panel>
+				</ngb-accordion>
+			</div>
+		</ng-template>
+	</li>
+	<li ngbNavItem>
+		<button ngbNavLink>{{'PRESENTATION.COMMENT' | translate}}</button>
+		<ng-template ngbNavContent><div class="comments__cont">
+				<!-- <div class="" *ngIf="meeting.current_agenda?.agenda_user_comments.length == 0 ">
+					<img class="" src="./assets/app/media/img/icons/empty-comments.png"/>
+
+				</div> -->
+				<div class="comment__item"
+					*ngFor="let userComment of meeting.current_agenda?.agenda_user_comments | slice:0:meeting.current_agenda?.commentsMax; let y = index">
+					<p class="vote-item__title">{{userComment.comment_text}}</p>
+					<time>
+						{{userComment.created_at | date: 'MMMM d, y, h:mm a'}}
+					</time>
+
+				</div>
+				<div *ngIf="meeting.current_agenda?.agenda_user_comments.length > commentsMax"
+					class="enz--grey-link-btn" [ngClass]="{ hideChildren : commentsEle.class !== 'showChildren' }"
+					#commentsEle>
+					<a
+						(click)="meeting.current_agenda.isShowMore = !meeting.current_agenda.isShowMore;toggle(meeting.current_agenda.agenda_user_comments.length, meeting.current_agenda);commentsEle.class = commentsEle.class == 'showChildren' ? '' :  'showChildren'">
+						<span *ngIf="meeting.current_agenda.isShowMore">
+							{{'PRESENTATION.VIEW_LESS_COMMENTS' | translate}}
+						</span>
+						<span *ngIf="!meeting.current_agenda.isShowMore">
+							{{'PRESENTATION.VIEW_MORE_COMMENTS' | translate}}
+						</span>
+					</a>
+
+				</div>
+
+				<div class="mt-3">
+					<textarea name="comment+agenda.id" class="white-bg py-0 form-control m-input m-input--solid"
+						placeholder="{{'PRESENTATION.ADD_COMMENT'|translate}}"
+						[(ngModel)]="meeting.current_agenda.current_user_comment" rows="3"
+						[disabled]=" !meeting.is_started" [maxlength]="1000"></textarea>
+					<div class="error text-danger form-control-feedback"
+						*ngIf="userComment.comment_text?.length == 1000">
+						{{'PRESENTATION.VALIDATION.COMMENT_LENGTH'|translate}}</div>
+				</div>
+				<div class="error text-danger form-control-feedback"
+					*ngIf="((meeting.current_agenda?.current_user_comment && meeting.current_agenda?.current_user_comment.length == 0) || !meeting.current_agenda?.current_user_comment) && (commentRequiredError.length != 0 && meeting.current_agenda?.id === commentToAgendaId) ">
+					{{'PRESENTATION.VALIDATION.COMMENT_REQUIRED'|translate}}</div>
+				<div class="comments-action">
+					<button type="button"
+						(click)="addComment(meeting.current_agenda?.id,meeting.current_agenda?.current_user_comment)"
+						class="btn btn-secondary btn-lg btn-block px-2"
+						[disabled]="(submitted && meeting.current_agenda?.id === commentToAgendaId) || !meeting.is_started">
+						<i class="fa fa-plus"></i>
+						<span>{{'PRESENTATION.ADD_COMMENT' | translate}}</span>
+						<i class='fa fa-spinner fa-spin '
+							*ngIf="submitted && meeting.current_agenda?.id === commentToAgendaId"></i>
+					</button>
+				</div>
+			</div>
+		 </ng-template>
+	</li>
+</ul>
+<div [ngbNavOutlet]="nav" class="mt-2"></div>

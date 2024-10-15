@@ -1,0 +1,38 @@
+<div class="modal-header py-3 d-flex align-items-center">
+  <h2 class="modal-title font-size-24 font-weight-500 color-title-dark">{{'FILES.ADDATTACHMENTS' | translate}}
+  </h2>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<form novalidate #attachmentForm="ngForm">
+  <div class="modal-body py-3">
+    <div class="form-group m-form__group row">
+      <div class="col-lg-12" style='min-height:200px;'>
+        <dropzone *ngIf="type === 'component'" class="dropzone-container" [config]="config"
+          (init)="onUploadInit($event)" [disabled]="disabled" (error)="onUploadError($event)"
+          message="{{'MEETINGS.ATTACHMENTS.ADD.MESSAGE' | translate}}"></dropzone>
+        <!-- <div *ngIf="type === 'directive'" class="dropzone dropzone-container modal-dropzone" [dropzone]="config"
+          [disabled]="disabled" (init)="onUploadInit($event)" (error)="onUploadError($event)"
+          (success)="onUploadSuccess($event)"></div> -->
+      </div>
+    </div>
+    <div class="error text-danger form-control-feedback" [hidden]="!dropzoneHasFiles()">{{'FILES.ATTACHMENTSVALIDATION'
+      | translate}}</div>
+    <div class="error text-danger form-control-feedback" [hidden]="!hasFileSizeError()">
+      {{fileSizeError }}</div>
+    <div class="error text-danger form-control-feedback" [hidden]="!hasFileTypeError()">
+      {{fileTypeError }}</div>
+      <div class="error text-danger form-control-feedback" [hidden]="!hasCountError()">
+        {{'FILES.FILES_MAX_NUMBER'|translate }}</div>
+  
+  </div>
+
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary px-5" (click)="save(attachmentForm)">{{'FILES.ADD'|translate}}</button>
+    <button type="button" class="btn bg-secondary px-5"
+      (click)="activeModal.dismiss('Close click')">{{'FILES.CANCEL'|translate}}</button>
+  </div>
+</form>

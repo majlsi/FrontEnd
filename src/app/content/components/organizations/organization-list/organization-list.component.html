@@ -1,0 +1,233 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text" *ngIf="idParameter == null">
+				{{'ORGANIZATIONS.LIST.PENDING_REQUESTS' | translate}}
+			</h3>
+			<h3 class="m-portlet__head-text" *ngIf="idParameter == 1">
+				{{'ORGANIZATIONS.LIST.APPROVED_REQUESTS' | translate}}
+			</h3>
+			<h3 class="m-portlet__head-text" *ngIf="idParameter == 0">
+				{{'ORGANIZATIONS.LIST.REJECTED_REQUESTS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<!-- 	<button class="btn btn-link" [disabled]="!activeDeactiveGroup" (click)="setActiveDeactive('active')" *ngIf="idParameter == 0 || idParameter == null">
+			<i class="fa fa-check"></i>
+			{{'BUTTON.ACTIVATEALL' | translate}}
+		</button> -->
+
+
+		<m-activate-organization [activeDeactiveGroup]="activeDeactiveGroup" 
+			*ngIf="idParameter == 0 || idParameter == null" [organizationsIds]="organizationsIds" [organizationsSelected]="organizationsSelected"
+			(getListEmiter)="getList();">
+
+		</m-activate-organization>
+
+		<button class="btn btn-link" [disabled]="!activeDeactiveGroup" (click)="setActiveDeactive('deactive')"
+			*ngIf="idParameter == 1 || idParameter == null">
+			<i class="fa fa-ban"></i>
+			{{'BUTTON.DEACTIVATEALL' | translate}}
+		</button>
+
+		<button type="button" class="btn btn-link " (click)="isCollapsed = !isCollapsed"
+			[attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #userForm="ngForm" (ngSubmit)="getList()">
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'ORGANIZATIONS.LIST.USERNAME' | translate}}</th>
+									<th>{{'ORGANIZATIONS.LIST.EMAIL' | translate}}</th>
+									<th>{{'ORGANIZATIONS.LIST.ORGANIZATIONNAME' | translate}}</th>
+									<th>{{'ORGANIZATIONS.LIST.ORGANIZATIONCODE' | translate}}</th>
+									<th>{{'ORGANIZATIONS.LIST.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'ORGANIZATIONS.LIST.USERNAME' | translate}}"
+											class="form-control form-filter input-sm" id="username" name="username"
+											[(ngModel)]="filterObject.SearchObject.user_name" #username="ngModel">
+									</td>
+									<td>
+										<input type="text" placeholder="{{'ORGANIZATIONS.LIST.EMAIL' | translate}}"
+											class="form-control form-filter input-sm" id="email" name="email"
+											[(ngModel)]="filterObject.SearchObject.email" #email="ngModel">
+									</td>
+									<td>
+										<input type="text"
+											placeholder="{{'ORGANIZATIONS.LIST.ORGANIZATIONNAME' | translate}}"
+											class="form-control form-filter input-sm" id="organizationname"
+											name="organizationname"
+											[(ngModel)]="filterObject.SearchObject.organization_name"
+											#organizationname="ngModel">
+									</td>
+									<td>
+										<input type="text"
+											placeholder="{{'ORGANIZATIONS.LIST.ORGANIZATIONCODE' | translate}}"
+											class="form-control form-filter input-sm" id="organizationcode"
+											name="organizationcode"
+											[(ngModel)]="filterObject.SearchObject.organization_code"
+											#organizationcode="ngModel">
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i
+													class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary m-btn--icon"
+												(click)=resetSearch()> <i
+													class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table [dataSource]="dataSource"
+					class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table"
+					matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+
+					<!--- Note that these columns can be defined in any order.
+										  The actual rendered columns are set as a property on the row definition" -->
+
+					<!-- Select Column -->
+					<ng-container matColumnDef="select">
+						<th *matHeaderCellDef class="mat-column-checkbox">
+							<mat-checkbox [(ngModel)]="selectedAll" (change)="selectAll()">
+							</mat-checkbox>
+						</th>
+						<td *matCellDef="let organization" class="mat-column-checkbox">
+							<mat-checkbox [(ngModel)]="organization.is_selected"
+								(change)="selectOrganization(organization)">
+							</mat-checkbox>
+						</td>
+					</ng-container>
+
+
+
+					<ng-container matColumnDef="original_image_url">
+						<th *matHeaderCellDef mat-sort-header class="mat-column-orgIcon">
+							{{'ORGANIZATIONS.LIST.ICON' | translate}}
+						</th>
+						<td *matCellDef="let organization" class="mat-column-orgIcon">
+							<!--<div class="organization-icon">-->
+								<i *ngIf="!organization.original_image_url" class="fa fa-image"></i>
+								<img *ngIf="organization.original_image_url" height="30px" width="30px" alt=""
+									src="{{imagesBaseURL+organization.original_image_url}}" />
+							<!--</div>-->
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="organization_name_en">
+						<th *matHeaderCellDef mat-sort-header>
+							{{'ORGANIZATIONS.LIST.ORGANIZATIONNAME' | translate}}
+						</th>
+						<td *matCellDef="let organization">
+							{{organization.organization_name_en}}
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="organization_name_ar">
+						<th *matHeaderCellDef mat-sort-header class="">
+							{{'ORGANIZATIONS.LIST.ORGANIZATIONNAMEAR' | translate}}</th>
+						<td *matCellDef="let organization" class="">{{organization.organization_name_ar}}</td>
+					</ng-container>
+					<ng-container matColumnDef="organization_code">
+						<th *matHeaderCellDef mat-sort-header class="">
+							{{'ORGANIZATIONS.LIST.ORGANIZATIONCODE' | translate}}</th>
+						<td *matCellDef="let organization" class="">{{organization.organization_code}}</td>
+					</ng-container>
+					<ng-container matColumnDef="name">
+						<th *matHeaderCellDef mat-sort-header class="">{{'ORGANIZATIONS.LIST.USERNAME' | translate}}
+						</th>
+						<td *matCellDef="let organization" class="">
+							{{isArabic? (organization.name_ar? organization.name_ar : organization.name) : (organization.name? organization.name : organization.name_ar)}}
+						</td>
+					</ng-container>
+					<ng-container matColumnDef="organization_phone">
+						<th *matHeaderCellDef mat-sort-header class="">{{'ORGANIZATIONS.LIST.PHONENO' | translate}}</th>
+						<td *matCellDef="let organization" class="">{{organization.organization_phone}}</td>
+					</ng-container>
+					<ng-container matColumnDef="email">
+						<th *matHeaderCellDef mat-sort-header class="email-cell">
+							{{'ORGANIZATIONS.LIST.CORPORATEEMAIL' | translate}}</th>
+						<td *matCellDef="let organization" class="email-cell">{{organization.email}}</td>
+					</ng-container>
+					<ng-container matColumnDef="organization_number_of_users">
+						<th *matHeaderCellDef mat-sort-header>{{'ORGANIZATIONS.LIST.USERSNUMBER' | translate}} </th>
+						<td *matCellDef="let organization">{{organization.organization_number_of_users}}</td>
+					</ng-container>
+					<ng-container matColumnDef="actions">
+						<th *matHeaderCellDef class="mat-column-action">
+							{{'ORGANIZATIONS.LIST.ACTIONS' | translate}}
+						</th>
+						<td *matCellDef="let organization" class="mat-column-action">
+							<button type="button" (click)="edit(organization.id)" *ngIf="editFlag" 
+								class="btn btn-black m-btn m-btn--outline-2x" matTooltip="{{'BUTTON.EDIT' | translate}}">
+								<i class="flaticon-edit-1"></i> {{'BUTTON.EDIT' | translate}}
+							</button>
+							<!-- <button type="button" *ngIf="organization.is_active == 0 || organization.is_active == null" (click)="activeDeactive(organization,1)"
+							 class="btn btn-sky" matTooltip="Activate" [disabled]="!canDoAction">
+							 <i class="fa fa-check"></i>
+							</button> -->
+
+							<m-activate-organization [activeDeactiveGroup]="activeDeactiveGroup" [organization]="organization"
+							*ngIf="organization.is_active == 0 || organization.is_active == null"  [organizationsIds]="[organization.id]" 
+								(getListEmiter)="getList();">
+
+							</m-activate-organization>
+
+							<button type="button" *ngIf="organization.is_active == 1 || organization.is_active == null"
+								(click)="activeDeactive(organization,0)" class="btn btn-light-grey"
+								matTooltip="{{'BUTTON.DEACTIVATE' | translate}}" [disabled]="!canDoAction">
+								<i class="fa fa-ban"></i>
+							</button>
+						</td>
+					</ng-container>
+
+
+
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+				</table>
+
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+			</div>
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+				</mat-paginator>
+			</div>
+		</div>
+
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

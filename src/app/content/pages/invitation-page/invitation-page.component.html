@@ -1,0 +1,77 @@
+<!-- <div _ngcontent-c10="" id="m_header_nav" class="m-stack__item m-stack__item--fluid m-header-head">
+	<div class="m-topbar m-stack m-stack--ver m-stack--general" id="m_header_topbar">
+		<div class="m-stack__item m-topbar__nav-wrapper">
+			
+		</div>
+	</div>
+</div> -->
+
+
+<div id="m_login"
+    class="m-grid__item m-grid__item--fluid m-grid m-grid--hor m-login m-login--signin m-login--2 m-login-2--skin-2">
+    <div class="m-grid__item m-grid__item--fluid m-login__wrapper-2 m-login__wrapper">
+        <div class="m-login__container">
+            <div class="m-login__logo">
+                <a href="#">
+                    <img src="./assets/app/media/img/logos/{{themeName}}/Main-Logo.png">
+                </a>
+            </div>
+
+            <!--begin::Signin-->
+            <div class="m-login__signin mjlsi--auth-form">
+                <div class="m-login__head">
+                    <h3 class="m-login__title">لقد تمت دعوتك لحضور {{meetingName}}</h3>
+                </div>
+                <!--begin::Form-->
+                <div *ngIf="error" class="error text-danger form-control-feedback">
+                    {{error}}
+                </div>
+                <form class="m-login__form m-form" name="form" (ngSubmit)="submit(loginForm)" #loginForm="ngForm"
+                    novalidate>
+
+                    <div class="form-group m-form__group- mb-3">
+
+                        <label for="username" class="text-white">{{ 'AUTH.LOGIN.NAME' | translate }}</label>
+                        <div class="split-cell row">
+                            <div class="half left col">
+                                <input type="text" name="username" id="username" placeholder="Name" class="form-control m-input" autocomplete="off"
+                                    [(ngModel)]="userName" required>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(loginForm,'username', 'required')">
+                                    {{'AUTH.VALIDATION.FULLNAME_AR_REQUIRED' |
+                                    translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <button type="submit" class="btn btn-primary btn-block" [disabled]="submitted">
+                        {{'AUTH.LOGIN.BUTTON' | translate}}
+                        <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+                    </button>
+
+
+                </form>
+
+                <div class="row m-login__form-sub">
+                    <div class="col m--align-left m-login__form-left m-login__account">
+                        <a href="javascript:;" [routerLink]="['/sign-up']" id="m_login_signup"
+                            class="m-link m-link--light m-login__account-link">{{ 'AUTH.LOGIN.TITLE' | translate }}
+                        </a>
+                    </div>
+                    <div class="col m--align-right m-login__form-right">
+
+                        <m-language-selector></m-language-selector>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+</div>

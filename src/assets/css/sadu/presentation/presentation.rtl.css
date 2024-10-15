@@ -1,0 +1,7 @@
+
+.presentation-container #clock img{
+	order: 2;
+}
+.presentation-container #clock countdown{
+	order: 1;
+}

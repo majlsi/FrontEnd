@@ -1,0 +1,43 @@
+<div class="modal-header">
+	<h4 class="modal-title" id="modal-basic-title">{{ "USERS.BLOCK.FREEZEREASON" | translate }}</h4>
+	<button type="button" class="close" aria-label="Close" (click)="close()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="modal-body">
+	<form name="blockForm" #blockForm="ngForm" (ngSubmit)="save(blockForm)" novalidate>
+		<div class="form-group row">
+			<div class="col-12">
+				<label>{{ "USERS.BLOCK.FREEZEREASON" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span> </label>
+				<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000" [(ngModel)]="reason" placeholder="{{ 'USERS.BLOCK.FREEZEREASON' | translate }}" id="doc_description" name="reason" required></textarea>
+				<div class="error text-danger form-control-feedback" [hidden]="!hasError(blockForm, 'reason', 'required')">
+					{{ "USERS.VALIDATION.FREEZEREASON" | translate }}
+				</div>
+			</div>
+			<div class="col-12">
+				<label>{{ "USERS.BLOCK.REASON" | translate }} </label>
+				<div class="input-group">
+					<label class="relative uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" for="attachmentfile">
+						<input type="file" class="d-none" id="attachmentfile" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt" (change)="fileUrlChangeEvent($event)" #attachment="ngModel" name="attachment" (ngModel)="(attachmentUrl)" />
+						<span id="attachmentfile" *ngIf="!attachmentUrl">{{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}</span>
+						<span *ngIf="attachmentUrl">{{ attachmentUrl }}</span>
+						<span class="btn btn-default px-0 mx-0">{{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}</span>
+					</label>
+				</div>
+				<div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+					{{ "USERS.VALIDATION.UPLOAD_FILE_TYPE" | translate }}
+				</div>
+				<div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+					{{ attachmentSizeError }}
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer px-0">
+			<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+				{{ "BUTTON.CONFIRM" | translate }}
+				<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+			</button>
+			<button class="btn btn-secondary" type="button" (click)="close()">{{ "BUTTON.CANCEL" | translate }}</button>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,384 @@
+<!-- Custom styles for this template -->
+<!-- <link href="./assets/css/presentation/sb-admin-2.min.css" rel="stylesheet">
+<link href="./assets/css/presentation/custom.css" rel="stylesheet"> -->
+<!-- End Custom styles for this template -->
+
+<!--============================= Start new presentation HTML ==================================-->
+<div class="presentation-container" [ngClass]="{'overflow-hidden':isResize}">
+	
+	<div id="pointer"></div>
+	<!-- Start Header -->
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-md navbar-light bg-white flex-column flex-md-row bd-navbar fixed-top p-0">
+		<div class="col-12 col-lg-2 justify-content-between d-flex navbar-main-col" id="fixedHeader">
+			<a href="#" class="navbar-brand">
+				<img src="assets/app/media/img/logos/{{themeName}}/logo_large.png" width="50" height="50"
+					class="d-inline-block align-top" alt="">
+			</a>
+
+			<div class="action-buttons d-inline-flex">
+				<ul class="m-topbar__nav m-nav m-nav--inline mb-0  d-flex justify-content-between d-lg-none">
+					<li ngbDropdown class="m-nav__item col-10 p-0">
+						<button class="btn btn-outline-secondary d-block presenter-dropdown-button"
+							[disabled]="(isClient && !isOrganiser) || isNoOnePresenting" id="dropdownBasic1"
+							[ngStyle]="{'border': isNoOnePresenting ? '3px red solid': '2px solid #d8d7dc'  }"
+							ngbDropdownToggle>
+							<span class="presenter-name d-block" *ngIf="attachment?.presenter || attachment?.presenter_guest"
+								title="{{presenterName}}">{{presenterName}}</span>
+							<span title="{{'PRESENTATION.NOW_PRESENTING'| translate}}"
+								*ngIf="attachment?.presenter || attachment?.presenter_guest">{{'PRESENTATION.NOW_PRESENTING'| translate}}</span>
+							<span title="{{'PRESENTATION.NO_PRESENTER'| translate}}"
+								*ngIf="(!attachment?.presenter) && (!attachment?.presenter_guest)">{{'PRESENTATION.NO_PRESENTER'| translate}}</span>
+							<i class="fa fa-caret-down"></i>
+						</button>
+						<div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+							*ngIf="(!isClient || isOrganiser) && isLoaded ">
+							<button class="dropdown-item" (click)="endMeeting();" [disabled]="endMeetingSubmitted"
+								[ngClass]="{'not-allowed': endMeetingSubmitted}" *ngIf="isOrganiser"
+								ngbDropdownItem>{{'PRESENTATION.END_MEETING' | translate}} <i
+									class='fa fa-spinner fa-spin ' *ngIf="endMeetingSubmitted"></i></button>
+							<button class="dropdown-item" (click)="endPresentation();" [disabled]="endMeetingSubmitted"
+								[ngClass]="{'not-allowed': endMeetingSubmitted}"
+								ngbDropdownItem>{{'PRESENTATION.END_PRESENTATION' | translate}}</button>
+							<m-change-presenter [meetingAgendaId]="meetingAgendaId" [meetingId]="meetingId"
+								[presenterUserId]="presenterUserId" [attachmentId]="attachmentId"
+								[organizers]="meetingData.meeting_organisers"
+								[participants]="meetingData.meeting_participants"
+								(closePointerEmiter)="fireClosePointer();" [endMeetingSubmitted]="endMeetingSubmitted">
+							</m-change-presenter>
+						</div>
+					</li>
+
+				</ul>
+				<button class="btn btn-sm btn-icon mx-2 min-w" (click)="showDetatilsSidebarToggle()">
+					<span class="fa fa-bars font-20"></span>
+				</button>
+				<a (click)="votesCommentsSidebarToggle()" class="d-block d-lg-none mx-2 m-nav__link m-dropdown__toggle">
+					<img src="./assets/app/media/img/icons/icon-toggler.png" alt="" width="20">
+				</a>
+			</div>
+		</div>
+
+		<!-- <a  id="m_aside_left_minimize_toggle"
+		class="m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block m-brand__toggler--active">
+				<span></span>
+			</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		 -->
+		<div class="tools-navbar col-12 col-lg-8 navbar-nav mx-auto">
+			<div class="row w-100">
+				<!-- Start timer -->
+				<div
+					class="col-4 col-lg-4 d-inline-flex flex-wrap justify-content-end flex-wrap-reverse d-lg-flex m-widget19__stats m-widget-agenda__countdown">
+
+					<div class="extra-time text-sm text-center" *ngIf="meetingData.current_agenda?.extraTime > 0">
+						<div> {{'VIEW_MEETING.EXTRA_TIME' | translate}}</div>
+						<cd-timer [startTime]="meetingData.current_agenda.extraTime" format="hms">
+						</cd-timer>
+					</div>
+					<div id="del-countdown">
+						<div id="clock" class="m-widget19__number m--font-brand d-flex">
+							<img src="./assets/app/media/img/icons/circular-clock.png" alt="" width="20">
+							<countdown class="d-flex px-3" #cd
+								[ngClass]="{'m-countdown-danger':isLessMinute === true,'m-countdown-success':isMore  === true,'m-countdown-warning':isthreeMinute === true }"
+								*ngIf="loaded" (event)="handleEvent($event)"
+								[config]="{leftTime: meetingData.current_agenda.timer , demand: !meetingData.current_agenda.is_presented_now,notify:[60,180]}">
+								$!m!:$!s!
+							</countdown>
+						</div>
+					</div>
+				</div>
+
+				<!-- end timer -->
+				<!-- Start Tools -->
+				<div class="col-8 col-lg-4 py- text-center justify-content-center">
+					<ul class="mb-2 navbar-nav flex-row ml-md-auto dashed-border bg-light-grey"
+						*ngIf="(!isClient || isOrganiser) && !isNoOnePresenting && (presenterUserId == userId || isOrganiser)">
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_FREE_HAND' | translate}}">
+								<a class="nav-link mj-header__topbar-icon--tool" role="button"
+									(click)="(!isClient || isOrganiser) &&  freeHand();"
+									[ngClass]="{ 'highlighted': isFreeHand }">
+									<i class="fas fa-mouse-pointer"></i>
+								</a>
+							</mat-icon>
+						</li>
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_DRAWING' | translate}}">
+								<a class="nav-link mj-header__topbar-icon--tool" role="button"
+									(click)="(!isClient || isOrganiser) &&  drawNotes();"
+									[ngClass]="{ 'highlighted': isDrawing }">
+									<i class="fas fa-pencil-alt fa-fw"></i>
+								</a>
+							</mat-icon>
+						</li>
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_POINTER' | translate}}">
+								<a class="nav-link mj-header__topbar-icon--tool" role="button"
+									(click)="(!isClient || isOrganiser) &&  showPointer();"
+									[ngClass]="{ 'highlighted': isPointer }">
+									<i class="fas fa-heading fa-fw"></i>
+								</a>
+							</mat-icon>
+						</li>
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_TEXT' | translate}}">
+								<a class="nav-link" role="button" (click)="(!isClient || isOrganiser) &&  showText();"
+									[ngClass]="{ 'highlighted': isText }">
+									<i class="fas fa-text-width fa-fw"></i>
+								</a>
+							</mat-icon>
+
+						</li>
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_ERASER' | translate}}">
+								<a class="nav-link" role="button" (click)="(!isClient || isOrganiser) &&  showEraser();"
+									[ngClass]="{ 'highlighted': isEraser }">
+									<i class="fas fa-eraser fa-fw"></i>
+								</a>
+							</mat-icon>
+						</li>
+						<li class="nav-item">
+							<mat-icon matTooltip="{{'PRESENTATION.PRESENTATION_CLEAR_ALL' | translate}}">
+								<a class="nav-link" role="button" (click)="(!isClient || isOrganiser) &&  clearAll();"
+									[ngClass]="{ 'highlighted': isClearAll }">
+									<i class="fas fa-trash fa-fw"></i>
+								</a>
+							</mat-icon>
+						</li>
+					</ul>
+				</div>
+				<!-- End Tools -->
+				<div *ngIf="HasAccessToRight(rightEnum.canChat)"
+					class="col-12 justify-content-center d-fl ex d-m-n one  chat-widget-sm">
+					<m-collapsible-chat-widget [meetingId]="meetingId" [isArabic]="isArabic" [markUnread]="markUnread" (markReadMeesageEmiter)="markMessageAsReaded()">
+					</m-collapsible-chat-widget>
+				</div>
+
+				<!-- Start Next/Prev buttons -->
+				<ul
+					class="col-12 col-lg-4 navbar-nav bd-navbar-nav text-center justify-content-end my-3 flex-row slides-arrows"  [ngClass]="{'d-none':isResize}">
+					<li class="nav-item">
+						<button *ngIf="!isClient || isOrganiser" class="btn btn-default btn-sm" (click)="prevSlide();"
+							[disabled]="currentSlide == 1">
+							<i class="fa fa-chevron-left"></i>
+						</button>
+						<span class="py-2">
+							<span>{{currentSlide}}</span> / {{presentationSlides?.length}}
+						</span>
+						<button *ngIf="!isClient || isOrganiser" class="btn btn-default btn-sm" (click)="nextSlide();"
+							[disabled]="currentSlide == presentationSlides?.length">
+							<i class="fa fa-chevron-right"></i>
+						</button>
+					</li>
+				</ul>
+				<!-- End Next/Prev buttons -->
+
+			</div>
+		</div>
+		<!-- Start Presenter -->
+		<div class="col-2 justify-content-between d-none d-lg-block">
+			<ul class="m-topbar__nav m-nav m-nav--inline mb-0  d-flex justify-content-between">
+				<li ngbDropdown class="m-nav__item col-10 p-0">
+					<button class="btn btn-outline-secondary d-block presenter-dropdown-button"
+						[disabled]="(isClient && !isOrganiser) || isNoOnePresenting" id="dropdownBasic1"
+						[ngStyle]="{'border': isNoOnePresenting ? '3px red solid': '2px solid #d8d7dc'  }"
+						ngbDropdownToggle>
+						<span class="presenter-name d-block" *ngIf="attachment?.presenter || attachment?.presenter_guest"
+							title="{{presenterName}}">{{presenterName}}</span>
+						<span title="{{'PRESENTATION.NOW_PRESENTING'| translate}}"
+							*ngIf="attachment?.presenter || attachment?.presenter_guest">{{'PRESENTATION.NOW_PRESENTING'| translate}}</span>
+						<span title="{{'PRESENTATION.NO_PRESENTER'| translate}}"
+							*ngIf="(!attachment?.presenter) && (!attachment?.presenter_guest)">{{'PRESENTATION.NO_PRESENTER'| translate}}</span>
+						<i class="fa fa-caret-down"></i>
+					</button>
+					<div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+						*ngIf="(!isClient || isOrganiser) && isLoaded ">
+						<button class="dropdown-item" (click)="endMeeting();" [disabled]="endMeetingSubmitted"
+							[ngClass]="{'not-allowed': endMeetingSubmitted}" *ngIf="isOrganiser"
+							ngbDropdownItem>{{'PRESENTATION.END_MEETING' | translate}} <i class='fa fa-spinner fa-spin '
+								*ngIf="endMeetingSubmitted"></i></button>
+						<button class="dropdown-item" (click)="endPresentation();" [disabled]="endMeetingSubmitted"
+							[ngClass]="{'not-allowed': endMeetingSubmitted}"
+							ngbDropdownItem>{{'PRESENTATION.END_PRESENTATION' | translate}}</button>
+						<m-change-presenter [meetingAgendaId]="meetingAgendaId" [meetingId]="meetingId"
+							[presenterUserId]="presenterUserId" [attachmentId]="attachmentId"
+							[organizers]="meetingData.meeting_organisers" [vote_participants]="vote_participants"
+							[participants]="meetingData.meeting_participants" (closePointerEmiter)="fireClosePointer();"
+							[endMeetingSubmitted]="endMeetingSubmitted">
+						</m-change-presenter>
+					</div>
+				</li>
+				<li id="m_quick_sidebar_toggle" class="m-nav__item aside-2__toggler col-2 p-0">
+					<a (click)="votesCommentsSidebarToggle()" class="m-nav__link m-dropdown__toggle">
+						<img src="./assets/app/media/img/icons/icon-toggler.png" alt="" width="20">
+					</a>
+				</li>
+			</ul>
+
+		</div>
+		<!-- End Presenter -->
+
+	</nav>
+
+	<!-- End Header -->
+
+	<div class="d-flex presentation-content ">
+
+		<div class="col-xl-2 col-lg-3 aside-shadow p-0 bg-white d-mobile-fixed fixed-right" *ngIf="showdetatilsSidebar">
+
+			<div class="aside col-12">
+				<div class="d-block d-lg-none">
+					<button class="btn btn-secondary aside-toggler-btn my-2 mx-0" mat-button
+						(click)="showDetatilsSidebarToggle()">
+						<i class="fa fa-times"></i>
+					</button>&nbsp;
+				</div>
+				<m-meeting-info-aside [meeting]="meetingData" (getPresentationEmitter)="loadPresentation($event)">
+				</m-meeting-info-aside>
+			</div>
+		</div>
+
+		<div class="canvas-area p-0"
+			[ngClass]="{'col-6 col-xl-8': showVotesCommentsSidebar && showdetatilsSidebar , 'col-10 col-lg-9 col-xl-10': (!showVotesCommentsSidebar && showdetatilsSidebar) || (!showdetatilsSidebar && showVotesCommentsSidebar), 'col-12': !showVotesCommentsSidebar && !showdetatilsSidebar}">
+			<div class="page-title justify-content-between d-md-flex d-block p-3 border-bottom-light-grey mt-0 mb-3"
+				id="headerHeigh">
+				<h4 class="mb-0">
+					{{isArabic? (meetingData.current_agenda?.agenda_title_ar? meetingData.current_agenda?.agenda_title_ar : meetingData.current_agenda?.agenda_title_en) : meetingData.current_agenda?.agenda_title_en? meetingData.current_agenda?.agenda_title_en :
+						meetingData.current_agenda?.agenda_title_ar}}
+				</h4>
+				<button class="btn btn-default btn-sm text-right" type="button" (click)="backToMeeting()">
+					<i class="la la-arrow-left"></i>
+					{{'PRESENTATION.BACKTOMEETING' | translate}}
+				</button>
+			</div>
+
+			<!----------------------------------------->
+			<!----------------------------------------->
+			<!-- Start Canvas -->
+			<div class="d-block my-0">
+				<!-- Content Column -->
+				<!-- width="1200" height="600" -->
+				<div class="canvas-cont w-100 mw-100">
+					<canvas #myCanvas id="viewport" (swipe)="!isClient && isFreeHand && onSwipe($event)">
+					</canvas>
+				</div>
+
+			</div>
+
+			<!-- End Canvas -->
+
+			<!-- Start Slides-->
+			<div class="d-none d-lg-block   p-0 fixed-slides"
+				[ngStyle]="{'right':!showVotesCommentsSidebar && showdetatilsSidebar ? 'auto' : '' }"
+				[ngClass]="{'col-6 col-xl-8 mx-auto': showVotesCommentsSidebar && showdetatilsSidebar , 'col-10': (!showVotesCommentsSidebar && showdetatilsSidebar) || (!showdetatilsSidebar && showVotesCommentsSidebar), 'col-12': !showVotesCommentsSidebar && !showdetatilsSidebar}">
+				<div class="col-12">
+					<button class="btn btn-sm" (click)="toggle()">
+						{{'PRESENTATION.SLIDES' | translate}}
+						<i class="fa fa-chevron-down"></i>
+					</button>
+				</div>
+				<div class="col-12 bg-white">
+					<ul class=" side bar sidebar-or ange accordion list-unstyled" id="accordionSidebar"
+						[ngClass]="show ? 'd-inline-flex' : 'd-none'">
+						<li id="slides" class="nav-item m-3"
+							*ngFor="let presentationSlide of presentationSlides; let i = index">
+							<img *ngIf="i!=0" id="img_{{i}}" src="{{ imagesBaseURL + presentationSlide}}"
+								(click)="(!isClient || isOrganiser) &&  scaleToFit(presentationSlide); fireSlideChange(currentSlide);">
+							<img *ngIf="i==0" id="img_{{i}}" src="{{ imagesBaseURL + presentationSlide}}"
+								(load)="scaleToFit(presentationSlide)"
+								(click)="(!isClient || isOrganiser) &&  scaleToFit(presentationSlide); fireSlideChange(currentSlide);">
+						</li>
+
+					</ul>
+				</div>
+
+
+			</div>
+
+			<!-- End Slides -->
+		</div>
+
+		<div class="col-xl-2 col-lg-3 aside-shadow votes-comments--aside d-mobile-fixed"
+			*ngIf="showVotesCommentsSidebar">
+			<div class="aside col-12 px-sm-2">
+				<div class="d-block d-lg-none">
+					<button class="btn btn-secondary aside-toggler-btn my-2 mx-0" mat-button
+						(click)="votesCommentsSidebarToggle()">
+						<i class="fa fa-times"></i>
+					</button>&nbsp;
+				</div>
+				<m-agenda-votes-comments-aside [vote_participants]="vote_participants" [isVoteEnabled]="isVoteEnabled" [meeting]="meetingData"
+					[voteStatuses]="voteStatuses" [panelActive]="panelActiveIds"
+					(getMeetingDataEmitter)="getMeetingData()" (handleActivePanelEmitter)="beforePanelChange($event)"
+					[attachmentId]="attachmentId"></m-agenda-votes-comments-aside>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+
+<!--============================= End new presentation HTML ==================================-->
+
+<div class="m-grid__item m-grid__item--fluid m-grid m-grid--hor enz--presentation-grid">
+
+
+	<!-- Resize Window -->
+	<div *ngIf="isResize" class="fixed-resize-modal">
+		<div class="modal">
+			<div>
+				<h4 class="mb-4 mt-3 font-20">
+					{{'PRESENTATION.RESIZE_ERROR' | translate}}
+				</h4>
+				<a class="enz-present--btn-primary" (click)="reloadPresentation()">
+					{{'PRESENTATION.RELOAD_BTN' | translate}}
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- End of Resize Window -->
+
+	<!-- Scroll to Top Button-->
+	<a class="scroll-to-top rounded" href="#page-top">
+		<i class="fas fa-angle-up"></i>
+	</a>
+	<ng-template #content let-c="close" let-d="dismiss">
+		<div class="modal-header">
+			<h4 class="modal-title" id="modal-basic-title">{{'PRESENTATION.PRESENTATION_NOTES' | translate}}
+			</h4>
+			<button type="button" class="close" aria-label="Close" (click)="close ();d('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<form name="textForm" #textForm="ngForm" (ngSubmit)="fireDrawText(textForm); textForm.valid && c('Save click');"
+			novalidate>
+			<div class="form-group m-form__group">
+				<!-- 	<input type="text" name="username" #username="ngModel" placeholder="{{'COMMITTEES.ADD.SEARCBYNAME' | translate}}" class="form-control" [ngModel]="textNotes" (ngModelChange)="fireDrawText()"/> -->
+				<input type="text" name="username" #username="ngModel" [(ngModel)]="textNotes"
+					placeholder="{{'PRESENTATION.PRESENTATION_NOTES' | translate}}" class="form-control" />
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>{{'BUTTON.SAVE' | translate}}
+					<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+				</button>
+				<button class="btn btn-secondary" mat-button
+					(click)="close();d('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+			</div>
+		</form>
+	</ng-template>
+</div>
+
+
+
+<!-- START:: FIXED CHAT WIDGET -->
+<div *ngIf="HasAccessToRight(rightEnum.canChat)" class="d- none d-md-b lock chat-widget-lg">
+	<m-collapsible-chat-widget [meetingId]="meetingId" [isArabic]="isArabic" [markUnread]="markUnread" (markReadMeesageEmiter)="markMessageAsReaded()"></m-collapsible-chat-widget>
+</div>
+<!-- END:: FIXED CHAT WIDGET -->

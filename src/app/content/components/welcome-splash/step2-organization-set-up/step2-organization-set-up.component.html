@@ -1,0 +1,101 @@
+<div class="m-portlet__head-title mt-4">
+	<h3 class="m-portlet__head-text">
+		{{'WELCOME_SPLACH.PROFILE' | translate}}
+	</h3>
+	<p>
+		{{'WELCOME_SPLACH.SETUP_PROFILE' | translate}}
+	</p>
+</div>
+
+
+<div [hidden]="error.length == 0" *ngFor="let item of error"
+	class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+	<span *ngFor="let field of item">
+		{{isArabic? field?.message_ar : field?.message? field?.message : field?.message_ar}}
+	</span>
+</div>
+<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate
+	#organizationForm="ngForm" (ngSubmit)="save(organizationForm)" name="organizationForm">
+	<div class="form-group m-form__group m--padding-top-15 pb-5 mb-3 m-form__group--org_avtr row">
+		<div class="col-md-1 col-12">
+			<div class="org_avtr imgLogo">
+				<div>
+					<img *ngIf="image_url" [src]="image_url" class="rounded">
+				</div>
+				<div class="">
+					<i class="fa fa-image" (click)="file.click()"></i>
+					<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)" #file
+						name="file" (ngModel)="organization.logo_image.image_url">
+				</div>
+				<span class="enz_editImg updateLogo"
+					(click)="file.click()">{{'ORGANIZATIONS.ADD.EDITIMAGE' | translate}}</span>
+			</div>
+
+		</div>
+		<div class="col-md-11 col-12">
+			<h3>{{'ORGANIZATIONS.ADD.ORGANIZATIONIMAGE' | translate}}</h3>
+			<p>{{'ORGANIZATIONS.ADD.DESCRIPTION' | translate}}</p>
+			<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+				{{logoImageSizeError }}</div>
+			<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+				{{ 'AUTH.VALIDATION.ORGANIZATION_LOGO_INVALID' | translate }}</div>
+			<div class="error text-danger form-control-feedback" *ngIf="fileRequiredError">
+				{{ 'ORGANIZATIONS.MANAGE.VALIDATION.ORGANIZATIONIMAGE' | translate }}</div>
+		</div>
+
+	</div>
+
+	<div class="form-group m-form__group row mb-5 border-0">
+
+		<div class="col-lg-6">
+			<label class="d-flex" for="organizationCode">
+				{{'ORGANIZATIONS.ADD.ORGANIZATION_CODE_MANDATORY' | translate}}
+				<span class="d-flex ml-2" [ngbTooltip]="tipContent" placement="top" container="body">
+					<i class="fa fa-info-circle"></i>
+
+				</span>
+				<ng-template #tipContent>{{'ORGANIZATIONS.ADD.ORGANIZATION_CODE_TOOLTIP' | translate}}</ng-template>
+			</label>
+
+			<input type="text" placeholder="{{'ORGANIZATIONS.ADD.ORGANIZATIONCODE' | translate}}" class="form-control"
+				id="organizationCode" name="organizationCode" [(ngModel)]="organization.organization_code"
+				#organizationCode="ngModel" required>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(organizationForm,'organizationCode', 'required')">
+				{{'ORGANIZATIONS.VALIDATION.ORGANIZATION_CODE' | translate}}</div>
+		</div>
+
+		<div class="col-lg-6">
+			<label for="organizationTimeZone">{{'MEETINGS.INFO.ADD.TIMEZONE' | translate}}&nbsp;<span
+					class="MandatoryAsterisk">&nbsp;</span></label>
+			<ng-select [searchable]="true" [clearable]="false" [(ngModel)]="organization.time_zone_id" name="timezone"
+				#timezone="ngModel" [items]="timeZones" bindValue="id">
+				<ng-template ng-label-tmp let-item="item">
+					{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}
+					{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+				</ng-template>
+				<ng-template ng-option-tmp let-item="item">
+					<span [title]="item.name"
+						class="ng-option-label">{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}</span>
+					<p>{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+					</p>
+				</ng-template>
+			</ng-select>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(organizationForm,'timezone', 'required')">
+				{{'MEETINGS.INFO.VALIDATION.TIMEZONE' | translate}}</div>
+		</div>
+
+	</div>
+
+	<div class="row justify-content-between align-items-center steps-action m-0 my-5 pt-3">
+		<button class="btn btn-default primary-font bold" mat-button
+			matStepperPrevious>{{'GENERAL.Back' | translate}}</button>
+		<button type="submit" class="btn btn-primary btn-primary-lg" mat-button [disabled]="submitted">
+			<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+			{{'GENERAL.NEXT' | translate}}
+		</button>
+		<!-- <button class="btn btn-primary btn-primary-lg" mat-button matStepperNext>{{'GENERAL.NEXT' | translate}}</button> -->
+	</div>
+
+</form>

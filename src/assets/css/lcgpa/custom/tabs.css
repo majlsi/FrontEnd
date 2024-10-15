@@ -1,0 +1,16 @@
+
+.nav.nav-pills .nav-link{
+    background: #EFEFF4;
+
+}
+.nav.nav-pills .nav-link.active{
+    background: #34607B;
+}
+.tabsWrabber{
+    background: white;
+    box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+
+}
+.tabsWrabber .nav.nav-pills{
+    border-bottom: 1px solid #ebedf2;
+}

@@ -1,0 +1,157 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 *ngIf="!userId&&!isParticipant" class="m-portlet__head-text">
+				{{'STAKEHOLDER.ADD.NEWSTAKEHOLDERPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="userId&&!isParticipant" class="m-portlet__head-text">
+				{{'STAKEHOLDER.ADD.EDITSTAKEHOLDERPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="!userId&&isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.NEWPARTICIPANTPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="userId&&isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.EDITPARTICIPANTPROFILE' | translate}}
+			</h3>
+
+
+		</div>
+
+
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div [hidden]="!showError" class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert" *ngFor="let error of errors">
+			<span>
+				{{isArabic? error.message_ar : error.message}}
+			</span>
+		</div>
+		<div class="bg-white--content m--padding-15">
+
+
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #userForm="ngForm" (ngSubmit)="save(userForm)">
+
+				<div class="form-group m-form__group row" joyrideStep="addUserData" [title]="'TUTORIALGUIDE.ADD_USER_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_USER_DATA_BODY' | translate" [stepPosition]="'bottom'">
+					<div class="col-lg-6" *ngIf="isArabic">
+						<label>{{'USERS.ADD.ARABICNAME' | translate}}</label>
+						<input type="text" placeholder="{{'USERS.ADD.ARABIC_NAME' | translate}}" class="form-control" id="namear" name="namear" [(ngModel)]="stakeholder.name_ar" #namear="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'namear', 'required')">
+							{{'USERS.VALIDATION.USERNAMEAR' | translate}}</div>
+					</div>
+					<div class="col-lg-6" *ngIf="!isArabic">
+						<label>{{'USERS.ADD.NAME_EN' | translate}}</label>
+						<input type="text" placeholder="{{'USERS.ADD.NAME' | translate}}" class="form-control" id="name" name="name" [(ngModel)]="stakeholder.name" #name="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'name', 'required')">
+							{{'USERS.VALIDATION.USERNAME_EN' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label class="">{{'USERS.ADD.EMAIL' | translate}}</label>
+						<input [disabled]="isParticipant&&userId" type="email" placeholder="{{'USERS.ADD.USER_EMAIL' | translate}}" class="form-control" id="email" name="email" [(ngModel)]="stakeholder.email" #email="ngModel" email="true" pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'email', 'required')">{{'USERS.VALIDATION.EMAIL' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'email', 'pattern')">
+							{{'USERS.VALIDATION.EMAILVALIDATION' | translate}}</div>
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.PHONENUMBER' | translate}}</label>
+						<input type="text" class="form-control" name="PhoneNo" placeholder="{{'USERS.ADD.PHONE_NUMBER' | translate}}" autocomplete="off" [(ngModel)]="stakeholder.user_phone" #PhoneNo="ngModel" pattern="[0-9]+" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'PhoneNo', 'pattern')">
+							{{'USERS.VALIDATION.PHONENO_INVALID' | translate}}</div>
+
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'PhoneNo', 'required')">
+							{{'USERS.VALIDATION.PHONENO_REQUIRED' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'STAKEHOLDER.LIST.IDENTITY_NUMBER' | translate}}</label>
+						<input type="text" class="form-control" name="identity_number" placeholder="{{'STAKEHOLDER.LIST.IDENTITYNUMBER' | translate}}" autocomplete="off" [(ngModel)]="stakeholder.identity_number" #identity_number="ngModel" pattern="[0-9]+" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'identity_number', 'required')">
+							{{'STAKEHOLDER.VALIDATION.IDENTITY_NUMBER' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'identity_number', 'pattern')">
+							{{'STAKEHOLDER.VALIDATION.IDENTITY_NUMBER_INVALID' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="expiryDateFrom">{{'STAKEHOLDER.LIST.DATE_OF_BIRTH' | translate}}</label>
+						<div class="input-group">
+							<input class="form-control m-input" placeholder="{{'STAKEHOLDER.LIST.DATEOFBIRTH' | translate}}" name="dateOfBirth" [(ngModel)]="dateOfBirth" ngbDatepicker #dTo="ngbDatepicker" [readonly]="true" (ngModelChange)="setDateModel()" required [minDate]="minDate" [maxDate]="maxDate">
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="dTo.toggle()" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'dateOfBirth', 'required')">
+							{{'STAKEHOLDER.VALIDATION.DATE_OF_BIRTH_Required' | translate}}</div>
+					</div>
+
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.LANG' | translate}}</label>
+						<ng-select [searchable]="true" [(ngModel)]="stakeholder.language_id" name="language" #language="ngModel" required [items]="languages" [bindLabel]="bindLabelLang" bindValue="id" placeholder="{{'USERS.ADD.LANG' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.language_name_ar" class="ng-option-label">{{isArabic? item.language_name_ar : (item.language_name_en? item.language_name_en : item.language_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'language', 'required')">{{'USERS.VALIDATION.LANG' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'STAKEHOLDER.LIST.SHARE' | translate}}</label>
+						<input (change)="updateTotalShare(share)" type="text" class="form-control" name="share" placeholder="{{'STAKEHOLDER.LIST.SHARE_PLACEHOLDER' | translate}}" autocomplete="off" [(ngModel)]="stakeholder.share" #share="ngModel" pattern="^\d{1,3}(\.\d{0,2})?$" required maxlength="5">
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'share', 'pattern')">
+							{{'STAKEHOLDER.VALIDATION.SHARE_INVALID' | translate}}</div>
+
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'share', 'required')">
+							{{'STAKEHOLDER.VALIDATION.SHARE' | translate}}</div>
+
+						<div class="error text-danger form-control-feedback" [hidden]="!stakeholder.share || totalShares <= 100">
+							{{'STAKEHOLDER.VALIDATION.SHARE_INVALID' | translate}}
+						</div>
+
+						<div class="error text-danger form-control-feedback" [hidden]="shareValid">
+							{{'STAKEHOLDER.VALIDATION.SHARE_INVALID' | translate}}
+						</div>
+
+					</div>
+					<div class="col-lg-6">
+						<label>{{'STAKEHOLDER.LIST.TOTAL_SHARE' | translate}}</label>
+						<input type="text" class="form-control" name="totalShare" placeholder="{{'STAKEHOLDER.LIST.TOTAL_SHARE' | translate}}" value="{{totalShares}}" disabled readonly>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" [disabled]="submitted" joyrideStep="saveUser" [title]="'TUTORIALGUIDE.SAVE_USER_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_USER_BODY' | translate" [stepPosition]="isArabic?'left':'right'">{{'BUTTON.SAVE' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i></button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+
+
+</m-portlet>

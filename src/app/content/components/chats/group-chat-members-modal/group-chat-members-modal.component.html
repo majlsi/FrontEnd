@@ -1,0 +1,110 @@
+<div class="modal-header d-flex justify-content-xl-between">
+	<div class="d-flex align-items-center modal-title d-flex" id="modal-basic-title">
+		<h4 class="modal-title" id="modal-basic-title">
+			<b>
+				{{'CONVERSATIONS.USERS__LIST' | translate}}
+			</b>
+		</h4>
+		<span class="badge badge-light mx-2 p-2">{{chatGroup.member_users.length}}</span>
+	</div>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<form novalidate #searchForm="ngForm" (ngSubmit)="search()">
+	<div class="modal-body p-0">
+		<div class="search-box search-box-shadow p-3">
+			<div class="input-group my-0">
+				<input type="text" placeholder="{{'CONVERSATIONS.SEARCH' | translate}}"
+					class="form-control form-filter input-sm" id="searchname" name="searchname" [(ngModel)]="searchName"
+					#searchname="ngModel" (ngModelChange)="search()">
+				<div class="input-group-append">
+					<button class="btn btn-outline-secondary" type="submit">
+						<i class="la la-search"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group m-form__group">
+
+			<!-- <input type="checkbox" id="ischecked" name="ischecked" [(ngModel)]="atLeastTwoSelected" #ischecked="ngModel"
+				hidden required> -->
+
+		</div>
+		<div class="form-group m-form__group">
+			<div [hidden]="errors.length == 0"
+				class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert"
+				*ngFor="let errorGroup of errors">
+				<p *ngFor="let error of errorGroup">
+					{{isArabic? error.error_ar : (error.error? error.error : error.error_ar)}}
+					{{isArabic? error?.message_ar : error?.message? error?.message : error?.message_ar}}
+				</p>
+			</div>
+			<div class="scrollable-list" #scrollDown [scrollWindow]="false" infiniteScroll
+			[infiniteScrollThrottle]="50" [infiniteScrollDistance]="2"
+			(scrolled)="onScrollDown()">
+
+				<table mat-table [dataSource]="usersList" class="new-chat-table">
+					<!-- Name Column -->
+					<ng-container matColumnDef="name">
+						<th mat-header-cell *matHeaderCellDef> {{'CONVERSATIONS.NAME' | translate}} </th>
+						<td mat-cell *matCellDef="let row">
+							<mat-checkbox
+								class="d-flex p-0 m-0 w-100 align-items-center justify-content-between example-radio-group example-margin"
+								[(ngModel)]="row.is_selected" name="organizationUser+{{row.id}}"
+								(change)="selectUser(row)">
+								<div class="chat-item-row d-flex w-100 align-items-center justify-content-between">
+									<div class="d-flex align-items-center">
+										<div>
+											<!--class="avatar-icon mr-2"-->
+											<img [src]="getMemberUserImage(row)" width="50"
+												class="chat-icon rounded-circle" alt="chat icon"
+												onerror="this.src='./assets/app/media/img/icons/individual.png';">
+										</div>
+										&nbsp;
+										{{isArabic? (row.name_ar? row.name_ar : row.name) : (row.name? row.name : row.name_ar)}}
+									</div>
+
+									<a class="btn btn-dark text-white">
+										<span>
+											{{'CONVERSATIONS.SELECT' | translate}}
+										</span>
+
+									</a>
+								</div>
+							</mat-checkbox>
+						</td>
+					</ng-container>
+
+					<!-- Weight Column -->
+					<!-- <ng-container matColumnDef="members_no">
+							<th mat-header-cell *matHeaderCellDef> Members No </th>
+							<td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+						</ng-container> -->
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+					</tr>
+				</table>
+				<div class="mat-table__message" *ngIf="usersList.length == 0">{{'GENERAL.NORECORDSFOUND' | translate}}
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<!-- <p *ngIf="!atLeastTwoSelected && edit" class="error text-danger form-control-feedback">
+		{{'CONVERSATIONS.VALIDATION.ADD_USERS_TO_GROUP' | translate}}</p> -->
+	<div class="modal-footer pt-4 d-flex justify-content-between">
+		<button type="button" class="btn btn-light mr-3" (click)="close();activeModal.dismiss('Cross click')">
+			{{'BUTTON.CANCEL' | translate}}
+		</button>
+		<button type="button" class="btn btn-primary" (click)="openChat(searchForm)" [disabled]="submitted">
+			{{'BUTTON.SAVE' | translate}}
+			<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+		</button>
+	</div>
+
+</form>

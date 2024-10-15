@@ -1,0 +1,178 @@
+/*
+@import "./theme";
+@import "./mixins"; */
+
+@import './custom/theme.css';
+@import "./general/base.css";
+@import "./general/forms.css";
+@import "./general/modals.css";
+/* Custom css */
+
+@import "./custom/base.css";
+@import "./general/buttons.css";
+@import "./custom/font.css";
+@import "./custom/portlet.css";
+@import "./custom/login.css";
+@import "./custom/form.css";
+@import "./custom/table.css";
+@import "./custom/tabs.css";
+@import "../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
+/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+
+@import "./custom/imageupload.css";
+@import "./custom/dropzone.css";
+@import "./custom/layout.css";
+@import "./custom/meeting-preview.css";
+@import "./custom/calendar-icon.css";
+@import "./custom/comments.css";
+@import "./custom/charts.css";
+@import "./custom/widget.css";
+@import "./custom/dragula.css";
+@import "./presentation/presentation.css";
+@import './custom/responsive.css';
+@import'./custom/splash.css';
+@import './custom/chat-media.css';
+@import './custom/decisions.css';
+@import './custom/help-center.css';
+@import './custom/modal.css';
+/* @import "./custom/table.scss";
+// @import "./custom/layout.scss";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "./custom/imageupload"; */
+
+/* @import 'custom.css'; */
+
+input {
+	direction: ltr;
+}
+
+.btn-group>.m-radio-btn-group:not(:last-child)>.m-btn {
+	border-top-right-radius: 0!important;
+	border-bottom-right-radius: 0!important;
+}
+
+.btn-group>.m-radio-btn-group:not(:first-child)>.m-btn {
+	border-top-left-radius: 0!important;
+	border-bottom-left-radius: 0!important;
+}
+
+.m-widget4 .m-widget4__item .m-widget4__ext .m-widget4__icon>i:hover {
+	cursor: pointer;
+}
+
+.topbar.navbar-light[_ngcontent-c1] .navbar-nav[_ngcontent-c1] .nav-item[_ngcontent-c1] .nav-link[_ngcontent-c1]:hover {
+	cursor: pointer;
+}
+
+#pointer {
+	width: 10px;
+	height: 10px;
+	background-color: rgb(255, 287, 0);
+	border-radius: 50%;
+	border: 15px rgb(255, 199, 0) solid;
+	display: none;
+	z-index: 9999;
+	position: absolute;
+}
+
+#add-text {
+	width: 100px;
+	height: 20px;
+	border: 1px black solid;
+	display: block;
+	z-index: 100;
+	position: absolute;
+}
+
+.highlighted {
+	background-color: #e6e6e6;
+}
+
+.enz-spinner {
+	width: 90px;
+	margin-bottom: 30px;
+}
+
+.cdk-overlay-container {
+	/*z-index: 9999999999;*/
+}
+
+.m-demo {
+	background: #fdfcfa
+}
+
+.m-demo.mb-2 {
+	position: relative;
+	padding: 15px 0;
+}
+
+.m-demo__preview.m-demo__preview-not-allowed {
+	position: absolute;
+	top: 15px;
+	display: block;
+	right: 0;
+	left: 0;
+	color: #d22121;
+	background: rgba(255, 255, 255, 0.34)!important;
+}
+
+.new-chat-table .mat-radio-checked .mat-radio-label-content .chat-item-row .btn-dark:after, .new-chat-table .mat-checkbox-checked .mat-checkbox-layout .chat-item-row .btn-dark::after {
+	content: 'Selected';
+}
+
+m-aside-left .m-0.m-badge.m-badge--accent {
+    position: relative;
+    top: -58px;
+    left: 52px;
+}
+
+.modal-body .ngx-charts-advanced-pie-chart-col span{
+
+	top:48%;
+	left: 55%;
+	font-size: 2.5rem;
+	font-weight: 500;
+}
+
+.ngx-charts-tooltip-content {
+	z-index: 160000!important;
+}
+
+.m-portlet .m-portlet__head.m-portlet__head--fit{
+	padding: 1.5rem 2.2rem 1.2rem;
+	height: auto!important;
+}
+
+.mt-20-rem{
+	margin-top: 20rem!important;
+}
+.badge {
+    font-weight: 600;
+}
+.scrollable-x {
+	max-width: 100%;
+	overflow-y: visible;
+	overflow-x: auto;
+	-webkit-overflow-x:auto;
+	-webkit-overflow-scrolling: touch;
+}
+	.scrollable-x::-webkit-scrollbar {
+	  width: 5px;
+	  height: 5px;
+	}
+
+	/* Track */
+	.scrollable-x::-webkit-scrollbar-track {
+	  background: #f1f1f1;
+	}
+
+	/* Handle */
+	.scrollable-x::-webkit-scrollbar-thumb {
+	  background: #A4AFC1;
+	  border-radius: 10px;
+	}
+
+	/* Handle on hover */
+	.scrollable-x::-webkit-scrollbar-thumb:hover {
+	  background: #A4AFC1;
+	}

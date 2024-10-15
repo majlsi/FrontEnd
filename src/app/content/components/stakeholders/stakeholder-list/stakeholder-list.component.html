@@ -1,0 +1,203 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text" *ngIf="isParticipant">
+				{{ 'USERS.LIST.PARTICIPANTSLIST' | translate}}
+			</h3>
+			<h3 class="m-portlet__head-text" *ngIf="!isParticipant">
+				{{ 'STAKEHOLDER.LIST.STAKEHOLDERSLIST' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<button i18n type="button" class="btn btn-link" (click)="isCollapsed = !isCollapsed"
+			[attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<button *ngIf="isParticipant && addFlag"
+			[routerLink]="isParticipant? ['/participants/add'] : ['/Stakeholders/add']" type="button"
+			class="btn btn-primary" [disabled]="!canAddUser">
+			{{ 'USERS.LIST.ADDNEWPARTICIPANT' | translate }}
+		</button>
+		<button class="btn main-btn secondary ml-2" [hidden]="!(!isParticipant && addFlag)"
+			(click)="downloadExcelTemplate()">
+			{{ 'STAKEHOLDER.IMPORT.DOWNLOAD_BLANK_EXCEL_FILE' | translate}}
+		</button>
+		<label for='input-file' class="btn main-btn large" (click)="file_upload.value='';doOpen()" [hidden]="!(!isParticipant && addFlag)">
+			<i class="fa fa-paperclip"></i>
+			{{ 'STAKEHOLDER.IMPORT.ATTACH_CSV' | translate}}
+			<!-- Attach CSV file -->
+		</label>
+		<input id='input-file' type='file' (change)="onChange($event)" #file_upload hidden/>
+		<button [hidden]="!(!isParticipant && addFlag)"
+			[routerLink]="isParticipant? ['/participants/add'] : ['/Stakeholders/add']" type="button"
+			class="btn btn-primary" [disabled]="!canAddUser" joyrideStep="addUser"
+			[title]="'TUTORIALGUIDE.ADD_USER_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_USER_BODY' | translate">
+			{{ 'STAKEHOLDER.LIST.ADD_NEW_STAKEHOLDER' | translate}}
+		</button>
+	</ng-container>
+	<!-- end::Header -->
+
+
+	<!-- start::Body (attribute: mPortletBody) -->
+
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #userForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'USERS.LIST.USERNAME' | translate}}</th>
+									<th>{{'USERS.LIST.EMAIL' | translate}}</th>
+									<th>{{'STAKEHOLDER.LIST.IDENTITYNUMBER' | translate}}</th>
+									<th>{{'STAKEHOLDER.LIST.SHARE_PLACEHOLDER' | translate}}</th>
+									<th>{{'STAKEHOLDER.LIST.DATEOFBIRTH' | translate}}</th>
+									<th>{{'USERS.LIST.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'USERS.LIST.USERNAME' | translate}}"
+											class="form-control form-filter input-sm" id="username" name="username"
+											[(ngModel)]="filterObject.SearchObject.name" #username="ngModel">
+									</td>
+									<td>
+										<input type="text" placeholder="{{'USERS.LIST.EMAIL' | translate}}"
+											class="form-control form-filter input-sm" id="email" name="email"
+											[(ngModel)]="filterObject.SearchObject.email" #email="ngModel">
+									</td>
+									<td>
+										<input type="text"
+											placeholder="{{'STAKEHOLDER.LIST.IDENTITY_NUMBER' | translate}}"
+											class="form-control form-filter input-sm" id="identity_number"
+											name="identity_number"
+											[(ngModel)]="filterObject.SearchObject.identity_number"
+											#identity_number="ngModel">
+									</td>
+									<td>
+										<input type="text" placeholder="{{'STAKEHOLDER.LIST.SHARE' | translate}}"
+											class="form-control form-filter input-sm" id="share" name="share"
+											[(ngModel)]="filterObject.SearchObject.share" #share="ngModel">
+									</td>
+									<td>
+										<input type="text"
+											placeholder="{{'STAKEHOLDER.LIST.DATE_OF_BIRTH' | translate}}"
+											class="form-control form-filter input-sm" id="date_of_birth"
+											name="date_of_birth" [(ngModel)]="filterObject.SearchObject.date_of_birth"
+											#date_of_birth="ngModel">
+									</td>
+									<!-- <td width="200" *ngIf="!isParticipant">
+										<ng-select class="" [searchable]="true" [(ngModel)]="filterObject.SearchObject.role_id" name="role" #role="ngModel" [items]="roles" [bindLabel]="bindLabel" bindValue="id" placeholder="{{'USERS.LIST.ROLE' | translate}}">
+											<ng-template ng-option-tmp let-item="item">
+												<span [title]="item.name" class="ng-option-label">{{isArabic? item.role_name_ar : (item.role_name? item.role_name : item.role_name_ar)}}</span>
+											</ng-template>
+										</ng-select>
+									</td> -->
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i
+													class="la la-search"></i>{{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary m-btn--icon"
+												(click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET'
+												|translate}}</button>
+
+										</div>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc"
+					matSortDisableClear
+					class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+
+					<ng-container matColumnDef="name">
+						<th *matHeaderCellDef mat-sort-header>{{'USERS.LIST.USERNAME' | translate}}</th>
+						<td *matCellDef="let user">{{isArabic? (user.name_ar? user.name_ar : user.name) : (user.name?
+							user.name : user.name_ar)}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="email">
+						<th *matHeaderCellDef mat-sort-header>{{'USERS.LIST.EMAIL' | translate}}</th>
+						<td *matCellDef="let user">{{user.email}}</td>
+					</ng-container>
+					<ng-container matColumnDef="date_of_birth">
+						<th *matHeaderCellDef mat-sort-header>{{'STAKEHOLDER.LIST.DATEOFBIRTH' | translate}}</th>
+						<td *matCellDef="let user">{{user.date_of_birth}}</td>
+					</ng-container>
+					<ng-container matColumnDef="identity_number">
+						<th *matHeaderCellDef mat-sort-header>{{'STAKEHOLDER.LIST.IDENTITYNUMBER' | translate}}</th>
+						<td *matCellDef="let user">{{user.identity_number}}</td>
+					</ng-container>
+					<ng-container matColumnDef="share">
+						<th *matHeaderCellDef mat-sort-header>{{'STAKEHOLDER.LIST.SHARE_PLACEHOLDER' | translate}}</th>
+						<td *matCellDef="let user">{{user.share}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="actions">
+						<th *matHeaderCellDef>
+							{{'USERS.LIST.ACTIONS' | translate}}
+						</th>
+						<td *matCellDef="let user" class="mat-column-action">
+							<button type="button" (click)="edit(user.id)" *ngIf="editFlag"
+								class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+								matTooltip="{{'BUTTON.EDIT' | translate}}">
+								<i class="flaticon-edit-1"></i>
+							</button>
+							<button type="button"
+								*ngIf="(user.id != currentUser.id) && (user.is_active == 0 || user.is_active == null) && activeFlag"
+								(click)="activeDeactive(user,1)" class="btn btn-sky"
+								matTooltip="{{'BUTTON.ACTIVATE' | translate}}" [disabled]="!canDoAction">
+								<i class="fa fa-check"></i>
+							</button>
+
+							<button type="button"
+								*ngIf="(user.id != currentUser.id) && (user.is_active == 1 || user.is_active == null) && deActiveFlag"
+								(click)="activeDeactive(user,0)" class="btn btn-light-grey"
+								matTooltip="{{'BUTTON.DEACTIVATE' | translate}}" [disabled]="!canDoAction">
+								<i class="fa fa-ban"></i>
+							</button>
+
+							<button type="button" (click)="delete(user.id)"
+								*ngIf="user.id != currentUser.id && deleteFlag"
+								class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"
+								matTooltip="{{'BUTTON.DELETE' | translate}}">
+								<i class="flaticon-delete-2"></i>
+							</button>
+						</td>
+					</ng-container>
+
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+				</table>
+
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+			</div>
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+				</mat-paginator>
+			</div>
+		</div>
+
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

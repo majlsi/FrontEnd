@@ -1,0 +1,34 @@
+<ng-template #content let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{element.task_status_id == taskStatusEnum.NEW? ('MEETINGS.TASK.START.TITLE' | translate) : ('MEETINGS.TASK.END.TITLE' | translate)}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="resetFlags();d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form name="statusForm" #statusForm="ngForm" (ngSubmit)="save(statusForm); statusForm.valid && c('Save click');" novalidate>
+        <div class="form-group m-form__group">
+            <textarea name="commenttext" class="white-bg py-0 form-control m-input m-input--solid"
+				placeholder="{{'PRESENTATION.ADD_COMMENT'|translate}}"
+				[(ngModel)]="commenText" rows="3" [maxlength]="1000"></textarea>
+			<div class="error text-danger form-control-feedback"
+				*ngIf="commenText == 1000">
+				{{'PRESENTATION.VALIDATION.COMMENT_LENGTH'|translate}}</div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" mat-button type="submit" cdkFocusInitial >{{element.task_status_id == taskStatusEnum.NEW? ('BUTTON.START' | translate) : ('BUTTON.ENDTASK' | translate)}}
+                <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+            </button>
+            <button class="btn btn-secondary" mat-button (click)="resetFlags();d('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp; 
+        </div>
+    </form>
+</ng-template>
+
+<button type="button" (click)="open(content)" class="btn btn-light-grey" *ngIf="element.task_status_id == taskStatusEnum.NEW">
+    <i class="fas fa-stopwatch"></i>
+    &nbsp;{{'TASKS_MANAGEMENT.START_TASK' | translate}}
+</button>
+<button type="button" (click)="open(content)" class="btn btn-green" *ngIf="element.task_status_id == taskStatusEnum.INPROGRESS">
+    <i class="fas fa-check-double"></i>
+    &nbsp;{{'TASKS_MANAGEMENT.END_TASK' | translate}}
+</button>

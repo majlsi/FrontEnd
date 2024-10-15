@@ -1,0 +1,116 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<h3 class="m-portlet__head-text">
+			{{ "REQUEST.ADD.REQUESTDETAILS" | translate }}
+		</h3>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<div>
+			<button type="reset" (click)="redirect()" class="btn btn-secondary">
+				<span class="px-2">{{ "BUTTON.BACKTOREQUESTS" | translate }}</span>
+				<i class="fa fa-arrow-left"></i>
+			</button>
+		</div>
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+
+	<ng-container mPortletBody>
+		<!-- ! add commitee form-->
+		<div class="bg-white--content m--padding-15">
+			<div [hidden]="error.length == 0" *ngFor="let item of error" class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+				<span *ngFor="let field of item">
+					{{ isArabic ? field?.message_ar : field?.message ? field?.message : field?.message_ar }}
+				</span>
+			</div>
+			<form class="m-form m-form--fit m-form--label-align-right" novalidate #requestForm="ngForm" *ngIf="request.request_body" (ngSubmit)="save(requestForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "REQUEST.ADD.EVIDENCE_DOCUMENT" | translate }}</label>
+						<div class="bg-white d-flex align-items-center justify-content-between border shadow-sm rounded w-50" (click)="downloadEvidenceFile()">
+							<div class="m-widget24 d-flex py-3">
+								<div class="d-flex align-items-center px-3">
+									<span class="m--font-brand">
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'doc'" src="./assets/app/media/img/files/doc.svg" class="ng-star-inserted file-icon" alt="" />
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'image'" src="./assets/app/media/img/files/jpg.svg" class="ng-star-inserted file-icon" alt="" />
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'pdf'" src="./assets/app/media/img/files/pdf.svg" class="ng-star-inserted file-icon" alt="" />
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'ppt'" src="./assets/app/media/img/files/ppt.svg" class="ng-star-inserted file-icon" alt="" />
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'xls'" src="./assets/app/media/img/files/xls.svg" class="ng-star-inserted file-icon" alt="" />
+										<img *ngIf="checkFileType(request.evidence_document_url) == 'video'" src="./assets/app/media/img/files/mp4.svg" alt="mp4" class="ng-star-inserted file-icon" />
+									</span>
+								</div>
+								<div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+									<h3 class="m-widget24__title font-size-14 m-0 text-truncate color-title-dark font-weight-500" placement="top" ngbTooltip="{{ 'REQUEST.ADD.EVIDENCE_DOCUMENT' | translate }}">{{ "REQUEST.ADD.EVIDENCE_DOCUMENT" | translate }}</h3>
+									<!-- <span class="m-widget24__desc font-size-12 m-0">{{ formatBytes(file.file_size) }}</span> -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{ "REQUEST.ADD.START_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate" [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()" required />
+							<div class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('startDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="startDate.toggle(); endDate.close(); $event.stopPropagation()" (dateSelect)="startDate.close()" (document:click)="decideClosure($event, startDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(requestForm, 'startDate', 'required')">
+							{{ "COMMITTEES.VALIDATION.STARTDATE" | translate }}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{ "REQUEST.ADD.EXPIRED_DATE" | translate }}</label>
+						<div class="input-group">
+							<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate" [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" required />
+							<div class="input-group-append position-relative">
+								<span class="clear-input" (click)="clearDate('endDate')">
+									<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+								</span>
+								<button class="btn btn-outline-secondary calendar" (click)="endDate.toggle(); startDate.close(); $event.stopPropagation()" (dateSelect)="endDate.close()" (document:click)="decideClosure($event, endDate)" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(requestForm, 'endDate', 'required')">
+							{{ "COMMITTEES.VALIDATION.ENDDATE" | translate }}
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!isDateError">
+							{{ "COMMITTEES.VALIDATION.DATES" | translate }}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12">
+						<label>{{ "REQUEST.ADD.UNFREEZE_REQUEST_REASON" | translate }}</label>
+						<input type="textarea" readonly="true" placeholder="{{ 'REQUEST.ADD.UNFREEZEREQUESTREASON' | translate }}" class="form-control bg-secondary" id="requestReason" name="requestReason" [(ngModel)]="request?.request_body.reason" #requestReason="ngModel" required />
+					</div>
+				</div>
+				<br />
+				<div class="m-form__actions m-form__actions--solid" *ngIf="request.is_approved == null">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" [disabled]="submitted">
+								{{ "BUTTON.ACCEPT" | translate }}
+								<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+							</button>
+							<button type="button" class="btn btn-secondary" (click)="reject()">
+								{{ "BUTTON.REJECT" | translate }}
+							</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<!-- end: BOTTOM -->
+	</ng-container>
+</m-portlet>

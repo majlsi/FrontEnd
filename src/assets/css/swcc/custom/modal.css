@@ -1,0 +1,124 @@
+ngb-modal-backdrop.modal-backdrop.fade.show.noBackdrop {
+	display: none;
+}
+
+.tour-modal .tutorial-modal {
+	/* height: 0; */
+	transition: height .3s ease-in-out;
+}
+
+.tour-modal .scrollable-x {
+	max-width: 100%;
+	overflow-y: visible;
+	overflow-x: auto;
+	-webkit-overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+/* .tour-modal .tutorial-modal.height-changed {
+	height: 450px;
+	transition: height .3s ease-out;
+} */
+
+.tour-modal .hover-btns .btn-outline-danger {
+    border-color: #f07c12!important;
+    color: #f07c12!important;
+}
+.tour-modal .hover-btns .btn-outline-danger:hover {
+	background: #f6861f!important;
+    border: 1px solid #f07c12!important;
+}
+.tour-modal .hover-btns {
+	display: flex;
+}
+.tour-modal .close {
+    color: #fff!important;
+}
+
+.tour-modal .modal-dialog {
+	position: absolute;
+	right: 10px;
+	bottom: 75px;
+	display: flex;
+	align-items: flex-end;
+	width: 340px;
+}
+
+.tour-modal .modal-dialog .modal-header {
+	background-color: #004c86 !important;
+	color: #fff;
+	padding: 18px 25px 15px;
+}
+
+.tour-modal .modal-dialog .modal-header h4 {
+	font-size: 15px!important;
+	font-weight: 600!important;
+	padding: 0 8px;
+}
+
+.tour-modal .modal-dialog .modal-header img {
+	width: 22px;
+}
+
+.tour-modal .modal-dialog .modal-body {
+	padding: 10px 25px;
+	max-height: 380px;
+}
+
+.tour-modal .tour-modal .modal-dialog .automation-center.m-portlet .m-portlet__body {
+	background-color: transparent;
+	min-height: 30vh;
+	padding: 0;
+}
+
+.tour-modal .tour-modal .modal-dialog .m-portlet__head.m-portlet__head--fit {
+	display: none;
+}
+.tour-modal .enz-card {
+    box-shadow: 0px 1px 3px #e9e9e9;
+    margin-bottom: 10px;
+    position: relative;
+}
+.tour-modal .automation-center.m-portlet .enz-card {
+	cursor: pointer;
+	min-height: 220px;
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: #ffffff;
+}
+
+.tour-modal .tutorials-cards {
+	flex-direction: column;
+	padding-top: 6px!important;
+}
+
+.tour-modal .tutorials-cards h2 {
+	display: none;
+}
+
+.tour-modal .tutorial-card:hover .hover-btns {
+	opacity: 1;
+}
+
+.tour-modal .tutorial-card h4 {
+	font-size: 1rem;
+}
+
+.tour-modal .tutorial-card h4 {
+	max-width: 100%;
+    margin-bottom: 0 !important;
+    padding: 0;
+}
+
+.tour-modal .tutorial-card p {
+	display: none;
+}
+
+
+.tour-modal .modal-dialog .tutorials-cards .tutorial-card {
+    max-width: 100%;
+    margin-bottom: 0 !important;
+    padding: 0;
+}

@@ -1,0 +1,125 @@
+<div class="signature-modal">
+	<div class="modal-header">
+
+		<h4 class="modal-title text-center" id="modal-basic-title">{{'SIGNATURE.ADD_COMMENT' | translate}}</h4>
+		<button type="button" [disabled]="submitted" class="close" aria-label="Close"
+			(click)="activeModal.close('Close click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body pt-2" [ngClass]="{'style-ltr': lang == 'en' }">
+		<ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs" (navChange)="changeTab($event)">
+			<li [ngbNavItem]="signatureTypeEnum.DRAW">
+				<button ngbNavLink>{{'SIGNATURE.DRAW' | translate}}</button>
+				<ng-template ngbNavContent>
+					<div class="signature-form">
+						<div class="form-group m-form__group ">
+							<div class="signature-card">
+								<signature-pad (onBeginEvent)="drawStart()" [options]="signaturePadOptions">
+								</signature-pad>
+								<button (click)="clear()" class="clearBTN btn btn-dark stick">{{'SIGNATURE.CLEAR' |
+									translate}}</button>
+							</div>
+							<h4 class="m--font-danger" *ngIf="hasEmptySign && !drawStarted">
+								{{'SIGNATURE.VALIDATIONS.SINGNTURE' | translate}}</h4>
+						</div>
+					</div>
+				</ng-template>
+			</li>
+			<li [ngbNavItem]="signatureTypeEnum.UPLOAD">
+				<button ngbNavLink>{{'SIGNATURE.UPLOAD' | translate}}</button>
+				<ng-template ngbNavContent>
+					<div class="upload-img-container d-flex justify-content-center align-items-center mb-5">
+						<img class="uploaded-img" [src]="localUrl" *ngIf="localUrl">
+						<div class="upload-button" *ngIf="!localUrl">
+							<input type="file" class="custom-file-input" accept="image/*"
+								(change)="showPreviewImage($event)">
+							<span class="btn btn-dark upload-btn">{{'SIGNATURE.UPLOAD_SIGNATURE' | translate}} <img
+									src="assets/app/media/img/signature/upload.png"></span>
+						</div>
+						<button *ngIf="localUrl" class="clearBTN btn btn-dark stick"
+							(click)="clearImage()">{{'SIGNATURE.CLEAR' | translate}}</button>
+					</div>
+
+					<h4 class="m--font-danger" *ngIf="hasEmptyUpload">
+						{{'SIGNATURE.VALIDATIONS.SINGNTURE_UPLOAD' | translate}}
+					</h4>
+					<h4 class="m--font-danger" *ngIf="signatureUploadTypeError">
+						{{'SIGNATURE.VALIDATIONS.SINGNTURE_UPLOAD_TYPE' | translate}}
+					</h4>
+				</ng-template>
+			</li>
+			<li [ngbNavItem]="signatureTypeEnum.TYPE">
+				<button ngbNavLink>{{'SIGNATURE.TYPE' | translate}}</button>
+				<ng-template ngbNavContent>
+					<div class="type-tab mb-5">
+						<div class="signature-form">
+							<div class="form-group">
+
+								<label>{{'SIGNATURE.YOUR_NAME' | translate}}</label>
+								<input type="text" [(ngModel)]="signatureByType" class="form-control"
+									(ngModelChange)="startTyping()">
+							</div>
+							<div
+								class="mt-3 upload-img-container small d-flex justify-content-between align-items-center">
+
+								<canvas #myCanvas class="fontLoad">
+								</canvas>
+								<button class="btn btn-dark style-btn align-self-start stick"
+									(click)="changeFont()">{{'SIGNATURE.CHANGE_STYLE' | translate}}</button>
+							</div>
+						</div>
+					</div>
+					<h4 class="m--font-danger" *ngIf="hasEmptyType">
+						{{'SIGNATURE.VALIDATIONS.SINGNTURE_TYPE' | translate}}
+					</h4>
+				</ng-template>
+			</li>
+			<li [ngbNavItem]="signatureTypeEnum.SAVEDSIGNATURE">
+				<button ngbNavLink>{{'SIGNATURE.SAVED_SIGNATURE' | translate}}</button>
+				<ng-template ngbNavContent>
+					<div class="signature-form mb-5">
+						<div *ngIf="userSignatures.length == 0"
+							class="upload-img-container no-border d-flex flex-column justify-content-center align-items-center">
+							<div class="icon d-flex justify-content-center align-items-center"><img
+									src="assets/app/media/img/signature/contract.png"></div>
+							<p class="mt-3">{{'SIGNATURE.DONT_HAVE_SIGNATURE' | translate}}</p>
+						</div>
+						<div *ngIf="userSignatures.length > 0"
+							class="upload-img-container no-border d-flex justify-content-center flex-wrap scrollable">
+							<img *ngFor="let item of userSignatures" class="signature-img"
+								[ngClass]="{'selected-signature-img':  item.UserSignatureID == selectedItemId}"
+								[src]="item.SignatureValue"
+								(click)="setSignatureValueUrl(item.SignatureValue ,item.UserSignatureID)">
+						</div>
+
+					</div>
+					<h4 class="m--font-danger" *ngIf="hasEmptyChoice">
+						{{'SIGNATURE.VALIDATIONS.SINGNTURE_CHOICE' | translate}}
+					</h4>
+				</ng-template>
+			</li>
+		</ul>
+		<div [ngbNavOutlet]="nav" class="mt-2"></div>
+		<div class="signature-form">
+			<div class="form-group mt-3">
+				<label>{{'SIGNATURE.ADD_COMMENT' | translate}}</label>
+				<textarea class="form-control" [(ngModel)]="signComment"></textarea>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer justify-content-between">
+		<button type="button" [disabled]="submitted" class="btn btn-outline-dark btn-lg"
+			(click)="activeModal.close('Close click')">{{'SIGNATURE.CANCEL' | translate}} <i
+				class="fa fa-times"></i></button>
+		<div class="left-buttons">
+			<button type="button" [disabled]="submitted" class="btn btn-primary btn-lg mx-3" (click)="submit(false)">
+				{{'SIGNATURE.SIGN' | translate}} <i class="fa fa-check"></i></button>
+			<button type="button" [disabled]="submitted" [hidden]="activeTab == signatureTypeEnum.SAVEDSIGNATURE"
+				class="btn btn-primary btn-lg" (click)="submit(true)"> {{'SIGNATURE.SIGN_AND_SAVE' | translate}} <i
+					class="fa fa-check"></i></button>
+		</div>
+
+	</div>
+
+</div>

@@ -1,0 +1,25 @@
+<div class="modal-header py-3 d-flex align-items-center">
+  <h2 class="modal-title font-size-24 font-weight-500 color-title-dark">{{'FILES.ADDDIRECTORY'|translate}}</h2>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form  novalidate #addForm="ngForm">
+  <div class="modal-body">
+
+    <div class="form-group pt-4">
+      <input type="text" class="form-control" [(ngModel)]="directory_name" id="newFolderName" name="directory_name"
+        aria-describedby="emailHelp" placeholder="{{'FILES.DIRECTORYNAME'|translate}}" required>
+        <div class="error text-danger form-control-feedback"
+        [hidden]="!hasError(addForm,'directory_name', 'required')">
+        {{'FILES.DIRECTORYNAME_REQUIRED' | translate}}
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary px-5" (click)="save(addForm)">{{'FILES.ADD'|translate}}</button>
+    <button type="button" class="btn bg-secondary px-5"
+      (click)="activeModal.dismiss('Close click')">{{'FILES.CANCEL'|translate}}</button>
+  </div>
+
+</form>

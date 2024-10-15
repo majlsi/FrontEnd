@@ -1,0 +1,135 @@
+.advanced-pie-legend .legend-items-container .legend-items .legend-item {
+    margin-right: 0px!important;
+    display: block!important;
+    cursor: pointer;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-color {
+    border-left-width: 30px!important;
+    width: 30px!important;
+    height: 6px!important;
+    float: right!important;
+    margin-right: 0px!important;
+    border-radius: 40px;
+}
+
+.advanced-pie-legend .total-value, .advanced-pie-legend .total-label,
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
+	display: none!important;
+}
+
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-label,
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    display: inline-block;
+}
+
+
+.advanced-pie {
+    display: inline-block;
+    float: right!important;
+}
+
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    font-size: 14px!important;
+	font-weight: 500;
+	margin-right: -28px;
+	margin-top: 10px;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-label {
+    font-size: 14px;
+    opacity: .7;
+    margin-right: 10px;
+    margin-top: 7px;
+	margin-bottom: 10px;
+}
+
+.ngx-charts-advanced-pie-chart-col{
+	overflow: hidden;
+    position: relative;
+    height: 100%;
+	min-height: 235px;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend .advanced-pie-legend-wrapper{
+    display: none !important;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend  ngx-charts-advanced-pie-chart{
+    margin-right: -300px;
+}
+.ngx-charts-advanced-pie-chart-col-sm {
+    min-height: 150px;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+    top: 90px;
+    left: 140px;
+    position: absolute;
+}
+
+ngx-charts-advanced-pie-chart {
+    position: absolute;
+    right: 0;
+}
+
+.advanced-pie-legend-wrapper {
+    display: inline-block;
+    left: 15px;
+    position: absolute;
+}
+
+.m-widget17 .m-widget17__stats .m-widget17__items .m-widget17__item {
+	box-shadow: none;
+    margin-top: 0;
+}
+
+.grey-blue{
+	color: #868AA8;
+}
+
+ngx-charts-bar-vertical-2d .chart-legend {
+    display: block;
+    position: absolute;
+    top: 00;
+}
+ngx-charts-bar-vertical-2d .chart-legend > div,
+ngx-charts-bar-vertical-2d .chart-legend .legend-wrap  {
+	width: auto!important;
+}
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-label {
+    display: inline-block;
+}
+
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-title{
+	display: none;
+}
+
+ngx-charts-bar-vertical-2d .ngx-charts {
+    position: absolute;
+    left: 0;
+    top: 30px;
+}
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-labels {
+    background: transparent!important;
+}
+@media(max-width: 1024px){
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        left:20%;
+    }
+}
+@media(max-width: 768px){
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        left:29%;
+    }
+}
+@media(max-width: 440px){
+    .ngx-charts-advanced-pie-chart-col.no-legend ngx-charts-advanced-pie-chart {
+        margin-right: -350px;
+    }
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        left:37%;
+    }
+}

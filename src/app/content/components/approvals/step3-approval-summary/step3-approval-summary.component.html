@@ -1,0 +1,74 @@
+<div class="px-4">
+    <div class="form-group m-form__group row pt-2 mb-2">
+        <div class="col-lg-12 mb-3">
+            <label>{{'APPROVAL.ADD.APPROVAL_CREATOR' | translate}}</label>
+            <div class="font-weight-500 rounded bg-light px-3 form-control border lh-1 py-0 cursor-not-allowed">
+                {{isArabic? (approval?.created_by_obj?.name_ar? approval?.created_by_obj?.name_ar :
+                approval?.created_by_obj?.name) : (approval?.created_by_obj?.name? approval?.created_by_obj?.name
+                :approval?.created_by_obj?.name_ar)}}
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-form__group row pt-0 mb-2">
+        <div class="col-lg-12 mb-3">
+            <label>{{'APPROVAL.ADD.FILE' | translate}}
+            </label>
+            <div class="agenda__items m-widget4 meeting-attachments__cont">
+                <div class="m-widget4__item align-items-center">
+                    <div class="m-widget4__img m-widget4__img--icon pl-2">
+                        <img src="./assets/app/media/img/icons/pdf.png" alt="">
+                    </div>
+                    <div class="m-widget4__info">
+                        <span class="m-widget4__text">
+                            {{approval?.attachment_name}}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group m-form__group row pt-0 mb-2">
+        <div class="col-lg-12 mb-3">
+            <label>{{'APPROVAL.ADD.ADD_DATE' | translate}}
+            </label>
+            <div class="font-weight-500 rounded bg-light px-3 form-control border lh-1 py-0 cursor-not-allowed">
+                {{approval?.created_at | date: 'd MMMM y, h:mm a'}}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group m-form__group row pt-0">
+        <div class="col-12">
+            <label>{{'APPROVAL.ADD.APPROVAL_MEMBERS' | translate}}
+            </label>
+            <div class="font-weight-500 rounded bg-light px-3 form-control border lh-1 py-0 cursor-not-allowed">
+                <div class="d-inline bg-light py-2 px-4 font-weight-500" *ngFor="let item of approval?.members">
+                    {{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name :item.name_ar)}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    
+	<div class="m-form__actions m-form__actions--solid pb-1">
+		<div class="row pb-4 mb-2 pt-3">
+			<div class="d-flex justify-content-start">
+
+                <button type="submit" class="btn btn-primary mx-3 pl-2" (click)="redirect()">
+                    {{'BUTTON.SEND' | translate}}
+                    <i [ngClass]="isArabic ? 'fa fa-chevron-left' : 'fa fa-chevron-right'" class="ml-1"></i>
+                </button>
+
+                <button type="reset" (click)="back()" class="btn btn-secondary">
+                    {{'GENERAL.Back' | translate}}
+                </button>
+
+			</div>
+		</div>
+	</div>
+
+   
+   
+</div>

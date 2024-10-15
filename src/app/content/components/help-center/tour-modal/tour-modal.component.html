@@ -1,0 +1,40 @@
+
+<div class="tutorial-modal" [ngClass]="{'height-changed': changeHeight}">
+    <div class="modal-header border-none">
+		<img src="./assets/app/media/img/icons/contact_support.png" alt="Help center icon" srcset="">
+        <h4 class="modal-title text-white">{{'HELP_CENTER.TITLE' | translate}}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="closeTour(true)">
+            <span aria-hidden="true" ><&times;></span>
+        </button>
+    </div>
+    <div class="modal-body scrollable-x">
+
+		<div class="row m-0 tutorials-cards pt-3">
+			<div class="tutorial-card col-lg-4 mb-3" *ngFor="let videosGuide of videosGuides">
+				<div class="enz-card p-2 mh-auto " (click)="openTutorial(videosGuide)">
+					<div class="d-flex h-100">
+						<div class="d-flex  align-items-center justify-content-center tutorial-icon">
+							<i *ngIf="videosGuide?.video_icon?.video_icon_url" class="{{videosGuide?.video_icon?.video_icon_url}}"></i>
+						</div>
+						<div class="tutorial-info p-3">
+							<h4 class="m--font-bolder">{{isArabic? videosGuide.video_name_ar : (videosGuide.video_name_en? videosGuide.video_name_en : videosGuide.video_name_ar)}}</h4>
+						</div>
+						<span>
+						</span>
+					</div>
+
+				</div>
+				<div class="hover-btns" *ngIf="videosGuide.video_url || videosGuide.tutorial_step_tag">
+					<button class="btn btn-outline-danger  btn-sm m-btn--icon  m-btn--outline-2x m-btn--pill" (click)="openTutorial(videosGuide)" *ngIf="videosGuide.video_url">
+						<i class="la la-play"></i> {{'HELP_CENTER.VIDEOS.VIDEOBTN' | translate}}</button>
+					<button  class="btn btn-outline-danger  btn-sm m-btn--icon m-btn--outline-2x m-btn--pill" (click)="startTour(videosGuide)" *ngIf="videosGuide.tutorial_step_tag">
+						<i class="la la-flag"></i> {{'HELP_CENTER.VIDEOS.GUIDEBTN' | translate}}</button>
+				</div>
+			</div>
+		</div>
+    </div>
+
+	<div *ngIf="haveFaq" class="modal-footer">
+		<button  class="btn btn-block btn-default" mat-button (click)="goToFaqs()">{{'HELP_CENTER.FAQS.TITLE' | translate}}</button>&nbsp;
+	</div>
+</div>

@@ -1,0 +1,105 @@
+<div class="bg-white--cont ent tabs Wrabber">
+	<div class="px-lg-0 px-3">
+		<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc"
+			matSortDisableClear
+			class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table meeting-table">
+			<!--class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table"> -->
+			<!--- Note that these columns can be defined in any order.
+	The actual rendered columns are set as a property on the row definition" -->
+			<!-- Meeting Title Column -->
+			<ng-container [matColumnDef]="isArabic? 'committee_name_ar' : 'committee_name_en'">
+				<th mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header>
+					{{'MEETINGS.LIST.MEETINGCOMMITTEE' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting" mat-cell>
+					{{isArabic? meeting.committee_name_ar : (meeting.committee_name_en? meeting.committee_name_en : meeting.committee_name_ar)}}
+				</td>
+			</ng-container>
+			<ng-container [matColumnDef]="isArabic? 'meeting_title_ar' : 'meeting_title_en'">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.LIST.TITLE' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting">
+					{{isArabic? (meeting.meeting_title_ar? meeting.meeting_title_ar : meeting.meeting_title_en) : (meeting.meeting_title_en? meeting.meeting_title_en : meeting.meeting_title_ar)}}
+				</td>
+			</ng-container>
+			<ng-container matColumnDef="meeting_code">
+				<th mat-header-cell *matHeaderCellDef>{{'MEETINGS.LIST.MEETINGCODE' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting">{{meeting.meeting_code}}</td>
+			</ng-container>
+			<ng-container [matColumnDef]="isArabic? 'meeting_venue_ar' : 'meeting_venue_en'">
+				<th mat-header-cell *matHeaderCellDef>{{'MEETINGS.LIST.VENUE' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting">
+					<i class="fa fa-map-marker-alt d-lg-none"></i>
+					{{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en) : (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
+				</td>
+			</ng-container>
+
+			<ng-container matColumnDef="meeting_schedule_from">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.LIST.SCHEDULE' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting">
+					<i class="fa fa-calendar d-lg-none"></i>
+					{{meeting.meeting_schedule_from | date: 'dd/MM/yyyy HH:mm'}} -
+					{{meeting.meeting_schedule_to  | date: 'dd/MM/yyyy HH:mm'}}</td>
+			</ng-container>
+			<ng-container [matColumnDef]="isArabic ? 'meeting_status_name_ar' : 'meeting_status_name_en'">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header>
+					{{'MEETINGS_DASHBOARD.LIST.MEETING_STATUS' | translate}}</th>
+				<td mat-cell *matCellDef="let meeting">
+				<div class="d-flex align-item-center">
+					<span class="mx-2 mt-0 my-auto m-badge m-badge--wide" [ngClass]="{'m-badge--success': meeting.meeting_status_id == meetingStatuses.STARTED ,
+											'm-badge--warning': meeting.meeting_status_id == meetingStatuses.DRAFT,
+											'm-badge--danger' : meeting.meeting_status_id == meetingStatuses.CANCELED,
+											'm-badge--accent': (meeting.meeting_status_id == meetingStatuses.PUBLISHED || meeting.meeting_status_id == meetingStatuses.AGENDAPUBLISHED),
+											'm-badge--metal': meeting.meeting_status_id == meetingStatuses.ENDED
+											}" ng-reflect-klass="mx-2 mt-0 mb-4 m-badge m-badge" ng-reflect-ng-class="[object Object]">
+						{{isArabic? meeting.meeting_status_name_ar : (meeting.meeting_status_name_en? meeting.meeting_status_name_en : meeting.meeting_status_name_ar)}}
+					</span>
+
+					<button type="button"
+					(click)="$event.stopPropagation();"
+					*ngIf="meeting.current_presentation_id"
+					[routerLink]="['/meetings/' + meeting.id +
+					'/meeting_agenda/' + meeting.meeting_agenda_id +
+					'/attachments/' + meeting.current_presentation_id]"
+						class="btn m-widget4__icon btn-white-primary-text m-btn m-btn--icon m-btn--outline-2x"
+						matTooltip="{{'PRESENTATION.JOIN_PRESENTATION' | translate}}">
+						<!-- <img src="./assets/app/media/img/icons/microsoft_teams.png" alt="" width="20"> -->
+						<i class="fa fa-play"></i>
+					</button>
+				</div>
+				</td>
+			</ng-container>
+
+
+			<!-- actions Column -->
+			<!-- <ng-container matColumnDef="actions"
+			>
+				<th mat-header-cell *matHeaderCellDef mat-sort-header  >
+					{{'GENERAL.ACTIONS' | translate}}
+				</th>
+				<td *matCellDef="let meeting"   mat-cell (click)="$event.stopPropagation();">
+					<button  class="btn m-widget4__icon btn-white-primary-text"
+					[hidden]="!meeting.current_presentation_id"
+					[routerLink]="['/meetings/' + meeting.id +
+			'/meeting_agenda/' + meeting.meeting_agenda_id +
+			'/attachments/' + meeting.current_presentation_id]">
+						{{'PRESENTATION.JOIN_PRESENTATION' | translate}}
+					</button>
+
+
+				</td>
+			</ng-container> -->
+
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewFlag && viewMeeting(row.id)"></tr>
+		</table>
+
+		<div class="mat-table__message" *ngIf="dataSourceLength">
+			{{'GENERAL.NORECORDSFOUND' | translate}}
+		</div>
+	</div>
+	<!-- start: BOTTOM -->
+	<div class="mat-table__bottom">
+		<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+		<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+		</mat-paginator>
+	</div>
+</div>

@@ -1,0 +1,324 @@
+<!-- <p>
+  secertary-dashboard works!
+</p> -->
+<!--Begin::Section-->
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				<img *ngIf="organizationId"alt="" class="m--img-rounded m--marginless m--img-centered" [src]="image_url" style="width: 50px;height: 50px;">
+
+					{{organizationId? (isArabic? (organization.organization_name_ar? organization.organization_name_ar : organization.organization_name_en) : (organization.organization_name_en? organization.organization_name_en : organization.organization_name_ar)) : ("DASHBOARD.DASHBOARD" | translate) }}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<!-- <div class="bg-white--content">
+
+				<div class="row m-row--no-padding m-row--col-separator-xl">
+						<div class="col-md-12 col-lg-6 col-xl-3">
+							<div class="m-widget24">
+								<div class="m-widget24__item">
+									<h4 class="m-widget24__title">
+													الإجتماعات
+
+									</h4><br>
+									<span class="m-widget24__desc">
+											مجموع الإجتماعات المنشئة
+									</span>
+									<span class="m-widget24__stats m--font-brand">
+										$18M
+									</span>
+									<div class="m--space-10"></div>
+									<div class="m--space-10"></div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12 col-lg-6 col-xl-3">
+
+							<div class="m-widget24">
+								<div class="m-widget24__item">
+									<h4 class="m-widget24__title">
+											مكتبة الملفات
+									</h4><br>
+									<span class="m-widget24__desc">
+											مجموع الملفات
+									</span>
+									<span class="m-widget24__stats m--font-info">
+										1349
+									</span>
+									<div class="m--space-10"></div>
+									<div class="m--space-10"></div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-12 col-lg-6 col-xl-3">
+							<div class="m-widget24">
+								<div class="m-widget24__item">
+									<h4 class="m-widget24__title">
+										اللجان
+									</h4><br>
+									<span class="m-widget24__desc">
+											مجموع لجان المنظمة
+									</span>
+									<span class="m-widget24__stats m--font-danger">
+										567
+									</span>
+									<div class="m--space-10"></div>
+									<div class="m--space-10"></div>
+								</div>
+							</div>
+
+						</div>
+						<div class="col-md-12 col-lg-6 col-xl-3">
+							<div class="m-widget24">
+								<div class="m-widget24__item">
+									<h4 class="m-widget24__title">
+											المستخدمين
+									</h4><br>
+									<span class="m-widget24__desc">
+											مجموع المستخدمين
+									</span>
+									<span class="m-widget24__stats m--font-success">
+										276
+									</span>
+									<div class="m--space-10"></div>
+									<div class="m--space-10"></div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+		</div> -->
+			<div class="bg-white--content">
+
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-4">
+
+
+					<div class="m-widget1">
+						<div class="m-widget1__item">
+							<div class="row m-row--no-padding align-items-center">
+								<div class="col">
+									<h3 class="m-widget1__title">
+										{{ "DASHBOARD.MEETINGS" | translate }}
+
+									</h3>
+									<span class="m-widget1__desc">
+
+										{{ "DASHBOARD.NUMOFMEETINGS" | translate }}
+
+									</span>
+								</div>
+								<div class="col m--align-right">
+									<span class="m-widget1__number m--font-brand">+{{numOfMeetings}}</span>
+								</div>
+							</div>
+						</div>
+					<!-- 	<div class="m-widget1__item">
+							<div class="row m-row--no-padding align-items-center">
+								<div class="col">
+									<h3 class="m-widget1__title">
+										مكتبة الملفات
+									</h3>
+									<span class="m-widget1__desc">
+										مجموع الملفات الموجودة في مكتبة الملفات
+									</span>
+								</div>
+								<div class="col m--align-right">
+									<span class="m-widget1__number m--font-danger">+90</span>
+								</div>
+							</div>
+						</div> -->
+						<div class="m-widget1__item">
+							<div class="row m-row--no-padding align-items-center">
+								<div class="col">
+									<h3 class="m-widget1__title">
+
+										{{ "DASHBOARD.COMMITTEES" | translate }}
+
+									</h3>
+									<span class="m-widget1__desc">
+										{{ "DASHBOARD.COMMITTEES_NUMBER" | translate }}
+
+									</span>
+								</div>
+								<div class="col m--align-right">
+									<span class="m-widget1__number m--font-success">+{{numOfCommittees}}</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="m-widget1__item">
+							<div class="row m-row--no-padding align-items-center">
+								<div class="col">
+									<h3 class="m-widget1__title">
+
+										{{ "DASHBOARD.USERS" | translate }}
+
+									</h3>
+									<span class="m-widget1__desc">
+											{{ "DASHBOARD.USERS_NUMBER" | translate }}
+
+									</span>
+								</div>
+								<div class="col m--align-right">
+									<span class="m-widget1__number m--font-info">+{{numOfUsers}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col-xl-4" style='direction:ltr;'>
+
+					<!--begin:: Widgets/Daily Sales-->
+					<div class="m-widget14">
+						<div class="m-widget14__header">
+							<h3 class="m-widget14__title">
+								{{ 'DASHBOARD.USERS_STATISTICS' | translate}}
+							</h3>
+							<span class="m-widget14__desc">
+
+								{{ 'DASHBOARD.ACTIVE_INACTIVE_USERS' | translate}}
+
+							</span>
+						</div>
+						<div class="row align-items-center m-widget14__chart">
+								<div class="col ngx-charts-advanced-pie-chart-col">
+									<ngx-charts-advanced-pie-chart [view]='view'
+									[results]="isArabic? userStatisticsAr : userStatisticsEn"
+									[scheme]="{ domain: [ '#30E07B', '#E75691', '#00C0FF', '#5D6A75' ,'#e299bf' ] }">
+									</ngx-charts-advanced-pie-chart>
+
+
+									<img *ngIf="isNoUsers" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;"  alt="Logo">
+
+
+								</div>
+
+							</div>
+					</div>
+
+					<!--end:: Widgets/Daily Sales-->
+				</div>
+				<div class="col-xl-4" style='direction:ltr;'>
+
+					<!--begin:: Widgets/Profit Share-->
+					<div class="m-widget14">
+						<div class="m-widget14__header">
+							<h3 class="m-widget14__title">
+								{{ 'DASHBOARD.MEETING_STATISTICS' | translate}}
+							</h3>
+							<span class="m-widget14__desc">
+
+								{{ 'DASHBOARD.MEETINGS_STATISTICS_DESC' | translate}}
+
+
+							</span>
+						</div>
+						<div class="row align-items-center m-widget14__chart">
+							<div class="col ngx-charts-advanced-pie-chart-col">
+								<ngx-charts-advanced-pie-chart [view]='view'
+								[results]="isArabic? meetingStatisticsAr : meetingStatisticsEn"
+								[scheme]="{ domain: [ '#30E07B', '#E75691', '#00C0FF', '#5D6A75' ,'#e299bf'] }">
+								</ngx-charts-advanced-pie-chart>
+
+								<img *ngIf="isNoMeetings" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;" alt="Logo">
+
+								<!-- <ngx-charts-chart
+								[view]="[width, height]"
+								[showLegend]="false"
+								[animations]="animations">
+								<svg:g [attr.transform]="transform" class="line-chart chart">
+									<svg:g>
+									<svg:g *ngFor="let series of results; trackBy:trackBy">
+										<svg:g ngx-charts-line-series
+										[xScale]="xScale"
+										[yScale]="yScale"
+										[colors]="colors"
+										[data]="series"
+										[activeEntries]="activeEntries"
+										[scaleType]="scaleType"
+										[curve]="curve"
+										[rangeFillOpacity]="rangeFillOpacity"
+										[animations]="animations"
+										/>
+									</svg:g>
+									</svg:g>
+								</svg:g>
+								</ngx-charts-chart> -->
+
+
+
+							</div>
+
+						</div>
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+			<div class="bg-white--content m--padding-15">
+				<div class='row'>
+					<div class='col'>
+							<h4 class="m-portlet__head-text mb-4">
+									{{'DASHBOARD.CALENDAR' | translate}}
+								</h4>
+					</div>
+
+				</div>
+
+				<div *ngIf="options">
+					<full-calendar #fullcalendar [options]="options" [(eventsModel)]="events"
+						(eventClick)="eventClick($event.detail)" (eventDrop)="updateEvent($event.detail)"
+						(eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"
+						(eventRender)="eventrender($event.detail)"
+						(eventMouseOver)="mouseOver($event.detail)" (eventMouseOut)="mouseOut($event.detail)">
+					</full-calendar>
+				</div>
+
+			<!-- 	<ng-container *ngIf="isHidden" #calendarPopover>
+					<h1>Heba</h1>
+				</ng-container> -->
+				<div class="d-flex align-items-center pb-4 mt-4">
+					<div class="m-widget14__legends d-flex flex-wrap">
+
+
+						<div class="m-widget14__legend col" *ngFor="let meetingStatus of meetingStatuses">
+							<span class="m-widget14__legend-bullet " [ngStyle]="{'background-color':meetingStatus.color}"></span>
+							<span class="m-widget14__legend-text">
+
+								{{isArabic? meetingStatus.meeting_status_name_ar : (meetingStatus.meeting_status_name_en? meetingStatus.meeting_status_name_en : meetingStatus.meeting_status_name_ar)}}
+
+							</span>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- end: BOTTOM -->
+		</ng-container>
+
+
+		<!-- end::Body -->
+</m-portlet>
+<!--End::Section-->

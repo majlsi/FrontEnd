@@ -1,0 +1,227 @@
+<div #voteErr class="m--padding-15 m--padding-top-0">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>
+                {{'MEETINGS.VOTE.GENERAL.ADDVOTEITEM' | translate}}
+            </h3>
+        </div>
+        <div class="col-lg-6 text-right card-header-action">
+            <button class="btn btn-light-grey title-action-btn" (click)="appendNewVote()" [hidden]="!canEditMeeting">
+                <i class="fa fa-plus"></i>
+                {{'MEETINGS.VOTE.ADD.ADDVOTE' | translate}}
+            </button>
+        </div>
+    </div>
+    <div [hidden]="agendas?.length !== 0"
+        class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+        {{'MEETINGS.VOTE.VALIDATION.AGENDASERROR' | translate}}
+    </div>
+    <div class="mat-table__wrapper mat-table__message" *ngIf="votes?.length == 0">
+        {{'MEETINGS.VOTE.ADD.NORECORDSFOUND' | translate}}</div>
+    <div [hidden]="agendaVotesError.length == 0"
+        class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+        <p>
+            {{agendaVotesError}}
+        </p>
+    </div>
+    <form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate #votesForm="ngForm"
+        (ngSubmit)="save(votesForm)">
+
+        <div class="card card-row" *ngFor="let vote of votes; let i = index; trackBy: trackFunction"
+            [attr.data-index]="i">
+            <div class="card-header p-b-0" id="restaurantChoice.id-header" role="tab">
+                <h5 class="mb-0">
+                    <div class="form-gro up m-form__g roup row no-pad">
+                        <div class="col-lg-12">
+                            <span class="m-list-timeline__time">
+                                <span class="m-menu__link-badge">
+                                    <span class="m-badge m-badge--btn editBadge deleteBadge" (click)="removeVote(i)"
+                                        [hidden]="!canEditMeeting">
+                                        <i class="la la-trash"></i>
+                                    </span>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </h5>
+
+                <div class="row m-b-15">
+                    <div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid">
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+                            <label for="relatedAgendaItem" class="col-lg-2 col-form-label">
+                                {{'MEETINGS.VOTE.ADD.RELATEDAGENDAITEM' | translate}}
+                                &nbsp;<span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <ng-select [items]="agendas" (change)="autoFillVoteSubject(vote,vote.agenda_id,i)"
+                                    placeholder="{{'MEETINGS.VOTE.ADD.RELATEDAGENDAITEM' | translate}}"
+                                    [bindLabel]="agendabindLabel" bindValue="id" name="{{'agenda'+i}}"
+                                    [searchable]="true" [clearable]="false" [(ngModel)]="vote.agenda_id" required
+                                    [disabled]="!canEditMeeting">
+                                    <ng-template ng-label-tmp let-item="item">
+                                        {{isArabic? (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en)
+                                        : (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <span [title]="item.name" class="ng-option-label">{{isArabic?
+                                            (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en) :
+                                            (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}</span>
+                                    </ng-template>
+                                </ng-select>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(votesForm,'agenda'+i, 'required')">
+                                    {{'MEETINGS.VOTE.VALIDATION.RELATEDAGENDAITEM' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+                            <label for="DECISION_TYPE" class="col-lg-2 col-form-label">
+                                {{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}
+                                &nbsp;<span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <ng-select [items]="decisionTypes"
+                                    placeholder="{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}"
+                                    [bindLabel]="decisionTypeBindLabel" bindValue="id" name="{{'decision_type'+i}}"
+                                    [searchable]="true" [clearable]="false" [(ngModel)]="vote.decision_type_id" required
+                                    [disabled]="!canEditMeeting">
+                                    <ng-template ng-label-tmp let-item="item">
+                                        {{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar :
+                                        item.decision_type_name_en) : (item.decision_type_name_en?
+                                        item.decision_type_name_en : item.decision_type_name_ar)}}
+                                    </ng-template>
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <span [title]="item.name" class="ng-option-label">{{isArabic?
+                                            (item.decision_type_name_ar? item.decision_type_name_ar :
+                                            item.decision_type_name_en) : (item.decision_type_name_en?
+                                            item.decision_type_name_en : item.decision_type_name_ar)}}</span>
+                                    </ng-template>
+                                </ng-select>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(votesForm,'decision_type'+i, 'required')">
+                                    {{'MEETINGS.VOTE.VALIDATION.DECISION_TYPE' | translate}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+                            <label for="DECISION_TYPE" class="col-lg-2 col-form-label">
+                                {{'CIRCULAR_DECISIONS.ADD.IS_SECRET' | translate }}
+                                <!-- &nbsp;<span class="MandatoryAsterisk">*</span> -->
+                            </label>
+                            <div class="col-lg-9">
+                                <input class="mr-2" type="checkbox" [(ngModel)]="vote.is_secret" [checked]="vote.is_secret"
+                                    style="margin-top: 13px;width: 20px;height: 20px;" name="{{'issecret'+i}}" [disabled]="!canEditMeeting" />
+                                </div>
+                                </div>
+                                <div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+                                    <label for="MOM_TITLE_AR" class="col-lg-2 col-form-label">
+                                        {{'MEETINGS.AGENDA.ADD.VOTE_PARTICIPANTS' | translate}}
+                                        <span class="MandatoryAsterisk">*</span>
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <ng-select (click)="onVoteParticipantListOpen(null,i)" placeholder="{{'MEETINGS.AGENDA.ADD.VOTE_PARTICIPANTS' | translate}}" [hideSelected]="true"
+                                            name="{{'agendaParticipants'+i}}" [searchable]="true" [(ngModel)]='vote.vote_participants' [multiple]="true"
+                                            [hideSelected]="true" required [disabled]="!canEditMeeting" [compareWith]="compareFn">
+                                            <ng-option *ngFor="let participation of customVoteParticipants" [value]="participation">
+                                                {{participation.name}}
+                                            </ng-option>
+                                        </ng-select>
+                                        <div class="error text-danger form-control-feedback"
+                                            [hidden]="!hasError(votesForm,'agendaParticipants'+i, 'required')">
+                                            {{'MEETINGS.VOTE.VALIDATION.PARTICIPATION' | translate}}
+                                        </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+                            <label for="DUE_DATE" class="col-lg-2 col-form-label">
+                                {{'MEETINGS.VOTE.ADD.DECISION_DUE_DATE' | translate}}
+                                &nbsp;<span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <div class="form-group row">
+                                    <div class="input-group col-lg-12 m-b-1">
+                                        <input class="form-control m-input" placeholder="{{'MEETINGS.VOTE.ADD.DECISION_DUE_DATE' | translate}}"
+                                            [disabled]="!canEditMeeting" name="dueDate_{{i}}" [(ngModel)]="vote.decision_due_date" ngbDatepicker
+                                            #d="ngbDatepicker" [readonly]="true" (ngModelChange)="setToDateEqualFrom(vote,i)" required name="dueDate_{{i}}">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary calendar"
+                                                (click)="d.toggle();$event.stopPropagation();" (dateSelect)="d.close()"
+                                                type="button">
+                                                <i class="fa fa-calendar-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(votesForm,'dueDate_'+i, 'required')">
+                                    {{'MEETINGS.VOTE.VALIDATION.DECISION_DUE_DATE' | translate}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;" *ngIf="isArabic">
+                            <label for="subject" class="col-lg-2 col-form-label">
+                                {{'MEETINGS.VOTE.ADD.SUBJECTAR' | translate}}
+                                &nbsp;<span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control m-input" [(ngModel)]="vote.vote_subject_ar"
+                                    placeholder="{{'MEETINGS.VOTE.ADD.SUBJECTAR' | translate}}" id="subject"
+                                    name="{{'subjectAr'+i}}" required [maxlength]="1000" [disabled]="!canEditMeeting">
+								</textarea>
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(votesForm,'subjectAr'+i, 'required')">
+                                    {{'MEETINGS.VOTE.VALIDATION.SUBJECTAR' | translate}}
+                                </div>
+                                <div class="error text-danger form-control-feedback"
+                                    *ngIf="vote.vote_subject_ar?.length == 1000">
+                                    {{'MEETINGS.VOTE.VALIDATION.SUBJECTAR_LENGTH'|translate}}</div>
+                            </div>
+                        </div>
+                        <div class="form-group m-form__group row" style="padding: 5px 0 20px;" *ngIf="!isArabic">
+                            <label for="subject" class="col-lg-2 col-form-label">
+                                {{'MEETINGS.VOTE.ADD.SUBJECTEN' | translate}}
+                                &nbsp;<span class="MandatoryAsterisk">*</span>
+                            </label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control m-input" [(ngModel)]="vote.vote_subject_en"
+                                    placeholder="{{'MEETINGS.VOTE.ADD.SUBJECTEN' | translate}}" [maxlength]="1000"
+                                    id="subject" name="{{'subjectEn'+i}}" required [disabled]="!canEditMeeting">
+							</textarea>
+                                <div class="error text-danger form-control-feedback" [hidden]="!hasError(votesForm,'subjectEn'+i, 'required')">
+                                    {{'MEETINGS.VOTE.VALIDATION.SUBJECTEN' | translate}}
+                                </div>
+                                <div class="error text-danger form-control-feedback"
+                                    *ngIf="vote.vote_subject_en?.length == 1000">
+                                    {{'MEETINGS.VOTE.VALIDATION.SUBJECTEN_LENGTH'|translate}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="m-form__actions m-form__actions--solid">
+            <div class="row">
+                <div class="col-lg-12 m--align-left">
+                    <button type="submit" class="btn btn-primary" [disabled]="submitted" *ngIf="canEditMeeting">
+                        {{'BUTTON.SAVE' | translate}}
+                        <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary" (click)="saveMeetingVersion(votesForm)" [disabled]="submitted"
+                        *ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+                        {{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+                        <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+                    </button>
+                    <button type="reset" (click)="redirect()" class="btn btn-secondary">
+                        {{'BUTTON.CANCEL' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>

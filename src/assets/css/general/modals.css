@@ -1,0 +1,50 @@
+.modal-backdrop {
+    z-index: 140000;
+}
+.modal {
+    z-index: 150000;
+}
+.modal-header{
+    padding: 10px 15px;
+    display: block;
+}
+.modal-h307 {
+    min-height:307px;
+}
+.modal-header .close {
+    margin-top: 0rem;
+}
+.modal-body{
+    padding: 25px;
+}
+.modal .modal-content .modal-footer {
+    padding: 15px 15px;
+}
+.mat-dialog-container {
+	padding:0 !important;;
+    overflow: hidden!important;
+}
+
+.modal .modal-content .modal-header .modal-title {
+    display: inline-block;
+}
+.modal-dropzone > .dz-wrapper.dz-multiple.dz-clickable.dropzone {
+    height: 225px;
+}
+.modal-615 > .modal-dialog {
+    max-width: 615px;
+}
+
+.modal .modal-content .modal-body .mFixed-height {
+    max-height: 225px;
+    overflow: auto;
+}
+
+.modal .modal-content .modal-body .mSharedFixed-height {
+    max-height: 210px;
+    overflow: auto;
+}
+.searchEmptyState {
+    height: 225px !important;
+    min-height: 225px !important;
+}

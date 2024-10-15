@@ -1,0 +1,131 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'FAQSECTIONS.LIST.FAQSECTIONLIST' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<a [routerLink]="['/faq-sections/add']" type="button" class="btn btn-primary" *ngIf="addFlag">
+			<i class="fa fa-plus"></i>{{'FAQSECTIONS.LIST.ADDFAQSECTION' | translate}}
+		</a>
+	</ng-container>
+	<!-- end::Header -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #faqSectionForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'FAQSECTIONS.LIST.FAQSECTIONNAMEAR' | translate}}</th>
+									<th>{{'FAQSECTIONS.LIST.FAQSECTIONNAEMEN' | translate}}</th>
+									<th>{{'FAQSECTIONS.LIST.FAQSECTIONPARENT' | translate}}</th>
+									<th> {{'GENERAL.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'FAQSECTIONS.LIST.FAQSECTIONNAMEAR' | translate}}" class="form-control form-filter input-sm" id="faqsectionnamear" name="faqsectionnamear"
+										 [(ngModel)]="filterObject.SearchObject.faq_section_name_ar" #faqsectionnamear="ngModel">
+
+									</td>
+									<td>
+										<input type="text" placeholder="{{'FAQSECTIONS.LIST.FAQSECTIONNAEMEN' | translate}}" class="form-control form-filter input-sm" id="faqsectionnameen" name="faqsectionnameen"
+											 [(ngModel)]="filterObject.SearchObject.faq_section_name_en" #faqsectionnameen="ngModel">
+
+									</td>
+									<td>
+										<ng-select id="faqparentsection" name="faqparentsection" [searchable]="true"
+											placeholder="{{'FAQSECTIONS.LIST.FAQSECTIONPARENT' | translate}}"
+											[(ngModel)]="filterObject.SearchObject.parent_section_id" #faqparentsection="ngModel">
+											<ng-option *ngFor="let section of faqParentSections" [value]="section.id">
+												{{isArabic? section.faq_section_name_ar : section.faq_section_name_en}}
+											</ng-option>
+										</ng-select>
+
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary-outline m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</ng-container>
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table [dataSource]="dataSource" matSort matSortActive="id"  matSortDisableClear
+				 class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+
+					<ng-container matColumnDef="faq_section_name_ar">
+						<th *matHeaderCellDef mat-sort-header>{{'FAQSECTIONS.LIST.FAQSECTIONNAMEAR' | translate}}</th>
+						<td *matCellDef="let faqSection">{{faqSection.faq_section_name_ar}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="faq_section_name_en">
+						<th *matHeaderCellDef mat-sort-header>{{'FAQSECTIONS.LIST.FAQSECTIONNAEMEN' | translate}}</th>
+						<td *matCellDef="let faqSection">{{faqSection.faq_section_name_en}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="parent_id">
+						<th *matHeaderCellDef >{{'FAQSECTIONS.LIST.FAQSECTIONPARENT' | translate}}</th>
+						<td *matCellDef="let faqSection">{{isArabic? faqSection.parent_section_name_ar : faqSection.parent_section_name_en}}</td>
+					</ng-container>
+
+
+					<!-- actions Column -->
+					<ng-container matColumnDef="actions">
+						<th *matHeaderCellDef>
+							{{'GENERAL.ACTIONS' | translate}}
+						</th>
+						<td *matCellDef="let faqSection">
+							<button type="button" (click)="edit(faqSection.id)" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+							 matTooltip="Edit" *ngIf="editFlag">
+								<i class="flaticon-edit-1"></i> {{'BUTTON.EDIT' | translate}}
+							</button>
+
+							<button type="button" (click)="delete(faqSection.id)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"
+							 matTooltip="Delete" *ngIf="deleteFlag">
+								<i class="flaticon-delete-2"></i> {{'BUTTON.DELETE' | translate}}
+							</button>
+						</td>
+					</ng-container>
+
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+				</table>
+
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+			</div>
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

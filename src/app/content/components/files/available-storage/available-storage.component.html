@@ -1,0 +1,27 @@
+<div class="border rounded d-lg-flex flex-lg-column mt-lg-5 p-lg-3 p-2 px-lg-4 d-none align-items-center mw-250px">
+  <div class="d-flex justify-content-center mb-3">
+    <div class="circle small d-flex justify-content-center align-items-center">
+      <h1 class="m-0 text-center font-size-18 font-weight-600">{{percentage}}%</h1>
+      <div class="avail-strg position-absolute">
+        <mat-progress-spinner [value]="percentage" diameter="90" class=""></mat-progress-spinner>
+      </div>
+    </div>
+  </div>
+  <div class="">
+    <h4 class="font-size-18 font-weight-500">{{'FILES.STORAGE_TITLE'|translate}} </h4>
+    <p class="mb-0 color-dark-grey">GB <b class="font-size-16 font-weight-500 color-title-dark">{{total}}</b>/{{used.unit}} <b class="font-size-16 font-weight-500 color-title-dark">{{used.value}}</b></p>
+  </div>
+</div>
+
+<div class="flex-column align-items-start d-lg-none py-3 px-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <p class="font-size-18r font-weight-400 my-1">{{'FILES.STORAGE_TITLE'|translate}}</p>
+    <p class="font-size-16r font-weight-600 my-1">{{percentage}}%</p>
+  </div>
+  <div class="progress">
+    <div class="progress-bar m--bg-accent" role="progressbar" [style.width]="percentage + '%'" [style.height]="10+'px'" [attr.aria-valuenow]="percentage" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+  <div>
+     <p class="font-size-14r font-weight-500 my-2">{{'FILES.STORAGE_RESPONSIVE'|translate:{used:used,total:total} }}</p> 
+  </div>
+</div>

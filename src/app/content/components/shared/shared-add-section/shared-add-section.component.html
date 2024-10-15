@@ -1,0 +1,115 @@
+<div class="d-flex flex-column align-items-center col-12 px-0">
+
+  <div class="d-flex w-100 px-0 mb-2 justify-content-between" *ngIf="(attachments &&attachments.length > 0) || (files && files.length > 0)">
+    <h3 class="font-size-20 font-weight-500 my-0 line-height-normal">{{'FILES.ATTACHEMNTS'|translate}}</h3>
+    <div ngbDropdown class="d-inline-block d-flex align-items-center justify-content-end"
+      *ngIf="isEditable && can_upload && (attachments &&attachments.length > 0) || (files && files.length > 0)">
+      <button type="button"
+        class="btn btn-dark py-2 px-3 d-flex justify-content-center align-items-center font-size-14 text-white dropdown_no_arrow line-height-inherit"
+        id="dropdownBasic1" ngbDropdownToggle><i class="fas fa-plus"></i>{{'FILES.ADDATTACHMENTS'|translate}} </button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1" [ngClass]="{'dropdown-menu-right': isArabic, 'dropdown-menu-left': !isArabic}">
+        <button type="button" ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+          (click)="selectFileModal()"><i class="icon-Icon-awesome-folder-plus font-size-11"></i>{{'FILES.SELECTFROMSTORAGE'|translate}}</button>
+        <button type="button" ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+          (click)="addFileModal()"><i class="icon-Icon-awesome-file-upload font-size-15"></i>{{'FILES.UPLOADFILES'|translate}}</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isEditable && files &&files.length == 0 && attachments && attachments.length == 0" class="d-flex mt-5 col-12 px-0 flex-column align-items-center">
+    <img src="assets/app/media/img/icons/add-file.png" alt="add-file" width="50">
+    <p class="font-size-24 font-weight-500 mt-4 mb-3">{{'FILES.NOATTACHMENTS'|translate}}</p>
+    
+    <div ngbDropdown class="d-inline-block d-flex align-items-center justify-content-end" *ngIf="can_upload">
+      <button type="button" class="btn btn-dark py-2 px-5 d-flex justify-content-center align-items-center font-size-20 text-white dropdown_no_arrow"
+        id="dropdownBasic1" ngbDropdownToggle><i class="fas fa-plus"></i>{{'FILES.ATTACHEMNTS'|translate}}</button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button type="button" ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+          (click)="selectFileModal()"><i class="icon-Icon-awesome-folder-plus font-size-11"></i>{{'FILES.SELECTFROMSTORAGE'|translate}}</button>
+        <button type="button" ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+          (click)="addFileModal()"><i class="icon-Icon-awesome-file-upload font-size-15"></i>{{'FILES.UPLOADFILES'|translate}}</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isEditable && files &&files.length == 0 && attachments && attachments.length == 0" class="d-flex col-12 px-0 flex-column align-items-center">
+    <div class="emptyState col-6 mt-5 mx-auto pt-4 d-flex flex-column align-items-center">
+      <img src="assets/app/media/img/icons/folder.png" alt="Empty State" width="100">
+      <p class="mb-0 mt-4 font-size-24 font-weight-500">{{'FILES.NOATTACHMENTS'|translate}}</p>
+    </div>
+  </div>
+
+  <div class="row col-12 px-0" *ngIf="(attachments &&attachments.length > 0) || (files && files.length > 0)">
+    <div class="col-md-6 col-lg-3 py-2 pr-4 pr-lg-3 pl-lg-3 pl-2" *ngFor="let attachment of attachments;let i = index">
+      <div class="bg-white d-flex align-items-center justify-content-between border shadow-sm rounded">
+        <div class="m-widget24 d-flex py-3 w-75">
+          <div class="d-flex align-items-center px-3">
+            <span class="m--font-brand">
+											<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+                      src="./assets/app/media/img/files/doc.svg" class="ng-star-inserted file-icon"
+                      alt="doc">
+                    <img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+                      src="./assets/app/media/img/files/jpg.svg" class="ng-star-inserted file-icon"
+                      alt="image">
+                    <img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+                      src="./assets/app/media/img/files/pdf.svg" class="ng-star-inserted file-icon"
+                      alt="pdf">
+                    <img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+                      src="./assets/app/media/img/files/ppt.svg" class="ng-star-inserted file-icon"
+                      alt="ppt">
+                    <img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+                      src="./assets/app/media/img/files/xls.svg" class="ng-star-inserted file-icon"
+                      alt="xls">
+                    <img *ngIf="checkFileType(attachment.attachment_url) == 'video'"
+                      src="./assets/app/media/img/files/mp4.svg"  class="ng-star-inserted file-icon"
+                      alt="mp4">
+              
+              </span>
+          </div>
+          <div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+            <h3 class="m-widget24__title font-size-14 m-0 text-overflow color-title-dark font-weight-500 text-truncate"> {{attachment.attachment_name}}
+            </h3>
+            <!-- <span class="m-widget24__desc color-dark-grey font-size-12 m-0"> {{file.size}} </span> -->
+          </div>
+        </div>
+        <button *ngIf="isEditable" class="btn bg-white border-0 ellipsis-icon" (click)="removeAttachment(i)"><i
+            class="icon-cancel-4 color-title-dark font-size-16"></i></button>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-3 py-2 pr-4 pr-lg-3 pl-lg-3 pl-2" *ngFor="let file of files;let i = index">
+      <div class="bg-white d-flex align-items-center justify-content-between border shadow-sm rounded">
+        <div class="m-widget24 d-flex py-3">
+          <div class="d-flex align-items-center px-3">
+            <span class="m--font-brand">
+											<img *ngIf="checkFileType(file.name) == 'doc'"
+                      src="./assets/app/media/img/files/doc.svg" class="ng-star-inserted file-icon"
+                      alt="doc">
+                    <img *ngIf="checkFileType(file.name) == 'image'"
+                      src="./assets/app/media/img/files/jpg.svg" class="ng-star-inserted file-icon"
+                      alt="image">
+                    <img *ngIf="checkFileType(file.name) == 'pdf'"
+                      src="./assets/app/media/img/files/pdf.svg" class="ng-star-inserted file-icon"
+                      alt="pdf">
+                    <img *ngIf="checkFileType(file.name) == 'ppt'"
+                      src="./assets/app/media/img/files/ppt.svg" class="ng-star-inserted file-icon"
+                      alt="ppt">
+                    <img *ngIf="checkFileType(file.name) == 'xls'"
+                      src="./assets/app/media/img/files/xls.svg" class="ng-star-inserted file-icon"
+                      alt="xls">
+                    <img *ngIf="checkFileType(file.name) == 'video'"
+                      src="./assets/app/media/img/files/mp4.svg"  class="ng-star-inserted file-icon"
+                      alt="mp4">
+              
+              </span>
+          </div>
+          <div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+            <h3 class="m-widget24__title font-size-14 m-0 text-overflow color-title-dark font-weight-500 text-truncate"> {{file.name}}
+            </h3>
+          </div>
+        </div>
+        <button *ngIf="isEditable" class="btn bg-white border-0 ellipsis-icon" (click)="removeFile(i)"><i
+            class="icon-cancel-4 color-title-dark font-size-16"></i></button>
+      </div>
+    </div>
+  </div>
+</div>

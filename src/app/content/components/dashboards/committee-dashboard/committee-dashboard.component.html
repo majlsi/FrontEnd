@@ -1,0 +1,85 @@
+<m-portlet [options]="{headLarge: true}">
+  <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+  <ng-container mPortletHeadTitle>
+    <div class="m-portlet__head-title">
+      <h3 class="m-portlet__head-text">
+        {{'MENU.DASHBOARD' | translate}}
+      </h3>
+    </div>
+    <!-- <button class="btn btn-primary " (click)="downloadFile()" *ngIf="activeCommittee &&activeCommittee.governance_regulation_url"> <i class="fa fa-download"></i> {{'COMMITTEES.ADD.DOWNLOAD_GOVERNANCE_REGULATION' | translate}}
+    </button> -->
+  </ng-container>
+  <ng-container mPortletHeadTools>
+
+    <button class="btn btn-primary " (click)="downloadFile()" [hidden]="!(activeCommittee &&activeCommittee.governance_regulation_url)"> <i class="fa fa-download"></i> {{'COMMITTEES.ADD.DOWNLOAD_GOVERNANCE_REGULATION' | translate}}
+    </button>
+  </ng-container>
+  <!-- end::Header -->
+
+
+
+  <!-- start::Body (attribute: mPortletBody) -->
+  <ng-container mPortletBody>
+    <div class="">
+      <ul ngbNav #nav="ngbNav" class="nav-pills" (navChange)="changeTab($event)">
+        <li [ngbNavItem]="committee.id" *ngFor="let committee of committees">
+          <button ngbNavLink>{{isArabic?(committee.committee_name_ar?committee.committee_name_ar:committee.committee_name_en):(committee.committee_name_en?committee.committee_name_en:committee.committee_name_ar)}}</button>
+          <ng-template ngbNavContent >
+            <div class="row" *ngIf="dashboard">
+              <div class="col-lg-8 mb-3">
+                <div class="bg-white--content dashboard-card mt-0 h-100">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>{{'DASHBOARD.MEETINGS'|translate}}</h3>
+                    <button class="btn btn-primary " [routerLink]="['/meetings/add']" *ngIf="addMeetingFlag" ><i class="fa fa-plus"></i>{{'DASHBOARD.ADDNEWMEETING'|translate}}</button>
+                  </div>
+                  <m-dashboard-meetings
+                    [dashboardMeetings]="{meetings_statistics:dashboard.meetings_statistics,meetings:dashboard.meetings}">
+                  </m-dashboard-meetings>
+                </div>
+              </div>
+              <div class="col-lg-4 mb-3">
+                <div class="bg-white--content dashboard-card mt-0 h-100">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>{{'DASHBOARD.TASKS'|translate}}</h3>
+                  </div>
+                <m-dashboard-tasks (reload)="getCommiteeDashBoard()"
+                  [dashboardTasks]="{tasks:dashboard.tasks,tasks_statistics:dashboard.tasks_statistics}">
+                </m-dashboard-tasks >
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="bg-white--content dashboard-card mt-0 h-100">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>{{'DECISIONS.LIST.DECISIONS' | translate}}
+                    </h3>
+                  </div>
+                  <m-dashboard-decision
+                    [dashboardDecisions]="{decisions:dashboard.meeting_decisions,decisions_statistics:dashboard.meeting_decisions_statistics}">
+                  </m-dashboard-decision>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="bg-white--content dashboard-card mt-0 h-100">
+                  <h3>{{'REVIEWS_ROOM.REVIEW.REVIEWS'|translate}}</h3>
+                  <m-dashboard-reviews [dashboardDocuments]="{documents:dashboard.documents,documents_statistics:dashboard.documents_statistics}"> </m-dashboard-reviews>
+                </div>
+
+              </div>
+              <div class="col-lg-4">
+                <div class="bg-white--content dashboard-card mt-0 h-100">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>{{'DASHBOARD.MEMBERS'|translate}}</h3>
+                    <button class="btn btn-primary m-0" [routerLink]="['/committees/edit/'+committee.id]" *ngIf="addUserFlag"><i class="fa fa-plus"></i>{{'DASHBOARD.ADDNEWMEMBER'|translate}}</button>
+                  </div>
+                  <m-dashboard-members [membersCount]="dashboard.members_count" [members]="dashboard.members" ></m-dashboard-members>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+  </ng-container>
+  <!-- end::Body -->
+</m-portlet>

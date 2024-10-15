@@ -1,0 +1,89 @@
+<div class="m-portlet__head-title">
+    <h3 class="m-portlet__head-text m-4 p-3"> {{'HTML_MOM_TEMPALTE_PAGE.TEMPLATE_TITLE' | translate}} </h3>
+  </div>
+  
+  <div class="m-portlet__body">
+  
+  
+    <div class="m-4 bg-white shadow-sm border rounded p-3">
+      <form (ngSubmit)="save(tempForm)" #tempForm="ngForm" novalidate
+        class="m-form m-form--p-top-bottom-10 m-form--profile m-form--label-align-right mb-5">
+  
+        <div class="m-form__section m-form__section--first mt-2 mb-3 ">
+  
+          <div class="form-group row" joyrideStep="addMomSummaryData" [stepPosition]="'bottom'"
+          [title]="'TUTORIALGUIDE.ADD_MOM_SUMMARY_TEMPLATE_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_MOM_SUMMARY_TEMPLATE_DATA_BODY' | translate">
+            <div class="col-lg-6">
+              <label>{{'HTML_MOM_TEMPALTE_PAGE.ARABIC' | translate}}</label>
+              <input type="text" class="form-control" name="templateNameAR" #templateNameAR="ngModel"
+                placeholder="{{'HTML_MOM_TEMPALTE_PAGE.ARABICTITLE'| translate}}" [(ngModel)]="htmlMomTemplate.html_mom_template_name_ar"
+                required>
+              <div class="error text-danger form-control-feedback"
+                [hidden]="!hasError(tempForm,'templateNameAR', 'required')">
+                {{'HTML_MOM_TEMPALTE_PAGE.VALIDATION.HTMLMOMTEMPLATENAMEAR' | translate}}
+              </div>
+  
+            </div>
+            <div class="col-lg-6">
+              <label>{{'HTML_MOM_TEMPALTE_PAGE.ENGLISH' | translate}}</label>
+              <input type="text" class="form-control" placeholder="{{'HTML_MOM_TEMPALTE_PAGE.ENGLISHTITLE'| translate}}"
+                class="form-control" name="templateNameEn" #templateNameEn="ngModel"
+                [(ngModel)]="htmlMomTemplate.html_mom_template_name_en" required>
+              <div class="error text-danger form-control-feedback"
+                [hidden]="!hasError(tempForm,'templateNameEn', 'required')">
+                {{'HTML_MOM_TEMPALTE_PAGE.VALIDATION.HTMLMOMTEMPLATENAMEEN' | translate}}
+              </div>
+  
+            </div>
+          </div>
+        </div>
+  
+        <div class="separator separator-dashed my-4"></div>
+  
+  
+        <div class="m-form__section m-form__section--first  mb-0 ">
+          <div class="row d-flex flex-column">
+  
+            <!-- <div class="form-group mr-2 ml-4"> -->
+            <div class="col-12">
+              <div class="form-group pb-4 mb-0">
+                <label>{{'HTML_MOM_TEMPALTE_PAGE.DESC_AR_LABEL' | translate}}</label>
+                <textarea class="form-control  mb-2" required rows="3" [maxlength]="1000"
+                  placeholder="{{'HTML_MOM_TEMPALTE_PAGE.DESC_AR' | translate}}" name="descAr" #descAr="ngModel"
+                  [(ngModel)]="htmlMomTemplate.html_mom_description_template_ar"></textarea>
+
+                <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'descAr', 'required')">
+                  {{'HTML_MOM_TEMPALTE_PAGE.VALIDATION.DESC_AR' | translate}}
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group pb-4 mb-0">
+                <label>{{'HTML_MOM_TEMPALTE_PAGE.DESC_EN_LABEL' | translate}}</label>
+                <textarea class="form-control  mb-2" [maxlength]="1000" name="descEn" #descEn="ngModel" required
+                  rows="3" placeholder="{{'HTML_MOM_TEMPALTE_PAGE.DESC_EN' | translate}}"
+                  [(ngModel)]="htmlMomTemplate.html_mom_description_template_en"></textarea>
+    
+                <div class="error text-danger form-control-feedback" [hidden]="!hasError(tempForm,'descEn', 'required')">
+                  {{'HTML_MOM_TEMPALTE_PAGE.VALIDATION.DESC_EN' | translate}}
+                </div>
+              </div>
+            </div>
+  
+          </div>
+
+          <button class="btn btn-primary mt-4" type="submit" [stepPosition]="isArabic?'left':'right'" joyrideStep="saveMomSummary"
+          [title]="'TUTORIALGUIDE.SAVE_MOM_SUMMARY_TEMPLATE_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_MOM_SUMMARY_TEMPLATE_BODY' | translate">{{'BUTTON.SAVE' | translate}} <i aria-hidden="true"
+            class="fa fa-check"></i>
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="redirect()">{{'BUTTON.CANCEL' | translate}}</button>
+  
+        </div>
+   
+      </form>
+  
+  
+  
+  
+    </div>
+  </div>

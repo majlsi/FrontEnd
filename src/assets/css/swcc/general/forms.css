@@ -1,0 +1,148 @@
+.form-control.focus, .form-control:focus {
+	border-color: #cac6a1;
+}
+.m-form .form-control-label, .m-form label {
+	font-size: 14px;
+}
+.m-form .m-form__actions{
+	border-radius: 0 0 15px 15px;
+	border-top: 1px solid #ebedf2;
+	padding: 20px 0;
+	margin: 15px 0 5px;
+	background-color:#fff;
+
+}
+.m-form .m-form__actions .btn{
+	font-size: 15px;
+	padding: 2px 20px;
+}
+.m-form .m-form__actions.m-form__actions--solid{
+	background-color:#fff;
+}
+.m-form .form-control-feedback {
+    position: relative;
+    font-size: 13px;
+	font-weight: 500;
+	position: absolute;
+}
+
+.m-form.m-form--profile .m-form__group,
+.m-form.m-form--fit.m-form--p-top-bottom-10 .m-form__group {
+    padding: 10px 0px;
+}
+.m-form.m-form--profile .form-control-feedback,
+.m-form.m-form--fit.m-form--p-top-bottom-10 .form-control-feedback {
+	margin-top: -0.1rem;
+}
+
+ngb-typeahead-window {
+    width: 94%;
+}
+
+.ngb-highlight[_ngcontent-c4] {
+    font-weight: 500!important;
+}
+
+ngb-typeahead-window a.active,
+ngb-typeahead-window .dropdown-item.active {
+    background: #ebedf2!important;
+    color: #121212!important;
+    text-decoration: none;
+    font-weight: 300;
+}
+
+.grey-sm {
+    color: #808080;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.21rem;
+    font-weight: 400;
+}
+.form-control {
+    padding: 1rem 0.65rem;
+    font-size: 15px;
+    height: 44px;
+    line-height: 44px;
+}
+.input-group>.input-group-append>.btn {
+    min-width: 40px;
+    margin: 0;
+}
+.ngb-dp-arrow-btn {
+	min-width: unset;
+}
+.ngb-dp-weekday{
+    color: #d7d900 !important;
+}
+
+.btn-link {
+    font-weight: 400;
+    color: #121212 !important;
+}
+.btn-link:hover {
+	color: #121212;
+}
+
+
+.form-control[disabled] {
+    border-color: #dfdfdf;
+    color: #6f727d;
+	background-color: #f0f0f0;
+	cursor: not-allowed;
+}
+
+.helper.agenda-helper {
+padding-left: 5px;
+padding-top: 5px;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: nowrap;
+width: 85%;
+top: 0px;
+display: block;
+position: absolute;
+}
+
+
+.round {
+    position: relative;
+  }
+  
+  .m-checkbox label {
+    background-color: transparent;
+    cursor: pointer;
+    height: 25px;
+    right: 7px;
+    position: absolute;
+    top: 11px;
+    width: 25px;
+  }
+  
+  .m-checkbox>input[type="checkbox"]:checked~div label::after {
+    border: 2px solid #fff;
+    border-top: none;
+    border-right: none;
+    content: "";
+    height: 6px;
+    left: 7px;
+    opacity: 1;
+    position: absolute;
+    top: 8px;
+    transform: rotate(-45deg);
+    width: 12px;
+  }
+  
+  .m-checkbox input[type="checkbox"] {
+    visibility: hidden;
+  }
+  
+  .m-checkbox>input[type="checkbox"]:checked~div label {
+    background-color: #34BFA3;
+  }
+
+  .bg-light-green {
+    background-color: #EFFAF8;
+  }
+  .m-checkbox>input:checked~div.round {
+    background-color: #EFFAF8 !important;
+  }

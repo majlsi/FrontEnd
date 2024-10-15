@@ -1,0 +1,245 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'ORGANIZATIONS.ADD.ADDNEORGANIZATION' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<div [hidden]="error.length == 0" *ngFor="let item of error" class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+				<p *ngFor="let field of item">
+					{{isArabic? field?.message_ar : field?.message? field?.message : field?.message_ar}}
+				</p>
+			</div>
+			<form class="
+		m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #organizationForm="ngForm" (ngSubmit)="save(organizationForm)" name="organizationForm">
+
+
+
+				<div class="form-group m-form__group m--padding-top-15 m--padding-left-10 m-form__group--org_avtr row">
+					<div class="col-md-1">
+						<div class="org_avtr imgLogo">
+							<div>
+								<img *ngIf="image_url" [src]="image_url" class="rounded">
+							</div>
+							<div class="">
+								<i class="fa fa-image" (click)="file.click()"></i>
+								<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)" #file name="file" (ngModel)="organization.logo_image.image_url">
+							</div>
+							<span class="enz_editImg updateLogo" (click)="file.click()">{{'ORGANIZATIONS.ADD.EDITIMAGE' | translate}}</span>
+						</div>
+
+					</div>
+					<div class="col-md-11">
+						<h3>{{'ORGANIZATIONS.ADD.ORGANIZATIONIMAGE' | translate}}</h3>
+						<p>{{'ORGANIZATIONS.ADD.DESCRIPTION' | translate}}</p>
+						<p>{{'ORGANIZATIONS.ADD.MESSAGE' | translate}}</p>
+						<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+							{{logoImageSizeError }}</div>
+						<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+							{{ 'AUTH.VALIDATION.ORGANIZATION_LOGO_INVALID' | translate }}</div>
+					</div>
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'ORGANIZATIONS.ADD.ORGANIZATIONNAMEAR' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.ORGANIZATION_NAME_AR' | translate}}" class="form-control" id="organizationnameAR" name="organizationnameAR" [(ngModel)]="organization.organization_name_ar" #organizationnameAR="ngModel" [required]="!organization.organization_name_en">
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'organizationnameAR', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.ORGANIZATIONNAMEAR' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'ORGANIZATIONS.ADD.ORGANIZATIONNAME_EN' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.ORGANIZATIONNAME' | translate}}" class="form-control" id="organizationname" name="organizationname" [required]="!organization.organization_name_ar" [(ngModel)]="organization.organization_name_en" #organizationname="ngModel">
+						<!-- <div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(organizationForm,'organizationname', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.ORGANIZATIONNAME' | translate}}</div> -->
+					</div>
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="phoneno">{{'ORGANIZATIONS.ADD.PHONENO' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.PHONE_NO' | translate}}" class="form-control" id="phoneno" name="phoneno" [(ngModel)]="organization.organization_phone" #phoneno="ngModel" pattern="[0-9]+" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'phoneno', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.PHONENO' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'phoneno', 'pattern')">
+							{{'ORGANIZATIONS.VALIDATION.PHONENOVALIDATION' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="usersNo">{{'ORGANIZATIONS.ADD.USERSNUMBER' | translate}}</label>
+						<input type="number" class="form-control" name="usersNo" placeholder="{{'ORGANIZATIONS.ADD.USERS_NUMBER' | translate}}" autocomplete="off" [(ngModel)]="organization.organization_number_of_users" #usersNo="ngModel" [min]="1" [max]="9999999" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'usersNo', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.USERSNUMBER' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'usersNo', 'max')">
+							{{'ORGANIZATIONS.VALIDATION.USERSNUMBERVALIDATIONMAX' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'usersNo', 'min')">
+							{{'ORGANIZATIONS.VALIDATION.USERSNUMBERVALIDATION' | translate}}</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="expiryDateFrom">{{'ORGANIZATIONS.ADD.EXPIRYDATE' | translate}}</label>
+						<div class="input-group">
+							<input class="form-control m-input" placeholder="{{'MEETINGS.LIST.DATEFROM' | translate}}" name="expiryDateFrom" [(ngModel)]="expiryDateFrom" ngbDatepicker #dTo="ngbDatepicker" [readonly]="true" (ngModelChange)="setDateModel()" required>
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar" (click)="dTo.toggle()" type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'expiryDateFrom', 'required')">
+								{{'ORGANIZATIONS.VALIDATION.EXPIRYDATE' | translate}}</div>
+						</div>
+					</div>
+
+					<div class="col-lg-6">
+						<label for="licenseDuration">{{'ORGANIZATIONS.ADD.NUMBEROFDAYSFOREXPIRATION' |
+							translate}}</label>
+						<input type="number" [max]="maxLicenseDurationNum" class="form-control" name="licenseDuration"
+							placeholder="{{'ORGANIZATIONS.ADD.NUMBEROFDAYSFOREXPIRATION' | translate}}" autocomplete="off"
+							[(ngModel)]="organization.licenseDuration" #licenseDuration="ngModel" [min]="1" (ngModelChange)="setDateModel()"
+							required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'licenseDuration', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.NUMBEROFDAYSFOREXPIRATION' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'licenseDuration', 'min')">
+							{{('ORGANIZATIONS.VALIDATION.MINNUMBEROFDAYSFOREXPIRATION' | translate) + ' ' + maxLicenseDurationNum}}</div>
+							<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'licenseDuration', 'max')">
+								{{('ORGANIZATIONS.VALIDATION.MINNUMBEROFDAYSFOREXPIRATION' | translate) + ' ' + maxLicenseDurationNum}}</div>
+						<br>
+						<div class="form-control-feedback" [hidden]="!expiryDateTo">
+							{{'ORGANIZATIONS.ADD.EXPIRYDATETO' | translate}} :
+							{{expiryDateTo | date }}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="directory_quota">{{'ORGANIZATIONS.ADD.DIRECTORYQUOTA' | translate}}</label>
+						<input type="number" class="form-control" name="directory_quota" placeholder="{{'ORGANIZATIONS.ADD.DIRECTORYQUOTA' | translate}}" autocomplete="off" [(ngModel)]="organization.directory_quota" #directory_quota="ngModel" [min]="storageQuota.min" [max]="storageQuota.max" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'directory_quota', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.DIRECTORYQUOTA' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'directory_quota', 'max')">
+							{{'ORGANIZATIONS.VALIDATION.MAXDIRECTORYQUOTA' | translate:{'value':storageQuota.max} }}
+						</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'directory_quota', 'min')">
+							{{'ORGANIZATIONS.VALIDATION.MINDIRECTORYQUOTA' | translate:{'value':storageQuota.min} }}
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="organizationCode">{{'ORGANIZATIONS.ADD.ORGANIZATION_CODE' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.ORGANIZATIONCODE' | translate}}" class="form-control" id="organizationCode" name="organizationCode" [(ngModel)]="organization.organization_code" #organizationCode="ngModel">
+						<!-- <div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'organizationCode', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.ORGANIZATION_CODE' | translate}}</div> -->
+					</div>
+
+					<div class="col-lg-6">
+						<label for="organizationTimeZone">{{'ORGANIZATIONS.ADD.TIMEZONE' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select [searchable]="true" [clearable]="false" [(ngModel)]="organization.time_zone_id" name="timezone" #timezone="ngModel" [items]="timeZones" bindValue="id">
+							<ng-template ng-label-tmp let-item="item">
+								{{isArabic? item.description_ar : (item.description_en? item.description_en :
+								item.description_ar)}}
+								{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+							</ng-template>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name" class="ng-option-label">{{isArabic? item.description_ar :
+									(item.description_en? item.description_en : item.description_ar)}}</span>
+								<p>{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+								</p>
+							</ng-template>
+						</ng-select>
+						<!-- <div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'timezone', 'required')">
+							{{'MEETINGS.INFO.VALIDATION.TIMEZONE' | translate}}</div> -->
+					</div>
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="organizationType">{{'ORGANIZATIONS.ADD.TYPETITLE' | translate}}&nbsp;<span class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select [searchable]="true" [clearable]="false" (change)="setUrl()" [(ngModel)]="organization.organization_type_id" name="organizationType" #organizationType="ngModel" required>
+							<ng-option *ngFor="let type of organizationTypes" [value]="type.id">
+								{{isArabic? type.organization_type_name_ar : type.organization_type_name_en}}
+							</ng-option>
+						</ng-select>
+					</div>
+					<div class="col-lg-6">
+						<label for="apiUrl">{{'ORGANIZATIONS.ADD.APIURLTITLE' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.APIURL' | translate}}" class="form-control" id="apiUrl" name="apiUrl" [(ngModel)]="organization.api_url" #apiUrl="ngModel" [disabled]="organization.organization_type_id == organizationTypesEnum.CLOUD" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'apiUrl', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.CLOUDURL' | translate}}</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="redisUrl">{{'ORGANIZATIONS.ADD.REDISURLTITLE' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.REDISAPIURL' | translate}}" class="form-control" id="redisUrl" name="redisUrl" [(ngModel)]="organization.redis_url" #redisUrl="ngModel" [disabled]="organization.organization_type_id == organizationTypesEnum.CLOUD" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'redisUrl', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.REDISURL' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="frontUrl">{{'ORGANIZATIONS.ADD.FRONTURLTITLE' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.FRONTURL' | translate}}" class="form-control" id="frontUrl" name="frontUrl" [(ngModel)]="organization.front_url" #frontUrl="ngModel" [disabled]="organization.organization_type_id == organizationTypesEnum.CLOUD" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'frontUrl', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.FRONTURL' | translate}}</div>
+					</div>
+
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						{{'ORGANIZATIONS.ADD.STAKEHOLDER_ENABLED' | translate}}<br>
+						<input type="radio" [value]="1" id="stakeholderEnabled" name="stakeholderEnabled" [(ngModel)]="organization.is_stakeholder_enabled" #stakeholderEnabled="ngModel">
+						{{'ORGANIZATIONS.ADD.YES' | translate}}<br>
+						<input type="radio" [value]="0" id="stakeholderEnabled" name="stakeholderEnabled" [(ngModel)]="organization.is_stakeholder_enabled" #stakeholderEnabled="ngModel">
+						{{'ORGANIZATIONS.ADD.NO' | translate}}<br>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'stakeholderEnabled', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_ENABLED' | translate}}</div>
+					</div>
+
+					<div class="col-lg-6">
+						<label for="usersNo">{{'ORGANIZATIONS.ADD.STAKEHOLDERS_COUNT' | translate}}</label>
+						<input [disabled]="!organization.is_stakeholder_enabled" type="number" class="form-control" name="stakeholdersCount" placeholder="{{'ORGANIZATIONS.ADD.STAKEHOLDERS_COUNT' | translate}}" autocomplete="off" [(ngModel)]="organization.stakeholders_count" #stakeholdersCount="ngModel" [min]="1" [max]="9999999" [required]="organization.is_stakeholder_enabled">
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'stakeholdersCount', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.STAKEHOLDERS_NUMBER' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'stakeholdersCount', 'max')">
+							{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_NUMBER_VALIDATION_MAX' | translate}}</div>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(organizationForm,'stakeholdersCount', 'min')">
+							{{'ORGANIZATIONS.VALIDATION.STAKEHOLDER_NUMBER_VALIDATION' | translate}}</div>
+					</div>
+				</div>
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary" [disabled]="submitted">{{'BUTTON.SAVE' |
+								translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+							</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' |
+								translate}}</button>
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

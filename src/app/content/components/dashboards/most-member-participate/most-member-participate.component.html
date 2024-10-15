@@ -1,0 +1,42 @@
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{ "COMMITTEES.LIST.MOSTMEMBERSPARTICIPATEINCOMMITTEES" | translate }}
+			</h3>
+		</div>
+	</ng-container>
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<!--! table -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="mostMemberParticipateDatasource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+					<ng-container matColumnDef="name_ar">
+						<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.MEMBERNAME" | translate }}</th>
+						<td *matCellDef="let member">{{ isArabic ? member.name_ar ? member.name_ar : member.name : member.name? member.name : member.name_ar }}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="number_of_committees">
+						<th *matHeaderCellDef mat-sort-header>{{ "DASHBOARD.COMMITTEES_NUMBER" | translate }}</th>
+						<td *matCellDef="let member">{{ member.number_of_committees }}</td>
+					</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="mostMemberParticipateDisplayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: mostMemberParticipateDisplayedColumns"></tr>
+				</table>
+				<div class="mat-table__message" *ngIf="mostMemberParticipateDatasourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+			</div>
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ | async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

@@ -1,0 +1,51 @@
+.m-portlet .m-portlet__head .m-portlet__head-caption .m-portlet__head-title .m-portlet__head-text {
+	display: flex;
+	align-items: center;
+	font-size: 20px;
+	font-weight: 600;
+	font-family: poppins;
+	margin: 0;
+	padding: 0;
+	color: #000;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn {
+	padding: 0 15px;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link {
+	border: 0px;
+	font-size: 14px;
+	color: #000;
+	font-weight: 400;
+	background: transparent;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.btn-link i {
+	color: #000;
+}
+
+.m-portlet.m-portlet--rounded-force {
+	overflow: initial !important;
+}
+
+.m-portlet {
+	box-shadow: none;
+	background-color: transparent;
+}
+
+.m-portlet .mat-table__wrapper .mat-table {
+	margin-bottom: 0;
+}
+
+.m-portlet .bg-white--content {
+	margin: 20px 0 0;
+	border: 1px solid #E2E5EA;
+	background: white;
+	box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+	border-radius: 4px;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-caption .m-portlet__head-title .m-portlet__head-text {
+	font-weight: 500;
+}

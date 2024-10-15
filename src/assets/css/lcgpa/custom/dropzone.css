@@ -1,0 +1,10 @@
+
+.dropzone-container > .dropzone.dz-wrapper {
+    border: 2px dashed #b7b7b7;
+    background: #fafafa;
+}
+
+.dropzone-container > .dropzone.dz-wrapper .dz-message {
+    border: 0px dashed #aaa;
+    background-color: transparent;
+}

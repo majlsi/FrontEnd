@@ -1,0 +1,165 @@
+<!--Begin::Section-->
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+					{{ "DASHBOARD.DASHBOARD" | translate }}
+
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+
+		<div class="bg-white--content">
+
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+
+				<div class="col-xl-6" style='direction:ltr;'>
+
+					<!--begin:: Widgets/Daily Sales-->
+					<div class="m-widget14">
+						<div class="m-widget14__header">
+							<h3 class="m-widget14__title">
+								{{ 'DASHBOARD.ESTABLISHMENTS_STATISTICS' | translate}}
+							</h3>
+							<span class="m-widget14__desc">
+								{{ 'DASHBOARD.ESTABLISHMENTS_STATISTICS_DESC1' | translate}}
+							</span>
+						</div>
+						<div class="row align-items-center m-widget14__chart">
+							<div class="col">
+
+									<ngx-charts-bar-vertical-2d [view]="view2" [scheme]="colorScheme2" [results]="isArabic? organizationsBarChartStatisticsAr : organizationsBarChartStatisticsEn"
+									[gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis" [legend]="showLegend"
+									[showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+									[xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel" (select)="onSelect($event)">
+								</ngx-charts-bar-vertical-2d>
+
+
+
+
+
+
+							</div>
+
+						</div>
+					</div>
+
+					<!--end:: Widgets/Daily Sales-->
+				</div>
+				<div class="col-xl-6" style='direction:ltr;'>
+
+					<!--begin:: Widgets/Profit Share-->
+					<div class="m-widget14">
+						<div class="m-widget14__header">
+							<h3 class="m-widget14__title">
+								{{ 'DASHBOARD.ESTABLISHMENTS_STATISTICS' | translate}}
+							</h3>
+							<span class="m-widget14__desc">
+								{{ 'DASHBOARD.ESTABLISHMENTS_STATISTICS_DESC2' | translate}}
+							</span>
+						</div>
+						<div class="row align-items-center m-widget14__chart">
+							<div class="col ngx-charts-advanced-pie-chart-col">
+
+									<ngx-charts-advanced-pie-chart [view]='view' [results]="isArabic? organizationsPieChartStatisticsAr : organizationsPieChartStatisticsEn"
+									[scheme]="{ domain: [ '#30E07B', '#E75691', '#00C0FF', '#5D6A75','#e299bf' ] }">
+								</ngx-charts-advanced-pie-chart>
+								<img *ngIf="isNoPieChartData" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;"  alt="Logo">
+
+
+							</div>
+
+						</div>
+					</div>
+
+					<!--end:: Widgets/Profit Share-->
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="bg-white--content m--padding-15">
+
+			<div class="row">
+				<div class="col">
+					<h4 class="m-portlet__head-text mb-4">
+						{{ "DASHBOARD.TOP_ACTIVE_ORGANIZATION" | translate }}
+					</h4>
+					<div class="show-more-abs"
+					title="Second Group">
+
+					<a *ngIf="showMore" [routerLink]="['/organizations/1']">{{'VIEW_MEETING.SHOW_MORE' | translate}}</a>
+				</div>
+				</div>
+
+			</div>
+
+			<div class="row m-row--no-padding m-row--col-separator-xl">
+				<div class="col-xl-12">
+
+					<!--begin::m-widget5-->
+					<div class="m-widget5">
+						<div  class="m-widget5__item pointer" *ngFor="let highActiveOrganization of highActiveOrganizations"  (click)="openDashboard(highActiveOrganization)">
+							<div class="m-widget5__content">
+								<div class="m-widget5__pic">
+									<img class="m-widget7__img" height="30px" style="width:inherit;" [src]="imagesBaseURL+highActiveOrganization.original_image_url"
+										alt="">
+								</div>
+								<div class="m-widget5__section">
+									<h4 class="m-widget5__title">
+
+                                        {{isArabic? (highActiveOrganization.organization_name_ar? highActiveOrganization.organization_name_ar : highActiveOrganization.organization_name_en) : (highActiveOrganization.organization_name_en? highActiveOrganization.organization_name_en : highActiveOrganization.organization_name_ar)}}
+
+									</h4>
+
+									<div class="m-widget5__info">
+
+										<span class="m-widget5__info-label">
+											{{ "DASHBOARD.EXPIRATION_DATE" | translate }}:
+										</span>
+										<span class="m-widget5__info-date m--font-info">
+											{{highActiveOrganization.expiry_date_to | date: 'EE, MMMM d, y'}}
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="m-widget5__content">
+								<div class="m-widget5__stats1">
+									<span class="m-widget5__number">{{highActiveOrganization.users_number}}</span><br>
+									<span class="m-widget5__sales">
+										{{'DASHBOARD.USER' | translate}}
+									</span>
+								</div>
+								<div class="m-widget5__stats2">
+									<span class="m-widget5__number">{{highActiveOrganization.meetings_number}}</span><br>
+									<span class="m-widget5__votes">
+										{{'DASHBOARD.MEETING' | translate}}
+									</span>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<!--end::m-widget5-->
+
+				</div>
+			</div>
+		</div>
+
+	</ng-container>
+
+
+	<!-- end::Body -->
+</m-portlet>
+<!--End::Section-->

@@ -1,0 +1,27 @@
+@import "../theme";
+@import "../mixins";
+.modal-header {
+	padding: 25px;
+}
+.modal-body {
+	padding: 25px;
+}
+.modal-footer {
+	padding: 25px;
+}
+.mat-dialog-container {
+	padding: 0 !important;
+	overflow: hidden !important;
+}
+
+
+.style-ltr {
+	direction: ltr;
+	text-align: left;
+	font-family: "DIN NEXT" !important;
+	.clearBTN,
+	.style-btn {
+		right: 20px !important;
+		left: unset !important;
+	}
+}

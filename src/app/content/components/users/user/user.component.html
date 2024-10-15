@@ -1,0 +1,300 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title flex justify-content-between">
+			<h3 *ngIf="!userId&&!isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.NEWUSERPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="userId&&!isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.EDITUSERPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="!userId&&isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.NEWPARTICIPANTPROFILE' | translate}}
+			</h3>
+
+			<h3 *ngIf="userId&&isParticipant" class="m-portlet__head-text">
+				{{'USERS.ADD.EDITPARTICIPANTPROFILE' | translate}}
+			</h3>
+
+
+		</div>
+
+
+
+	</ng-container>
+
+	<ng-container mPortletHeadTools>
+		<button type="button" class="btn btn-primary"
+		(click)="openAddUserByNationalIdDialog()"
+				[hidden]="isSubmittedByFetcher"
+		>{{'USERS.ADD.ADD_BY_NATIONAL_ID' | translate}}</button>
+
+		<button type="button" class="btn btn-primary"
+				(click)="RemoveAutoFill()"
+				[hidden]="!isSubmittedByFetcher"
+		>{{'USERS.ADD.RemoveAutoFill' | translate}}</button>
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div [hidden]="!showError"
+			class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+			role="alert" *ngFor="let error of errors">
+			<span>
+				{{isArabic? error.message_ar : error.message}}
+			</span>
+		</div>
+		<div class="bg-white--content m--padding-15">
+
+
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate
+				#userForm="ngForm" (ngSubmit)="save(userForm)">
+
+				<div class="form-group m-form__group row" joyrideStep="addUserData" [title]="'TUTORIALGUIDE.ADD_USER_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_USER_DATA_BODY' | translate" [stepPosition]="'bottom'">
+					<div class="col-lg-6" *ngIf="isArabic">
+						<label>{{'USERS.ADD.ARABICNAME' | translate}}</label>
+						<input type="text" placeholder="{{'USERS.ADD.ARABIC_NAME' | translate}}" class="form-control"
+							   [readonly]="isSubmittedByFetcher"
+							id="namear" name="namear" [(ngModel)]="user.name_ar" #namear="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'namear', 'required')">
+							{{'USERS.VALIDATION.USERNAMEAR' | translate}}</div>
+					</div>
+					<div class="col-lg-6" *ngIf="!isArabic">
+						<label>{{'USERS.ADD.NAME_EN' | translate}}</label>
+						<input type="text" placeholder="{{'USERS.ADD.NAME' | translate}}" class="form-control" id="name"
+							   [readonly]="isSubmittedByFetcher"
+							name="name" [(ngModel)]="user.name" #name="ngModel" required>
+							<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'name', 'required')">
+							{{'USERS.VALIDATION.USERNAME_EN' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label class="">{{'USERS.ADD.EMAIL' | translate}}</label>
+						<input [disabled]="isParticipant&&userId" type="email"
+							placeholder="{{'USERS.ADD.USER_EMAIL' | translate}}" class="form-control" id="email"
+							name="email" [(ngModel)]="user.email" #email="ngModel" email="true"
+							pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'email', 'required')">{{'USERS.VALIDATION.EMAIL' | translate}}
+						</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'email', 'pattern')">
+							{{'USERS.VALIDATION.EMAILVALIDATION' | translate}}</div>
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.PHONENUMBER' | translate}}</label>
+						<input type="text" class="form-control" name="PhoneNo"
+							   [readonly]="isSubmittedByFetcher"
+							placeholder="{{'USERS.ADD.PHONE_NUMBER' | translate}}" autocomplete="off"
+							[(ngModel)]="user.user_phone" #PhoneNo="ngModel" pattern="[0-9]+" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'PhoneNo', 'pattern')">
+							{{'USERS.VALIDATION.PHONENO_INVALID' | translate}}</div>
+
+							<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'PhoneNo', 'required')">
+							{{'USERS.VALIDATION.PHONENO_REQUIRED' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.ROLE' | translate}}</label>
+						<ng-select [disabled]="isParticipant" [searchable]="true" [(ngModel)]="user.role_id" name="role"
+							#role="ngModel" required [items]="roles" [bindLabel]="bindLabel" bindValue="id"
+							placeholder="{{'USERS.LIST.ROLE' | translate}}">
+							<!--<ng-option *ngFor="let role of roles" [value]="role.id">{{isArabic? role.role_name_ar : (role.role_name? role.role_name : role.role_name_ar)}}</ng-option>-->
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name"
+									class="ng-option-label">{{isArabic? item.role_name_ar : (item.role_name? item.role_name : item.role_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'role', 'required')">{{'USERS.VALIDATION.ROLE' | translate}}
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.USER_TITLE_AR' | translate}}</label>
+							<ng-select  [searchable]="true" [(ngModel)]="user.user_title_id" name="userTitleAr"
+							#userTitleAr="ngModel"  [items]="userTitles" [bindLabel]="bindLabelUserTitle" bindValue="id"
+							placeholder="{{'USERS.ADD.USERTITLE_AR' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.user_title_name_ar"
+									class="ng-option-label">{{isArabic? item.user_title_name_ar : (item.user_title_name_en? item.user_title_name_en : item.user_title_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+						<!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'userTitleAr', 'required')">{{'USERS.VALIDATION.TITLE_AR' | translate}}</div> -->
+
+					</div>
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.JOB_TITLE_AR' | translate}}</label>
+							 <ng-select  [searchable]="true" [(ngModel)]="user.job_title_id"  name="jobTitleAr"
+								#jobTitleAr="ngModel" [items]="jobTitles" [bindLabel]="bindLabelJobTitle" bindValue="id"
+								placeholder="{{'USERS.ADD.JOBTITLE_AR' | translate}}">
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.job_title_name_ar"
+										class="ng-option-label">{{isArabic? item.job_title_name_ar : (item.job_title_name_en? item.job_title_name_en : item.job_title_name_ar)}}</span>
+								</ng-template>
+						 	</ng-select>
+
+							 <!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'jobTitleAr', 'required')">{{'USERS.VALIDATION.JOB_TITLE_AR' | translate}}</div> -->
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.NICKNAME_LABLE_AR' | translate}}</label>
+							 <ng-select  [searchable]="true" [(ngModel)]="user.nickname_id"  name="nickNameAr"
+								#nickNameAr="ngModel" [items]="nicknames" [bindLabel]="bindLabelNickname" bindValue="id"
+								placeholder="{{'USERS.ADD.NICKNAME_AR' | translate}}">
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.nickname_ar"
+										class="ng-option-label">{{isArabic? item.nickname_ar : (item.nickname_en? item.nickname_en : item.nickname_ar)}}</span>
+								</ng-template>
+						 	</ng-select>
+
+						<!-- <div class="error text-danger form-control-feedback" [hidden]="!hasError(userForm,'nickNameAr', 'required')">{{'USERS.VALIDATION.NICKNAME_AR' | translate}}</div> -->
+					</div>
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.LANG' | translate}}</label>
+						<ng-select  [searchable]="true" [(ngModel)]="user.language_id" name="language"
+							#language="ngModel" required [items]="languages" [bindLabel]="bindLabelLang" bindValue="id"
+							placeholder="{{'USERS.ADD.LANG' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.language_name_ar"
+									class="ng-option-label">{{isArabic? item.language_name_ar : (item.language_name_en? item.language_name_en : item.language_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'language', 'required')">{{'USERS.VALIDATION.LANG' | translate}}
+						</div>
+					</div>
+
+
+				</div>
+				<div *ngIf="additionalUserFields">
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "USERS.LIST.JOBID" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.JOBID' | translate }}" class="form-control" id="job_id"
+								   [readonly]="isSubmittedByFetcher"
+								name="job_id" [(ngModel)]="user.job_id" #job_id="ngModel"  required/>
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(userForm,'job_id', 'required')">
+									{{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'USERS.LIST.JOBID' | translate
+									} }}
+								</div>
+						</div>
+						<div class="col-lg-6">
+							<label class="">{{ "USERS.LIST.JOBTITLE" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.JOBTITLE' | translate }}" class="form-control" id="job_title"
+								   [readonly]="isSubmittedByFetcher"
+								   name="job_title" [(ngModel)]="user.job_title" #job_title="ngModel"  required/>
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(userForm,'job_title', 'required')">
+									{{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'USERS.LIST.JOBTITLE' | translate
+									} }}
+								</div>
+						</div>
+					</div>
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "USERS.LIST.RESPONSIBLEADMINISTRATION" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.RESPONSIBLEADMINISTRATION' | translate }}"
+								   [readonly]="isSubmittedByFetcher"
+								class="form-control" id="Responsible_admininstartation" name="Responsible_admininstartation"
+								[(ngModel)]="user.responsible_administration" #Responsible_admininstartation="ngModel"  required/>
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(userForm,'Responsible_admininstartation', 'required')">
+									{{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'USERS.LIST.RESPONSIBLEADMINISTRATION' | translate
+									} }}
+								</div>
+						</div>
+						<div class="col-lg-6">
+							<label class="">{{ "USERS.LIST.TRANSFERNO" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.TRANSFERNO' | translate }}" class="form-control"
+								id="transfer_NO" name="transfer_NO" [(ngModel)]="user.transfer_no" #transfer_NO="ngModel" required />
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(userForm,'transfer_NO', 'required')">
+									{{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'USERS.LIST.TRANSFERNO' | translate
+									} }}
+								</div>
+						</div>
+					</div>
+
+					<div class="form-group m-form__group row">
+						<div class="col-lg-6">
+							<label>{{ "USERS.LIST.HR_CategoryName" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.HR_CategoryName' | translate }}"
+								   [readonly]="isSubmittedByFetcher"
+								   class="form-control" id="HR_CategoryName" name="HR_CategoryName"
+								   [(ngModel)]="user.hr_categoryName" #HR_CategoryName="ngModel" required/>
+
+						</div>
+						<div class="col-lg-6 ">
+							<label class="">{{ "USERS.LIST.HR_GradeName" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.HR_GradeName' | translate }}" class="form-control"
+								   [readonly]="isSubmittedByFetcher"
+								   id="HR_GradeName" name="HR_GradeName" [(ngModel)]="user.hr_gradeName" #HR_GradeName="ngModel" required />
+
+						</div>
+						<div class="col-lg-6 mt-2">
+							<label class="">{{ "USERS.LIST.AreaName" | translate }}</label>
+							<input type="text" placeholder="{{ 'USERS.LIST.AreaName' | translate }}" class="form-control"
+								   [readonly]="isSubmittedByFetcher"
+								   id="AreaName" name="AreaName" [(ngModel)]="user.areaName" #AreaName="ngModel" required />
+
+						</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row" *ngIf="!userId">
+					<div class="col-lg-6">
+						<label>{{'USERS.ADD.PASSWORD' | translate}}</label>
+						<input type="password" placeholder="{{'USERS.ADD.USER_PASSWORD' | translate}}"
+							class="form-control" id="password" name="password" [(ngModel)]="user.password"
+							#password="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'password', 'required')">
+							{{'USERS.VALIDATION.PASSWORD' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label class="">{{'USERS.ADD.CONFIRMPASSWORD' | translate}}</label>
+						<input type="password" placeholder="{{'USERS.ADD.USER_CONFIRM_PASSWORD' | translate}}"
+							class="form-control" id="rpassword" name="rpassword" [(ngModel)]="user.rpassword"
+							#rpassword="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(userForm,'rpassword', 'required')">
+							{{'USERS.VALIDATION.CONFIRMPASSWORD' | translate}}</div>
+						<div class="error text-danger form-control-feedback"
+							*ngIf="user.password && user.rpassword && user.password != user.rpassword">
+							{{'USERS.VALIDATION.MATCHPASSWORD' | translate}}</div>
+					</div>
+				</div>
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+								[disabled]="submitted"
+								joyrideStep="saveUser" [title]="'TUTORIALGUIDE.SAVE_USER_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_USER_BODY' | translate" [stepPosition]="isArabic?'left':'right'">{{'BUTTON.SAVE' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i></button>
+							<button type="reset" (click)="redirect()"
+								class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+
+
+</m-portlet>

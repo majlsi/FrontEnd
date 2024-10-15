@@ -1,0 +1,339 @@
+<div id="m_login"
+	class="m-grid__item m-grid__item--fluid m-grid m-grid--hor m-login m-login--signin m-login--2 m-login-2--skin-2">
+	<div class="m-grid__item m-grid__item--fluid m-login__wrapper-2 m-login__wrapper">
+		<div class="m-login__container m-signup__lg-container">
+			<div class="m-login__logo">
+				<a href="#">
+					<img src="./assets/app/media/img/logos/{{themeName}}/Main-Logo.png" class="enz-reg-logo">
+				</a>
+			</div>
+
+
+			<!--begin::Signin-->
+			<div class="m-login__signin mjlsi--auth-form">
+				<div class="m-login__head">
+					<h3 class="m-login__title">{{ 'AUTH.REGISTER.TITLE' | translate }}</h3>
+				</div>
+				<m-auth-notice></m-auth-notice>
+
+				<div [hidden]="registerErrorHide" *ngFor="let item of error"
+					class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+					<span *ngFor="let field of item">
+						{{isArabic? field?.message_ar : field?.message}}
+					</span>
+				</div>
+				<div>
+
+				</div>
+				<!--begin::Form-->
+				<form class="m-login__form m-form" name="form" (ngSubmit)="submit(registerForm)" novalidate
+					#registerForm="ngForm">
+
+					<!-- <div class="row">
+						<div
+							class="col-sm-12 form-group m-form__group m--padding-bottom-30 m-form__group--org_avtr row">
+							<div class="col-md-2">
+								<div class="org_avtr imgLogo">
+									
+									<img *ngIf="image_url" [src]="image_url" class="rounded">
+								
+									<div class="">
+										<i class="fa fa-image" (click)="file.click()"></i>
+										<input type="file" accept="image/*" class="no-opacity" id="logoimage" #file
+											(ngModel)="user.organization.logo_image.image_url" name="file"
+											(change)="detectFiles($event)" required>
+									</div>
+									<span class="enz_editImg updateLogo"
+										(click)="file.click()">{{'AUTH.REGISTER.EDITIMAGE' | translate}}</span>
+								</div>
+
+							</div>
+							<div class="col-md-10">
+								<h3>{{ 'AUTH.INPUT.LOGO_IMAGE' | translate }}</h3>
+								<p>{{ 'AUTH.INPUT.LOGO_IMAGE_DESC' | translate }}, {{'AUTH.INPUT.MESSAGE' | translate}}</p>
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(registerForm,'file', 'required')">
+									{{ 'AUTH.VALIDATION.ORGANIZATION_LOGO_REQUIRED' | translate }}</div>
+								<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+									{{ 'AUTH.VALIDATION.ORGANIZATION_LOGO_INVALID' | translate }}</div>
+								<div class="error text-danger form-control-feedback"
+									*ngIf="logoImageSizeError.length > 0">
+									{{logoImageSizeError }}</div>
+							</div>
+
+
+						</div>
+					</div> -->
+
+
+					<div class="row" *ngIf="isArabic">
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="organizationnameAR">{{ 'AUTH.INPUT.ORGANIZATION_NAME_AR' | translate }} *</label>
+							<div class="split-cell ">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="text"
+											class="form-control" id="organizationnameAR" name="organizationnameAR"
+											[(ngModel)]="user.organization.organization_name_ar"
+											#organizationnameAR="ngModel" required>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'organizationnameAR', 'required')">
+											{{ 'AUTH.VALIDATION.ORGANIZATION_NAME_AR_REQUIRED' | translate }}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="fnamear">{{ 'AUTH.INPUT.FULLNAME_AR' | translate }}*</label>
+							<div class="split-cell ">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="text" class="form-control m-input" name="fnamear"
+											 autocomplete="off" [(ngModel)]="user.name_ar"
+											#fnamear="ngModel" required>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'fnamear', 'required')">
+											{{ 'AUTH.VALIDATION.FULLNAME_AR_REQUIRED' | translate }}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+
+					
+					</div>
+
+
+
+					<div class="row" *ngIf="!isArabic">
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="OrganizationName">{{ 'AUTH.INPUT.ORGANIZATION_NAME_EN' | translate }}*</label>
+							<div class="split-cell ">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="text" class="form-control m-input" name="OrganizationName"
+											 autocomplete="off"
+											[(ngModel)]="user.organization.organization_name_en" required
+											#OrganizationName="ngModel">
+											<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'OrganizationName', 'required')">
+											{{ 'AUTH.VALIDATION.ORGANIZATION_NAME_REQUIRED' | translate }}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group col-md-6" >
+							<label class="col" for="fname">{{ 'AUTH.INPUT.FULLNAME' | translate }}*</label>
+							<div class="split-cell ">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="text" class="form-control m-input" name="fullname"
+											 autocomplete="off" [(ngModel)]="user.name"
+											#fullname="ngModel" required>
+											<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'fullname', 'required')">
+											{{ 'AUTH.VALIDATION.FULLNAME_EN_REQUIRED' | translate }}</div>
+									</mat-form-field>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="exampleInputEmail1">{{ 'AUTH.INPUT.EMAIL' | translate }}</label>
+							<div class="split-cell ">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="email" name="email"
+											class="form-control m-input" autocomplete="off" [(ngModel)]="user.email"
+											#email="ngModel" email="true" required
+											pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$">
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'email', 'required')">
+											{{ 'AUTH.VALIDATION.EMAIL_REQUIRED' | translate }}</div>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'email', 'pattern')">
+											{{ 'AUTH.VALIDATION.EMAIL_INVALID' | translate }}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="PhoneNo">{{ 'AUTH.INPUT.PHONENO' | translate }}</label>
+							<div class="split-cell">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="text" class="form-control m-input" name="PhoneNo"
+											 autocomplete="off"
+											[(ngModel)]="user.organization.organization_phone" #PhoneNo="ngModel"
+											required pattern="[0-9]+">
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'PhoneNo', 'required')">
+											{{ 'AUTH.VALIDATION.PHONENO_REQUIRED' | translate }}</div>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'PhoneNo', 'pattern')">
+											{{'AUTH.VALIDATION.PHONENO_INVALID' | translate}}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+
+
+					<div class="row">
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="password">{{ 'AUTH.INPUT.PASSWORD' | translate }}</label>
+							<div class="split-cell">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput class="form-control m-input" type="password" name="password"
+											placeholder="{{ 'AUTH.RESET.PASSWORD' | translate }}" autocomplete="off" [(ngModel)]="user.password"
+											#password="ngModel" required>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'password', 'required')">
+											{{'AUTH.VALIDATION.PASSWORD_REQUIRED' | translate}}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="rpassword">{{ 'AUTH.INPUT.CONFIRM_PASSWORD' | translate }}</label>
+							<div class="split-cell">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput class="form-control m-input" type="password" name="rpassword"
+											placeholder="{{ 'AUTH.RESET.CONFIRM_PASSWORD' | translate }}" autocomplete="off"
+											[(ngModel)]="user.rpassword" #rpassword="ngModel" required>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'rpassword', 'required')">
+											{{'AUTH.VALIDATION.CONFIRM_PASSWORD_REQUIRED' | translate}}</div>
+										<div class="error text-danger form-control-feedback"
+											*ngIf="user.rpassword && user.rpassword != user.password">
+											{{'AUTH.VALIDATION.CONFIRM_PASSWORD' | translate}}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- <div class="row">
+
+							<div class="form-group m-form__group col-md-6">
+									<label class="col" for="companyCode">{{ 'AUTH.INPUT.COMPANY_CODE' | translate }}</label>
+									<div class="split-cell ">
+										<div class="half left col">
+											<mat-form-field>
+												<input matInput type="text" name="companyCode" placeholder="Email address"
+													class="form-control m-input" autocomplete="off"
+													[(ngModel)]="user.organization.organization_code" #companyCode="ngModel"
+													required>
+												<div class="error text-danger form-control-feedback"
+													[hidden]="!hasError(registerForm,'companyCode', 'required')">
+													{{ 'AUTH.VALIDATION.COMPANY_CODE' | translate }}</div>
+											</mat-form-field>
+										</div>
+									</div>
+								</div>
+
+
+						
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="usersNo">{{ 'AUTH.INPUT.USERSNO' | translate }}</label>
+							<div class="split-cell">
+								<div class="half left col">
+									<mat-form-field>
+										<input matInput type="number" class="form-control m-input" name="usersNo"
+											placeholder="Your Phone Number" autocomplete="off"
+											[(ngModel)]="user.organization.organization_number_of_users"
+											#usersNo="ngModel" [min]="1" required>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'usersNo', 'required')">
+											{{'AUTH.VALIDATION.USERS_NUMBER_REQUIRED' | translate}}</div>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'usersNo', 'min')">
+											{{'AUTH.VALIDATION.USERS_NUMBER_INVALID' | translate}}</div>
+									</mat-form-field>
+								</div>
+							</div>
+						</div>
+
+					</div> -->
+
+					
+
+					<!-- <div class="row">
+
+						
+						<div class="form-group m-form__group col-md-6">
+							<label class="col" for="timeZone"> {{'MEETINGS.INFO.ADD.TIMEZONE' | translate}}&nbsp;<span
+									class="MandatoryAsterisk">&nbsp;</span></label>
+							<div class="split-cell">
+								<div class="half left col">
+								
+										<ng-select [searchable]="true" [clearable]="false"
+											[(ngModel)]="user.organization.time_zone_id" name="timezone" #timezone="ngModel"
+											 [items]="timeZones"  bindValue="id" required>
+											<ng-template ng-label-tmp let-item="item">
+												{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}
+												{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+											</ng-template>
+											<ng-template ng-option-tmp let-item="item">
+												<span [title]="item.name"
+													class="ng-option-label">{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}</span>
+												<p>{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+												</p>
+											</ng-template>
+										</ng-select>
+										<div class="error text-danger form-control-feedback"
+											[hidden]="!hasError(registerForm,'timezone', 'required')">
+											{{'MEETINGS.INFO.VALIDATION.TIMEZONE' | translate}}
+										</div>
+										
+								
+								</div>
+							</div>
+						</div> 
+					</div>-->
+
+					<button type="submit" class="btn btn-primary btn-block" [disabled]="submitted">
+						{{ 'AUTH.GENERAL.SIGNUP_BUTTON' | translate }}
+						<i class="fa fa-check" aria-hidden="true"></i><i class='fa fa-spinner fa-spin'
+							*ngIf="submitted"></i>
+					</button>
+
+				</form>
+				<!--end::Form-->
+
+
+
+
+				<!--begin::Action-->
+				<div class="row m-login__form-sub">
+					<div class="col m--align-left m-login__form-left m-login__account">
+						<a href="javascript:;" [routerLink]="['/login']" id="m_login_signup"
+							class="m-link m-link--light m-login__account-link">
+							<i class="la la-arrow-left"></i>
+							{{'AUTH.GENERAL.BACK_BUTTON' | translate}} 
+						</a>
+						<!-- <a href="javascript:;" id="m_login_forget_password" class="m-link">Forget Password ?</a> -->
+					</div>
+					<div class="col m--align-right m-login__form-right">
+
+						<m-language-selector></m-language-selector>
+
+					</div>
+
+				</div>
+				<!--end::Action-->
+
+			</div>
+			<!--end::Signin-->
+
+
+
+		</div>
+	</div>
+</div>

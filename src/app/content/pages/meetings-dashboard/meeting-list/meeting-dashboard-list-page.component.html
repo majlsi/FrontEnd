@@ -1,0 +1,152 @@
+<m-portlet [options]="{headLarge: true}">
+    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'MEETINGS_DASHBOARD.LIST.MYMEETINGS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed"
+			[attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i> {{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+
+	</ng-container>
+    <!-- end::Header -->
+
+	<!--! filter -->
+    <ng-container mPortletBody>
+        <div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+            <div class="m-form col-md-12">
+                <div class="bg-white--content">
+                    <form class="" novalidate #committeeForm="ngForm" (ngSubmit)="getList()">
+                        <table class="table table-bordered">
+                            <thead class="">
+                                <tr>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.TITLE' | translate}}</th>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.DATEFROM' | translate}}</th>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.DATETO' | translate}}</th>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.MEETING_STATUS' | translate}}</th>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.COMMITTEES' | translate}}</th>
+                                    <th> {{'GENERAL.OPERATIONS' | translate}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" placeholder="{{'MEETINGS_DASHBOARD.LIST.TITLE' | translate}}"
+                                            class="form-control form-filter input-sm" id="meetingtitle"
+                                            name="meetingtitle" [(ngModel)]="filterObject.SearchObject.meeting_title"
+                                            #meetingtitle="ngModel">
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="form-control m-input"
+                                                placeholder="{{'MEETINGS_DASHBOARD.LIST.DATEFROM' | translate}}"
+                                                name="schedulefrom" [(ngModel)]="meeting_schedule_from_date"
+                                                ngbDatepicker #d="ngbDatepicker" (click)="d.toggle()" [readonly]="true">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary calendar"
+                                                    (click)="d.toggle();$event.stopPropagation();"
+                                                    type="button">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="form-control m-input"
+                                                placeholder="{{'MEETINGS_DASHBOARD.LIST.DATETO' | translate}}"
+                                                name="scheduleto" [(ngModel)]="meeting_schedule_to_date"  ngbDatepicker
+                                                #dTo="ngbDatepicker" [minDate]="meeting_schedule_from_date"
+                                                [readonly]="true" (click)="d.toggle()">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary calendar"
+                                                    (click)="dTo.toggle();$event.stopPropagation();"
+                                                     type="button">
+                                                    <i class="fa fa-calendar-alt"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                    <td class="md-column">
+                                        <ng-select class="" [searchable]="true"  placeholder="{{'MEETINGS_DASHBOARD.LIST.MEETING_STATUS' | translate}}"
+                                            [(ngModel)]="filterObject.SearchObject.meeting_status_id"
+                                            name="meetingstatus" #meetingstatus="ngModel" [items]="meetingStatuses"
+                                            [bindLabel]="bindMeetingStatusLabel" bindValue="id">
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{isArabic? item.meeting_status_name_ar : (item.meeting_status_name_en? item.meeting_status_name_en : item.meeting_status_name_ar)}}
+                                            </ng-template>
+                                            <ng-template ng-option-tmp let-item="item">
+                                                <span [title]="item.name"
+                                                    class="ng-option-label">{{isArabic? item.meeting_status_name_ar : (item.meeting_status_name_en? item.meeting_status_name_en : item.meeting_status_name_ar)}}</span>
+                                            </ng-template>
+                                        </ng-select>
+                                    </td>
+                                    <td class="sm-column">
+                                        <ng-select class="" [searchable]="true" placeholder="{{'MEETINGS_DASHBOARD.LIST.COMMITTEES' | translate}}"
+                                            [(ngModel)]="filterObject.SearchObject.committee_id" name="role"
+                                            #role="ngModel" [items]="organizationCommittees" [bindLabel]="bindLabel"
+                                            bindValue="id">
+                                            <ng-template ng-label-tmp let-item="item">
+                                                {{isArabic? item.committee_name_ar : (item.committee_name_en? item.committee_name_en : item.committee_name_ar)}}
+                                            </ng-template>
+                                            <ng-template ng-option-tmp let-item="item">
+                                                <span [title]="item.name"
+                                                    class="ng-option-label">{{isArabic? item.committee_name_ar : (item.committee_name_en? item.committee_name_en : item.committee_name_ar)}}</span>
+                                            </ng-template>
+                                        </ng-select>
+                                    </td>
+                                    <td>
+                                        <div class="margin-bottom-5 in-b  serchbtnMar">
+                                            <button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i
+                                                    class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+                                            <button type="button" class="btn btn-secondary m-btn--icon"
+                                                (click)=resetSearch()> <i
+                                                    class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- end::Header -->
+
+    <!-- start::Body (attribute: mPortletBody) -->
+	<!--! tabs -->
+    <ng-container mPortletBody>
+    	<div class="bg-white--content tabsWrabber">
+        <ul ngbNav #nav="ngbNav" class="nav-pills" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+            <li ngbNavItem="previousMeetings">
+                <button ngbNavLink>{{'MEETINGS_DASHBOARD.LIST.PREVIOUS_MEETINGS'|translate}}</button>
+                <ng-template ngbNavContent>
+                    <m-meeting-dash-list [filterObject]="filterObject"
+                        [meetingTypes]="meetingTypes" [loadingSubject]="loadingSubject"
+                        [dataSourceLength]="dataSourceLength" [paginatorTotal$]="paginatorTotal$"
+                        [dataSource]="dataSource" [activeIdString]="activeIdString"></m-meeting-dash-list>
+                </ng-template>
+            </li>
+            <li ngbNavItem="currentMeetings">
+                <button ngbNavLink>{{'MEETINGS_DASHBOARD.LIST.CURRENT_MEETINGS'|translate}}</button>
+                <ng-template ngbNavContent>
+                    <m-meeting-dash-list [filterObject]="filterObject"
+                        [meetingTypes]="meetingTypes" [loadingSubject]="loadingSubject"
+                        [dataSourceLength]="dataSourceLength" [paginatorTotal$]="paginatorTotal$"
+                        [dataSource]="dataSource" [activeIdString]="activeIdString"></m-meeting-dash-list>
+                </ng-template>
+            </li>
+        </ul>
+        <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    </div>
+</ng-container>
+    <!-- end::Body -->
+</m-portlet>

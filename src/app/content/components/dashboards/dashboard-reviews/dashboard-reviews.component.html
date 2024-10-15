@@ -1,0 +1,65 @@
+<div class="row mt-2">
+  <div class="col-6">
+    <div class="border-card">
+      <i class="la la-exclamation-circle m--font-danger"></i>
+      <h5 class="mt-2"><span class="num">{{dashboardDocuments.documents_statistics.delayed}}</span><span class="mx-1">{{'DASHBOARD.REVIEWDELAYED'|translate}}</span></h5>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="border-card">
+      <i class="la la-check-circle m--font-success"></i>
+      <h5 class="mt-2"><span class="num">{{dashboardDocuments.documents_statistics.completed}}</span><span class="mx-1">{{'DASHBOARD.REVIEWDONE'|translate}} </span></h5>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="border-card">
+      <i class="la la-plus-circle m--font-info-dark"></i>
+      <h5 class="mt-2"><span class="num">{{dashboardDocuments.documents_statistics.new}}</span><span class="mx-1">{{'DASHBOARD.REVIEWNEW'|translate}}</span></h5>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="border-card">
+      <i class="la la-clock-o m--font-primary"></i>
+      <h5 class="mt-2"><span class="num">{{dashboardDocuments.documents_statistics.in_progress}}</span><span class="mx-1">{{'DASHBOARD.REVIEWINPROGRESS'|translate}}</span></h5>
+    </div>
+  </div>
+</div>
+<div class="d-flex justify-content-end"  *ngIf="dashboardDocuments.documents.length && listFlag">
+  <div class="mt-1 m--font-bolder"><a class="m--font-info" [routerLink]="['/reviews-room']">{{'DASHBOARD.SHOW_ALL'|translate}} <i  class="align-middle la" [ngClass]="{'la-arrow-left ':isArabic,'la-arrow-right ': !isArabic}"></i></a>
+  </div>
+</div>
+<div class="bg-white--content m--border-radius-15 enz--relative mt-2" *ngFor="let document of dashboardDocuments.documents">
+  <div class="d-flex align-items-center justify-content-between  p-3 mw-100">
+    <div class="mw-90">
+      <div class="d-flex align-items-center mw-100">
+        <h5 class="m-0 text-truncate mw-60">{{document.document_subject_ar}}</h5><span class="mx-2 m-badge m-badge--wide" [ngClass]="{'m-badge--success': document.document_status_id == documentStatuses.complete,
+        'm-badge--primary': document.document_status_id == documentStatuses.inProgress,
+        'm-badge--brand': document.document_status_id == documentStatuses.new,
+        'm-badge--danger': document.document_status_id == documentStatuses.delay}">
+        {{isArabic? document.document_status_name_ar : (document.document_status_name_en? document.document_status_name_en : document.document_status_name_ar)}}
+      </span>
+      </div>
+
+      <div class="d-flex align-items-center mt-2">
+        <span class=" font-sm"> <i class="fa fa-user-circle align-middle"></i><span class="mx-1">{{isArabic? document.creator_name_ar : (document.creator_name? document.creator_name : document.creator_name_ar)}}</span></span>
+        <span class=" mx-2 font-sm"> <i class="la la-calendar align-text-bottom"></i><span class="mx-1">
+          {{document.review_start_date | date}} - {{document.review_end_date | date}}
+        </span></span>
+      </div>
+    </div>
+
+    <div ngbDropdown class="d-inline-block" *ngIf="(document.can_edit && editFlag) || viewFlag">
+      <button class="btn btn-secondary m-btn--icon-only px-2" id="dropdownBasic1" ngbDropdownToggle><i
+          class="fa fa-ellipsis-v"></i></button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <li ngbDropdownItem  (click)="edit(document.id)" *ngIf="document.can_edit && editFlag">
+          {{'BUTTON.EDIT' | translate}}
+        </li>
+        <li ngbDropdownItem (click)="view(document.id)" *ngIf="viewFlag">
+          {{'BUTTON.VIEW' | translate}}
+        </li>
+      </div>
+    </div>
+
+  </div>
+</div>

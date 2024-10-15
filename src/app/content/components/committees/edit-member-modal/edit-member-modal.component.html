@@ -1,0 +1,68 @@
+<ng-template  let-modal #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'COMMITTEES.ADD.EDITE_DATES' | translate}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form name="memberForm" #memberForm="ngForm" (ngSubmit)="save(memberForm);" novalidate>
+      <div class="form-group row">
+        <div class="col-6">
+          <label>{{'COMMITTEES.ADD.START_DATE' | translate}}</label>
+          <div class="input-group">
+           
+            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate"
+						    [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true" (ngModelChange)="setEndDateEqualFrom()">
+							<div class="input-group-append position-relative">
+                <span class="clear-input" (click)="clearDate('startDate')">
+                  <mat-icon matDatepickerToggleIcon >clear</mat-icon>
+                </span>
+                <button class="btn btn-outline-secondary calendar" (click)="startDate.toggle();endDate.close();$event.stopPropagation();" (dateSelect)="startDate.close()" (document:click)="decideClosure($event,startDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <label>{{'COMMITTEES.ADD.EXPIRED_DATE' | translate}}</label>
+          <div class="input-group">
+            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate"
+								   [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()">
+							<div class="input-group-append position-relative">
+                <span class="clear-input" (click)="clearDate('endDate')">
+                  <mat-icon matDatepickerToggleIcon >clear</mat-icon>
+                </span>
+                <button class="btn btn-outline-secondary calendar" (click)="endDate.toggle();startDate.close();$event.stopPropagation();" (dateSelect)="endDate.close()" (document:click)="decideClosure($event,endDate)"
+										type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+          
+
+          </div>
+          <div class="error text-danger form-control-feedback"
+							[hidden]="!isDateError">
+							{{'COMMITTEES.VALIDATION.DATES' | translate}}
+            </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button  class="btn btn-primary" mat-button type="submit" cdkFocusInitial >
+          {{'BUTTON.SAVE' | translate}}
+          <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+        </button>
+        <button class="btn btn-secondary" type="button" (click)="close()">{{'BUTTON.CANCEL' | translate}}</button> </div>
+    </form>
+  </div>
+  
+
+</ng-template>
+<button color="warn" type="button"  matTooltip="time"
+(click)="open(content)" 	
+class="btn btn-black m-btn m-btn--icon m-btn--outline-2x">
+<i class="la la-calendar"></i>
+</button>
+

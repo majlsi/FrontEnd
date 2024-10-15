@@ -1,0 +1,53 @@
+@import "./custom.css";
+
+.meeting-summary-panel__title {
+	font-size: 24px;
+	color: #231f20;
+	font-weight: 600;
+	position: sticky;
+    top: -6px;
+    background: #fff;
+}
+
+.card-header {
+	background: #fff !important;
+	padding: 1.5rem 1.25rem;
+	margin-bottom: 0;
+	border-bottom: 0px;
+}
+body {
+	background: #333 !important;
+}
+.presentation-content {
+	padding-top: 68px;
+}
+
+.aside .panel-footer {
+	border-top: 2px dashed #d8d8d8;
+	padding-top: 10px;
+	background-color: #ffffff;
+}
+.btn-sm {
+	font-size: 12px;
+}
+
+.meeting-summary-panel__body {
+    border: 1.5px solid #F2F3F7;
+}
+
+.meeting-summary-panel__body.active-border {
+    border: 1.5px solid #333;
+}
+
+@media (min-width: 1024px) {
+	.presentation-container .aside {
+		position: -webkit-sticky !important;
+		position: sticky !important;
+		min-height: unset;
+		height: calc(100vh - 70px);
+		overflow: unset;
+		padding-bottom: 10px;
+		top: 68px;
+		overflow-y: auto;
+	}
+}

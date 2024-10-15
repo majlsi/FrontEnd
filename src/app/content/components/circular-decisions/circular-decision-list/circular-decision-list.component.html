@@ -1,0 +1,101 @@
+<div class="mat-table__wrapper">
+	<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear
+		class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+		<ng-container matColumnDef="vote_subject_ar">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.SUBJECT' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.vote_subject_ar? decision.vote_subject_ar : decision.vote_subject_en}}</td>
+        </ng-container>
+        <ng-container matColumnDef="vote_subject_en">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.SUBJECT' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.vote_subject_en? decision.vote_subject_en : decision.vote_subject_ar}}</td>
+		</ng-container>
+
+        <ng-container matColumnDef="decision_type_name_ar">
+			<th *matHeaderCellDef mat-sort-header>{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.decision_type_name_ar? decision.decision_type_name_ar : decision.decision_type_name_en}}</td>
+        </ng-container>
+        <ng-container matColumnDef="decision_type_name_en">
+			<th *matHeaderCellDef mat-sort-header>{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.decision_type_name_en? decision.decision_type_name_en : decision.decision_type_name_ar}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="vote_result_status_name_ar">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">
+				<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': decision.vote_result_status_id == voteResultStatusesEnum.approved,
+					'm-badge--accent': decision.vote_result_status_id == voteResultStatusesEnum.balanced,
+					'm-badge--metal': decision.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+					'm-badge--danger': decision.vote_result_status_id == voteResultStatusesEnum.rejected,
+					'm-badge--warning': decision.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+					{{decision.vote_result_status_name_ar? decision.vote_result_status_name_ar : decision.vote_result_status_name_en}}
+				</span>
+			</td>
+        </ng-container>
+        <ng-container matColumnDef="vote_result_status_name_en">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">
+				<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': decision.vote_result_status_id == voteResultStatusesEnum.approved,
+				'm-badge--accent': decision.vote_result_status_id == voteResultStatusesEnum.balanced,
+				'm-badge--metal': decision.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+				'm-badge--danger': decision.vote_result_status_id == voteResultStatusesEnum.rejected,
+				'm-badge--warning': decision.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+					{{decision.vote_result_status_name_en? decision.vote_result_status_name_en : decision.vote_result_status_name_ar}}
+				</span>
+			</td>
+		</ng-container>
+		
+        <ng-container matColumnDef="committee_name_ar">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.COMMITTEE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.committee_name_ar? decision.committee_name_ar : decision.committee_name_en}}</td>
+        </ng-container>
+        <ng-container matColumnDef="committee_name_en">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.COMMITTEE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.committee_name_en? decision.committee_name_en : decision.committee_name_ar}}</td>
+        </ng-container>
+        
+		<ng-container matColumnDef="vote_schedule_from">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.DECISION_FROM_DATE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.vote_schedule_from | date: 'MMMM d, y'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="vote_schedule_to">
+			<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.DECISION_TO_DATE' | translate}}</th>
+			<td *matCellDef="let decision" (click)="viewDecision(decision.id);$event.stopPropagation()">{{decision.vote_schedule_to | date: 'MMMM d, y'}}</td>
+		</ng-container>
+
+		<!-- actions Column -->
+		<ng-container matColumnDef="actions">
+			<th *matHeaderCellDef>
+				{{'GENERAL.ACTIONS' | translate}}
+			</th>
+			<td *matCellDef="let decision" (click)="$event.stopPropagation()">
+				<button type="button" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x m-btn--icon-only" matTooltip="{{'BUTTON.EDIT' | translate}}" (click)="edit(decision.id)" *ngIf="decision.can_edit && editFlag">
+					<i class="flaticon-edit-1"></i>
+				</button>
+				<button type="button" matTooltip="{{'BUTTON.VIEW' | translate}}" (click)="viewDecision(decision.id)"
+					class="btn btn-black m-btn m-btn--icon m-btn--outline-2x m-btn--icon-only">
+					<i class="fa fa-eye"></i>
+				</button>
+				<button type="button" matTooltip="{{'BUTTON.TASKS' | translate}}" (click)="viewDecisionTasks(decision.id)"  *ngIf="decision.can_edit && editFlag"
+				class="btn btn-black m-btn m-btn--icon m-btn--outline-2x m-btn--icon-only">
+					<i class="fa fa-tasks"></i>
+				</button>
+                <button type="button" (click)="delete(decision.id)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x m-btn--icon-only" matTooltip="{{'BUTTON.DELETE' | translate}}" *ngIf="decision.can_edit && deleteFlag">
+					<i class="flaticon-delete-2"></i>
+				</button>
+			</td>
+		</ng-container>
+
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	</table>
+
+	<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+</div>
+
+<!-- start: BOTTOM -->
+<div class="mat-table__bottom">
+	<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+	<mat-paginator  [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+	</mat-paginator>
+</div>

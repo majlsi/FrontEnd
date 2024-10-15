@@ -1,0 +1,103 @@
+<div class="mat-table__wrapper">
+	<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear
+		class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+		<!--- Note that these columns can be defined in any order.
+						  The actual rendered columns are set as a property on the row definition" -->
+
+		<!-- role_name Column -->
+		<ng-container matColumnDef="document_subject_ar">
+			<th *matHeaderCellDef mat-sort-header>{{'REVIEWS_ROOM.LIST.DOCUMENT_TITLE' | translate}}</th>
+			<td *matCellDef="let document" (click)="reviewRoom(document);$event.stopPropagation()">{{document.document_subject_ar}}</td>
+		</ng-container>
+
+		<!-- role_name_ar Column -->
+		<ng-container matColumnDef="added_by">
+			<th *matHeaderCellDef mat-sort-header>{{'REVIEWS_ROOM.LIST.DOCUMENT_UPLOADED_BY' | translate}}
+			</th>
+			<td *matCellDef="let document" (click)="reviewRoom(document);$event.stopPropagation()">{{isArabic? document.creator_name_ar : (document.creator_name? document.creator_name : document.creator_name_ar)}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="review_start_date">
+			<th *matHeaderCellDef mat-sort-header>{{'REVIEWS_ROOM.LIST.DOCUMENT_START_DATE' | translate}}
+			</th>
+			<td *matCellDef="let document" (click)="reviewRoom(document);$event.stopPropagation()">{{document.review_start_date | date: 'MMMM d, y'}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="review_end_date">
+			<th *matHeaderCellDef mat-sort-header>{{'REVIEWS_ROOM.LIST.DOCUMENT_END_DATE' | translate}}</th>
+			<td *matCellDef="let document" (click)="reviewRoom(document);$event.stopPropagation()">{{document.review_end_date | date: 'MMMM d, y'}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="document_status_id">
+			<th *matHeaderCellDef mat-sort-header>{{'REVIEWS_ROOM.LIST.STATUS' | translate}}</th>
+			<td *matCellDef="let document" (click)="reviewRoom(document);$event.stopPropagation()">
+				<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': document.document_status_id == documentStatusEnm.complete,
+					'm-badge--accent': document.document_status_id == documentStatusEnm.inProgress,
+					'm-badge--metal': document.document_status_id == documentStatusEnm.new,
+					'm-badge--danger': document.document_status_id == documentStatusEnm.delay}">
+					{{isArabic? document.document_status_name_ar : (document.document_status_name_en? document.document_status_name_en : document.document_status_name_ar)}}
+				</span>
+			</td>
+		</ng-container>
+
+		<!-- actions Column -->
+		<ng-container matColumnDef="actions">
+			<th *matHeaderCellDef>
+				{{'GENERAL.ACTIONS' | translate}}
+			</th>
+			<td *matCellDef="let document" (click)="$event.stopPropagation()">
+				<button type="button" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x" matTooltip="{{'BUTTON.EDIT' | translate}}" (click)="edit(document.id)" *ngIf="document.can_edit && editFlag">
+					<i class="flaticon-edit-1"></i>
+				</button>
+				<button type="button" (click)="delete(document.id)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x" matTooltip="{{'BUTTON.DELETE' | translate}}" *ngIf="document.can_edit && deleteFlag">
+					<i class="flaticon-delete-2"></i>
+				</button>
+				<button type="button" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x" (click)="download(document,'original')"
+					matTooltip="{{'REVIEWS_ROOM.LIST.DOWNLOAD_ORIGINAL_DOCUMENT' | translate}}">
+					<i class="fas fa-download"></i>
+				</button>
+				<button type="button" class="btn btn-primary m-btn m-btn--icon m-btn--outline-2x ng-star-inserted" (click)="download(document,'modified')"
+					matTooltip="{{'REVIEWS_ROOM.LIST.DOWNLOAD_MODIFIED_DOCUMENT' | translate}}">
+					<i class="fas fa-file-download"></i>
+				</button>
+				<!-- <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown" container="body">
+					<button class="btn btn-black m-btn m-btn--icon m-btn--outline-2x" id="dropdownBasic1"
+						ngbDropdownToggle>
+						<i class="fas fa-download"></i>
+					</button>
+					<div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+						<button ngbDropdownItem>Action - 1</button>
+						<button ngbDropdownItem>Another Action</button>
+						<button ngbDropdownItem>Something else is here</button>
+					</div>
+				</div>
+
+				<div ngbDropdown container="body">
+					<button class="btn btn-outline-primary btn-sm" ngbDropdownToggle>Actions</button>
+					<div ngbDropdownMenu>
+						<button ngbDropdownItem>Edit</button>
+						<button ngbDropdownItem>Duplicate</button>
+						<button ngbDropdownItem>Move</button>
+						<div class="dropdown-divider"></div>
+						<button ngbDropdownItem>Delete</button>
+					</div>
+				</div> -->
+
+
+			</td>
+		</ng-container>
+
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	</table>
+
+	<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+</div>
+
+<!-- start: BOTTOM -->
+<div class="mat-table__bottom">
+	<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+	<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+	</mat-paginator>
+</div>

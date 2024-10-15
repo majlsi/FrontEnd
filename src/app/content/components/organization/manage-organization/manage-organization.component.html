@@ -1,0 +1,228 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'ORGANIZATIONS.ADD.ADDNEORGANIZATION' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<div [hidden]="error.length == 0" *ngFor="let item of error"
+				class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+				<span *ngFor="let field of item">
+					{{isArabic? field?.message_ar : field?.message? field?.message : field?.message_ar}}
+				</span>
+			</div>
+			<form class="
+		m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #organizationForm="ngForm"
+				(ngSubmit)="save(organizationForm)" name="organizationForm">
+
+
+
+				<div class="form-group m-form__group m--padding-top-15 m-form__group--org_avtr row">
+					<div class="col-md-1">
+						<div class="org_avtr imgLogo">
+							<div>
+								<img *ngIf="image_url" [src]="image_url" class="rounded">
+							</div>
+							<div class="">
+								<i class="fa fa-image" (click)="file.click()"></i>
+								<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)"
+									#file name="file" (ngModel)="organization.logo_image.image_url">
+							</div>
+							<span class="enz_editImg updateLogo"
+								(click)="file.click()">{{'ORGANIZATIONS.ADD.EDITIMAGE' | translate}}</span>
+						</div>
+
+					</div>
+					<div class="col-md-11 pl-0">
+						<h3>{{'ORGANIZATIONS.ADD.ORGANIZATIONIMAGE' | translate}}</h3>
+						<p>{{'ORGANIZATIONS.ADD.DESCRIPTION' | translate}}</p>
+						<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+							{{logoImageSizeError }}</div>
+						<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+							{{ 'AUTH.VALIDATION.ORGANIZATION_LOGO_INVALID' | translate }}</div>
+						<div class="error text-danger form-control-feedback" *ngIf="fileRequiredError">
+							{{ 'ORGANIZATIONS.MANAGE.VALIDATION.ORGANIZATIONIMAGE' | translate }}</div>
+					</div>
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-12" *ngIf="isArabic">
+						<label>{{'ORGANIZATIONS.MANAGE.ORGANIZATIONNAMEAR' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.MANAGE.ORGANIZATION_NAME_AR' | translate}}"
+							class="form-control" id="organizationnameAR" name="organizationnameAR"
+							[(ngModel)]="organization.organization_name_ar" #organizationnameAR="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'organizationnameAR', 'required')">
+							{{'ORGANIZATIONS.MANAGE.VALIDATION.ORGANIZATIONNAMEAR' | translate}}</div>
+					</div>
+					<div class="col-lg-12" *ngIf="!isArabic">
+						<label>{{'ORGANIZATIONS.MANAGE.ORGANIZATIONNAME_EN' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.MANAGE.ORGANIZATIONNAME' | translate}}"
+							class="form-control" id="organizationname" name="organizationname" required
+							[(ngModel)]="organization.organization_name_en" #organizationname="ngModel">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'organizationname', 'required')">
+							{{'ORGANIZATIONS.MANAGE.VALIDATION.ORGANIZATIONNAME' | translate}}</div>
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="phoneno">{{'ORGANIZATIONS.ADD.PHONENO' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.PHONE_NO' | translate}}"
+							class="form-control" id="phoneno" name="phoneno"
+							[(ngModel)]="organization.organization_phone" #phoneno="ngModel" pattern="[0-9]+" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'phoneno', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.PHONENO' | translate}}</div>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'phoneno', 'pattern')">
+							{{'ORGANIZATIONS.VALIDATION.PHONENOVALIDATION' | translate}}</div>
+					</div>
+
+					<div class="col-lg-6">
+						<label
+							for="organizationCode">{{'ORGANIZATIONS.ADD.ORGANIZATION_CODE_MANDATORY' | translate}}</label>
+						<input type="text" placeholder="{{'ORGANIZATIONS.ADD.ORGANIZATIONCODE' | translate}}"
+							class="form-control" id="organizationCode" name="organizationCode"
+							[(ngModel)]="organization.organization_code" #organizationCode="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'organizationCode', 'required')">
+							{{'ORGANIZATIONS.VALIDATION.ORGANIZATION_CODE' | translate}}</div>
+					</div>
+
+				</div>
+
+
+
+				<div class="form-group m-form__group row">
+
+
+					<div class="col-lg-6">
+						<label for="organizationTimeZone">{{'MEETINGS.INFO.ADD.TIMEZONE' | translate}}&nbsp;<span
+								class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select [searchable]="true" [clearable]="false" [(ngModel)]="organization.time_zone_id"
+							name="timezone" #timezone="ngModel" [items]="timeZones" bindValue="id" required>
+							<ng-template ng-label-tmp let-item="item">
+								{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}
+								{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+							</ng-template>
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name"
+									class="ng-option-label">{{isArabic? item.description_ar : (item.description_en? item.description_en : item.description_ar)}}</span>
+								<p>{{item.diff_hours > 0? '+'+item.diff_hours : item.diff_hours}} GMT
+								</p>
+							</ng-template>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'timezone', 'required')">
+							{{'MEETINGS.INFO.VALIDATION.TIMEZONE' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="organizationTimeZone">{{'MEETINGS.INFO.ADD.VOTE' | translate}}&nbsp;<span
+								class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select id="enable_vote" name="enableVote" [clearable]="false"
+							[(ngModel)]="organization.is_vote_enabled" required>
+							<ng-option [value]="0">{{'MEETINGS.INFO.ADD.VOTE_DISABLE'  | translate}} </ng-option>
+							<ng-option [value]="1">{{'MEETINGS.INFO.ADD.VOTE_ENABLE'  | translate}} </ng-option>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(organizationForm,'enableVote', 'required')">
+							{{'MEETINGS.INFO.VALIDATION.VOTE' | translate}}</div>
+					</div>
+
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="organizationTwoFactor">{{'ORGANIZATIONS.ADD.TWOFACTORAUTH' | translate}}&nbsp;<span
+							class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select id="twoFactorAuth" name="twoFactorAuth"
+                        	[clearable]="false" [(ngModel)]="organization.has_two_factor_auth" required>
+                        	<ng-option [value]="0">{{'ORGANIZATIONS.ADD.TWOFACTORAUTH_DISABLE'  | translate}} </ng-option>
+                        	<ng-option [value]="1">{{'ORGANIZATIONS.ADD.TWOFACTORAUTH_ENABLE'  | translate}} </ng-option>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(organizationForm,'twoFactorAuth', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.TWOFACTORAUTH' | translate}}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="organizationTwoFactor">{{'ORGANIZATIONS.ADD.MEETINGARCHIVING' | translate}}&nbsp;<span
+							class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select id="MEETINGARCHIVING" name="MEETINGARCHIVING"
+                        	[clearable]="false" [(ngModel)]="organization.enable_meeting_archiving" required>
+                        	<ng-option [value]="0">{{'ORGANIZATIONS.ADD.MEETINGARCHIVING_DISABLE'  | translate}} </ng-option>
+                        	<ng-option [value]="1">{{'ORGANIZATIONS.ADD.MEETINGARCHIVING_ENABLE'  | translate}} </ng-option>
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(organizationForm,'MEETINGARCHIVING', 'required')">
+						{{'ORGANIZATIONS.VALIDATION.MEETINGARCHIVING' | translate}}</div>
+					</div>			
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col">
+						<label class="col-form-label">{{'PROFILE.UPLOAD_DISCLOSURE' | translate}}
+							&nbsp;<span class="MandatoryAsterisk"></span>
+						</label>
+					</div>
+					<div class="col ml-auto text-right">
+						<a (click)="downloadFile()" class="m-widget4__icon col-md-12" style="margin-right: 0;" *ngIf="organization.disclosure_url">
+							{{'PROFILE.DOWNLOAD_DISCLOSURE' | translate}}
+							<i class="la la-download"></i>
+						</a>
+						<a (click)="downloadDefaultFile()" class="m-widget4__icon col-md-12" style="margin-right: 0;">
+							{{'PROFILE.DOWNLOAD_ORIGINAL_DISCLOSURE' | translate}}
+							<i class="la la-download"></i>
+						</a>
+					</div>
+					<div class="input-group mr-3 ml-3">
+						 <label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" 
+							for="thefile">
+								<input type="file" class="d-none" id="thefile" accept=".doc, .docx"
+								 	(change)="fileChangeEvent($event)" #disclosure="ngModel" name="disclosure" (ngModel)="attachmentUrl"/>
+								<span id="fileName" *ngIf="!attachmentUrl">{{ 'REVIEWS_ROOM.ADD.NO_CHOSEN_FILE' | translate }}</span>
+								<span id="fileName" *ngIf="attachmentUrl">{{attachmentUrl}}</span>
+								<span class="btn btn-default px-0 mx-0">{{'REVIEWS_ROOM.ADD.BROWSE' | translate}}</span>
+						</label>
+					</div>					
+				</div>
+				<div class="error text-danger form-control-feedback"
+					*ngIf="attachmentTypeError">
+					{{'PROFILE.VALIDATION.ORGANIZATION_UPLOAD_FILE_TYPE' | translate}}
+				</div>
+				<div class="error text-danger form-control-feedback"
+					*ngIf="attachmentSizeError">
+					{{attachmentSizeError}}
+				</div>
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+								[disabled]="submitted">{{'BUTTON.SAVE' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+							</button>
+							<!-- 	<button type="reset" (click)="redirect()"
+								class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button> -->
+						</div>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

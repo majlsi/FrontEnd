@@ -1,0 +1,64 @@
+<ng-template #contentDelete let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{ "COMMITTEES.DELETE.DELETEMEMBERREQUEST" | translate }}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="close()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form name="memberForm" #memberForm="ngForm" (ngSubmit)="save(memberForm)" novalidate>
+			<div class="form-group row">
+				<div class="col-12">
+					<label>{{ 'COMMITTEES.DELETE.DELETEREASON' | translate }}
+						&nbsp;<span class="MandatoryAsterisk">*</span>
+					</label>
+					<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000"
+					    #delete_reason="ngModel"   [(ngModel)]="deleteReason.delete_reason"
+						placeholder="{{ 'COMMITTEES.DELETE.DELETEREASON' | translate }}" id="doc_description" name="delete_reason"
+						></textarea>
+
+						<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(memberForm,'delete_reason', 'required')">
+						{{  'COMMITTEES.DELETE.DELETEREASONREQUIRED' | translate  }}
+						</div>
+				</div>
+				<div class="col-12">
+					<label>{{'COMMITTEES.DELETE.EVIDENCEDOCUMENT' | translate}}
+
+					</label>
+					<div class="input-group ">
+						<label
+							class="relative uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+							for="attachmentEvidencefile">
+							<input type="file"  class="d-none"  id="attachmentEvidencefile" accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt" (change)="fileEvidenceUrlChangeEvent($event)" #attachmentEvidence="ngModel" name="attachmentEvidence" (ngModel)="(attachmentEvidenceUrl)" />
+							<span id="attachmentEvidencefile" *ngIf="!attachmentEvidenceUrl">{{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}</span>
+							<span  *ngIf="attachmentEvidenceUrl">{{ attachmentEvidenceUrl }}</span>
+							 <span class="btn btn-default px-0 mx-0">{{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}</span>
+						</label>
+					</div>
+					<div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+						{{ "COMMITTEES.VALIDATION.GOVERNANCE_REGULATION_UPLOAD_FILE_TYPE" | translate }}
+					</div>
+					<div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+						{{ attachmentSizeError }}
+					</div>
+
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+					{{ "BUTTON.SEND" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+				</button>
+				<button class="btn btn-secondary" type="button" (click)="close()">{{ "BUTTON.CANCEL" | translate }}</button>
+			</div>
+		</form>
+
+	</div>
+
+</ng-template>
+
+<button type="button" (click)="open(contentDelete)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x">
+	<i class="flaticon-delete-2"></i>
+</button>

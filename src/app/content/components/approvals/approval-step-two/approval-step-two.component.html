@@ -1,0 +1,94 @@
+<div class="presentation-container bg-white m-4 d-flex flex-column">
+    <div class="d-flex presentation-content border rounded bg-light pt-0 flex-grow-1">
+        <div class="canvas-area p-4 col-12 col-lg-10">
+            <!----------------------------------------->
+            <!-- Start Header -->
+            <div class="d-flex justify-content-start border-bottom-light-grey pb-4 ">
+                <div ngbDropdown class="d-inline-block" placement="bottom-end" container="body">
+                    <button type="button" id="addFieldDropdown" ngbDropdownToggle
+                        class="dropdown-toggle btn btn-light-grey title-action-btn mb-0 d-flex align-items-center py-1">
+                        <i class="fas fa-pen-nib mr-2 pr-1 font-size-12 ml-2"></i>
+                        {{'APPROVAL.ADD.ADD_SIGN' | translate }}
+                        <i class="fas fa-chevron-down ml-4 mr-2"></i>
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="addFieldDropdown" class="w-100">
+                        <button ngbDropdownItem class="bg-light mb-2 rounded" (click)="addField(member)"
+                            *ngFor="let member of committeeUsers; let i = index">
+                            {{isArabic ? member.name_ar : member.name}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- End Header -->
+            <!----------------------------------------->
+            <div class="d-flex presentation-content pt-0">
+                <div [ngClass]="showCursor ? 'cursor-none': ''"
+                    class="add-signature-field-canvas canvas-area p-0 col-12 min-h-500px position-relative">
+                    <!----------------------------------------->
+                    <!-- Start Canvas -->
+                    <div [ngClass]="showCursor ? 'opacity-1': 'opacity-0'" class="sign-cursor-btn btn
+                    btn-primary position-absolute d-flex align-items-center justify-content-center pt-2 h-unset">
+                        {{assignedMemberName ? assignedMemberName : ''}}
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                            <!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                            <path fill="white"
+                                d="M136.6 138.79a64.003 64.003 0 0 0-43.31 41.35L0 460l14.69 14.69L164.8 324.58c-2.99-6.26-4.8-13.18-4.8-20.58 0-26.51 21.49-48 48-48s48 21.49 48 48-21.49 48-48 48c-7.4 0-14.32-1.81-20.58-4.8L37.31 497.31 52 512l279.86-93.29a64.003 64.003 0 0 0 41.35-43.31L416 224 288 96l-151.4 42.79zm361.34-64.62l-60.11-60.11c-18.75-18.75-49.16-18.75-67.91 0l-56.55 56.55 128.02 128.02 56.55-56.55c18.75-18.75 18.75-49.15 0-67.91z" />
+                        </svg>
+                    </div>
+                    <div class="d-block my-0" *ngFor="let documentSlide of documentSlides; let key = index">
+                        <!-- Content Column -->
+                        <div class="canvas-cont d-flex w-100 justify-content-center" id="canvas_parrent_{{key}}">
+                            <canvas #myCanvas [ngStyle]="{'cursor': isDrawing ? 'text' : '' }" id="viewport_{{key}}"
+                                class="canvas_{{key}}" (swipe)="isFreeHand && onSwipe($event)">
+                            </canvas>
+                        </div>
+                    </div>
+                    <!-- End Canvas -->
+                </div>
+            </div>
+        </div>
+        <!------------>
+        <div
+            class="col-xl-2 col-lg-2 bg-g-500 votes-comments--aside d-mobile-fixed  pt-4 pb-3 px-1 d-flex flex-column justify-content-between">
+            <div class=" aside col-12">
+                <div class="height-calc-minus-header mt-4">
+                    <div class="d-block d-lg-none">
+                        <button class="btn btn-secondary aside-toggler-btn my-2 mx-0" mat-button
+                            (click)="showRevisionsMenu=false">
+                            <i class="fa fa-times"></i>
+                        </button>&nbsp;
+                    </div>
+                    <div class="meeting-summary-panel__title d-flex justify-content-center p-0">
+                        <h4 class="mt-1 font-weight-600 font-size-18">{{'PRESENTATION.SLIDES' | translate}}</h4>
+                    </div>
+                    <div class="panel__body p-0">
+                        <ul class="side bar sidebar-or ange accordion list-unstyled flex-column" id="slides-list"
+                            [ngClass]="show ? 'd-flex' : 'd-none'">
+
+                            <li class="nav-item my-3 mx-2" *ngFor="let documentSlide of documentSlides; let i = index">
+                                <img class="mw-100" id="img_{{i}}" src="{{ imagesBaseURL + documentSlide.url}}"
+                                    (load)="scaleToFit(documentSlide,i)" (click)="scroleTo(i);">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!------------>
+    </div>
+    <div class="m-form__actions m-form__actions--solid">
+        <div class="row pb-4 mb-2 mt-4">
+            <div class="d-flex justify-content-start">
+                <button type="submit" class="btn btn-primary mx-3 pl-2" (click)="openSummary()"
+                    [disabled]="submitted || !addedAllMembers">
+                    {{'BUTTON.SAVE' | translate}}
+                    <i class="fa fa-chevron-right ml-1" aria-hidden="true"></i>
+                    <i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+                </button>
+                <button type="reset" (click)="back()" class="btn btn-secondary">
+                    {{'GENERAL.Back' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

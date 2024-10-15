@@ -1,0 +1,128 @@
+<m-portlet [options]="{headLarge: false}">
+    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+    <ng-container mPortletHeadTitle>
+        <div class="m-portlet__head-title flex-column">
+            <h3 class="m-portlet__head-text mt-0"> {{approval?.approval_title}} </h3>
+        </div>
+    </ng-container>
+
+    <ng-container mPortletHeadTools>
+
+        <span class="m-alert__text d-flex justify-content-end align-top">
+            <span *ngIf="canSign()">
+                <button type="button" class="btn btn-primary mx-3" (click)="goToDigitalSignature()">
+                    {{'APPROVAL.VIEW.SIGN_APPROVALS' | translate}}
+                </button>
+            </span>
+            <span>
+                <a class="btn btn-secondary" routerLink="/approvals">
+                    <span class="px-2">{{'APPROVAL.VIEW.BACKTO_APPROVALS'| translate}}</span>
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+            </span>
+        </span>
+    </ng-container>
+    <!-- end::Header -->
+
+
+    <!-- start::Body (attribute: mPortletBody) -->
+    <ng-container mPortletBody>
+        <div class="bg-white--content p-4">
+            <div class="form-group m-form__group row pt-2 mb-2">
+                <div class="col-lg-12 mb-3">
+                    <label>{{'APPROVAL.ADD.APPROVAL_CREATOR' | translate}}</label>
+                    <div class="font-weight-500 rounded bg-light px-3 form-control border lh-1 py-0 cursor-not-allowed">
+                        {{isArabic? (approval?.created_by_obj?.name_ar? approval?.created_by_obj?.name_ar :
+                        approval?.created_by_obj?.name) : (approval?.created_by_obj?.name?
+                        approval?.created_by_obj?.name
+                        :approval?.created_by_obj?.name_ar)}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group m-form__group row pt-0 mb-2">
+                <div class="col-lg-12 mb-3">
+                    <label>{{'APPROVAL.ADD.FILE' | translate}}
+                    </label>
+                    <div class="agenda__items m-widget4 meeting-attachments__cont">
+                        <div class="m-widget4__item align-items-center">
+                            <div class="m-widget4__img m-widget4__img--icon pl-2">
+                                <img src="./assets/app/media/img/icons/pdf.png" alt="">
+                            </div>
+                            <div class="m-widget4__info">
+                                <span class="m-widget4__text">
+                                    {{approval?.attachment_name}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group m-form__group row pt-0 mb-2">
+                <div class="col-lg-12 mb-3">
+                    <label>{{'APPROVAL.ADD.ADD_DATE' | translate}}
+                    </label>
+                    <div class="font-weight-500 rounded bg-light px-3 form-control border lh-1 py-0 cursor-not-allowed">
+                        {{approval?.created_at | date: 'd MMMM y, h:mm a'}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white--content p-4">
+
+            <h4 class="font-size-18 font-weight-600">{{'APPROVAL.ADD.APPROVAL_MEMBERS' | translate}}</h4>
+            <div class="mat-table__wrapper">
+                <table *ngIf="!dataSourceLength" mat-table [dataSource]="dataSource"
+                    class="table table-bordered m-table table-hover table-striped table-scroll mat-table">
+                    <ng-container matColumnDef="approval_name">
+                        <th *matHeaderCellDef>{{'APPROVAL.LIST.TITLE' | translate}}</th>
+                        <td *matCellDef="let member">
+                            {{isArabic? (member.name_ar? member.name_ar : member.name) : (member.name? member.name
+                            :member.name_ar)}}
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status_id">
+                        <th *matHeaderCellDef>{{'APPROVAL.LIST.STATUS' | translate}}</th>
+                        <td *matCellDef="let member">
+                            <span class="m-badge m-badge--status"
+                                [ngClass]="{'m-badge--success': member?.is_signed == true,'m-badge--accent': member?.is_signed == false,'m-badge--metal': member?.is_signed == null}">
+                                {{getSignStatus(member)}}
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="updated_at_formatted">
+                        <th *matHeaderCellDef>{{'APPROVAL.LIST.UPDATED_AT' | translate}}</th>
+                        <td *matCellDef="let member">
+                            {{member.updated_at | date: 'd MMMM y, h:mm a' }}
+                        </td>
+                    </ng-container>
+                    <!-- reason Column -->
+                    <ng-container matColumnDef="reason">
+                        <th *matHeaderCellDef>
+                            {{'APPROVAL.VIEW.SIGN_APPROVAL_REASON' | translate}}
+                        </th>
+                        <td *matCellDef="let member">
+                            {{member?.signature_comment}}
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+
+                <div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+            </div>
+
+            <!-- start: BOTTOM -->
+            <div class="mat-table__bottom">
+                <mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+                <!-- <mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+                                                                                                                                                                                                                                                                                                </mat-paginator> -->
+            </div>
+            <!-- end::Body -->
+        </div>
+    </ng-container>
+    <!-- end::Body -->
+
+</m-portlet>

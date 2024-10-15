@@ -1,0 +1,53 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'MYCALENDAR.TITLE' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+
+			<div *ngIf="options">
+				<full-calendar #fullcalendar [options]="options" [(eventsModel)]="events"
+					(eventClick)="eventClick($event.detail)" (eventDrop)="updateEvent($event.detail)"
+					(eventResize)="updateEvent($event.detail)" (clickButton)="clickButton($event.detail)"
+					(eventRender)="eventrender($event.detail)"
+					(eventMouseOver)="mouseOver($event.detail)" (eventMouseOut)="mouseOut($event.detail)">
+				</full-calendar>
+			</div>
+
+		<!-- 	<ng-container *ngIf="isHidden" #calendarPopover>
+				<h1>Heba</h1>
+			</ng-container> -->
+			<div class="d-flex align-items-center pb-4 mt-4">
+				<div class="m-widget14__legends d-flex flex-wrap">
+
+
+					<div class="m-widget14__legend col" *ngFor="let meetingStatus of meetingStatuses">
+						<span class="m-widget14__legend-bullet " [ngStyle]="{'background-color':meetingStatus.color}"></span>
+						<span class="m-widget14__legend-text">
+
+							{{isArabic? meetingStatus.meeting_status_name_ar : (meetingStatus.meeting_status_name_en? meetingStatus.meeting_status_name_en : meetingStatus.meeting_status_name_ar)}}
+
+						</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+
+	<!-- end::Body -->
+</m-portlet>

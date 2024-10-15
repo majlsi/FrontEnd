@@ -1,0 +1,81 @@
+<div class="row justify-content-between">
+  <m-search-bar class="col-lg-8 col-md-9 col-12 mx-3 px-0 files-typeahead" [path]="path"></m-search-bar>
+
+
+  
+  
+
+  <div ngbDropdown #myDrop="ngbDropdown" [autoClose]="false" class="d-inline-block col-2 mx-5 mx-md-0 px-0 d-flex align-items-center justify-content-end"
+    *ngIf="canAdd">
+    <button
+      class="btn btn-primary py-2 px-5 mx-0 my-3 d-flex justify-content-center align-items-center text-white dropdown_no_arrow"
+      id="dropdownBasic1" ngbDropdownToggle joyrideStep="addFile" [title]="'TUTORIALGUIDE.ADD_FILE_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_FILE_BODY' | translate" [stepPosition]="'bottom'" (next)="myDrop.open();"><i class="fas fa-plus"></i> {{'FILES.ADD'|translate}}</button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+      [ngClass]="{'dropdown-menu-right': isArabic, 'dropdown-menu-left': !isArabic}">
+      <button ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey"
+        (click)="openNewFolderModal()"><i class="icon-Icon-awesome-folder-plus font-size-10"></i>
+        {{'FILES.ADDDIRECTORY'|translate}}</button>
+      <button ngbDropdownItem class="btn bg-white d-flex align-items-center m-0 p-0 color-dark-grey" *ngIf="can_upload"
+        (click)="openUploadFileModal()" joyrideStep="uploadFile" [title]="'TUTORIALGUIDE.UPLOAD_FILE_TITLE' | translate" [text]="'TUTORIALGUIDE.UPLOAD_FILE_BODY' | translate" [stepPosition]="isArabic?'left':'right'"><i class="icon-Icon-awesome-file-upload font-size-14"></i>
+        {{'FILES.UPLOADFILES'|translate}}</button>
+
+    </div>
+  </div>
+
+</div>
+<div *ngIf="path != 'recent'">
+  <div class="m-portlet__head-title" [hidden]="emptyRecent === null||emptyRecent">
+    <h3 class="m-2 p-3 font-size-24 font-weight-500 color-title-dark"> {{'FILES.RECENTFILES'|translate}}</h3>
+  </div>
+  <div class="m-portlet__body">
+    <m-files-list [config]="recentFilesConfig" [hidden]="emptyRecent === null ||emptyRecent"
+      (isEmpty)="isEmptyRecent($event)"></m-files-list>
+  </div>
+</div>
+
+<div [hidden]="emptyDirectories === null||emptyDirectories">
+  <div class="m-portlet__head-title row d-flex justify-content-between align-items-center">
+    <h3 class="m-2 p-3 font-size-24 font-weight-500 color-title-dark"> {{'FILES.ALLDIRECTORIES'|translate}}</h3>
+    <div ngbDropdown class="d-flex align-items-center my-2 py-3 mx-0 px-0" *ngIf="!isRecentPage">
+      <button class="btn border-0 m-0 p-0 directoriesFilterBtn btn-transperant" id="sortMenu" ngbDropdownToggle>{{selectedSortOrder.label|translate}}</button>
+      <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="sortMenu">
+        <button class="dropdown-item" *ngFor="let sortOrder of sortOrders" (click)="ChangeSortOrder(sortOrder)" >{{sortOrder.label|translate}}</button>
+      </div>
+      <button class="btn border-0 directoriesSort-BtnArrow m-link" (click)="asc = !asc; changeSort()"><i class="fas font-size-12 fa-arrow-up arrow-rotate" [ngClass]="{'down':!asc}"></i></button>
+      <!-- <button class="btn directoriesSort-BtnArrow m-link"><i class="fas font-size-12 fa-arrow-up"></i></button> -->
+    </div>
+  </div>
+  <div class="m-portlet__body">
+    <m-folders-list [config]="directoriesConfig" (isEmpty)="isEmptyDirectories($event)">
+    </m-folders-list>
+  </div>
+</div>
+
+<div [hidden]="emptyFiles === null||emptyFiles">
+  <div class="m-portlet__head-title row d-flex justify-content-between align-items-center">
+    <h3 class="m-2 p-3 font-size-24 font-weight-500 color-title-dark"> {{'FILES.ALLFILES'|translate}}</h3>
+    <div ngbDropdown class="d-flex align-items-center my-2 py-3 mx-0 px-0"*ngIf="emptyDirectories === null||emptyDirectories">
+      <button class="btn border-0 m-0 p-0 directoriesFilterBtn btn-transperant" id="sortMenu" ngbDropdownToggle>{{selectedSortOrder.label|translate}}</button>
+      <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="sortMenu">
+        <button class="dropdown-item" *ngFor="let sortOrder of sortOrders" (click)="ChangeSortOrder(sortOrder)" >{{sortOrder.label|translate}}</button>
+      </div>
+      <button class="btn border-0 directoriesSort-BtnArrow m-link" (click)="asc = !asc;changeSort()"><i class="fas font-size-12 fa-arrow-up arrow-rotate" [ngClass]="{'down':!asc}"></i></button>
+      <!-- <button class="btn directoriesSort-BtnArrow m-link"><i class="fas font-size-12 fa-arrow-up"></i></button> -->
+    </div>
+  </div>
+  <div class="m-portlet__body">
+    <m-files-list [config]="filesConfig" (isEmpty)="isEmptyFiles($event)"></m-files-list>
+  </div>
+</div>
+
+
+
+<div
+  [hidden]="emptyFiles === null || emptyRecent === null || emptyDirectories === null || !emptyFiles || !emptyDirectories || !emptyRecent">
+  <div class="d-flex col-12 px-0 flex-column align-items-center">
+    <div class="emptyState col-6 mt-5 mx-auto pt-4 d-flex flex-column align-items-center">
+      <img src="assets/app/media/img/icons/folder.png" alt="Empty State" width="100">
+      <p class="mb-0 mt-4 font-size-24 font-weight-500">{{'FILES.EMPTY'|translate}}</p>
+    </div>
+  </div>
+</div>

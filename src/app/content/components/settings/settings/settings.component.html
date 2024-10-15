@@ -1,0 +1,197 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+			     {{'SETTINGS.SETTINGS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+            <div *ngIf="error && error.length > 0" class="m-alert m-alert--outline m-alert--outline-2x alert alert-danger" role="alert" #alertNotice>
+                <span >{{error}}</span>
+            </div>
+        <form class="m-form m-form--fit " mScrollInvalid [form]="settingForm" #settingForm="ngForm" novalidate name="settingForm" (ngSubmit)="save(settingForm)">
+            <!-- first steop seetings-->
+            <div class="row m--margin-top-15">
+                <div class="col">
+                    <h4 class="m-portlet__head-text mb-4">
+                        {{'SETTINGS.STEP_ONE_SETTINGS' | translate}}
+                    </h4>
+                </div>
+            </div>
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.INTRODUCTION_VIDEO_URL' | translate }}
+                    <span class="m--font-danger">*</span>
+                </label>
+                <div class="col-lg-7">
+                    <input type="text" placeholder="{{'SETTINGS.INTRODUCTION_VIDEO_URL' | translate }}" class="form-control" id="introduction_video_url" name="introduction_video_url" [(ngModel)]="configration.introduction_video_url" required >
+
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'introduction_video_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.INTRODUCTION_VIDEO_URL' | translate }}</div>
+                </div>
+            </div>
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.SUPPORT_EMAIL' | translate }}
+                    <span class="m--font-danger">*</span>
+                </label>
+                <div class="col-lg-7">
+                    <input type="email" placeholder="{{'SETTINGS.SUPPORT_EMAIL' | translate }}" class="form-control" id="support_email" name="support_email" [(ngModel)]="configration.support_email" required 
+                    pattern="^\w+([\.+-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$">
+                    <div class="m--font-danger form-control-feedback" [hidden]="!hasError(settingForm,'support_email', 'pattern')">
+                        {{'SETTINGS.SUPPORT_EMAIL_NOT_VALID' | translate}}
+                    </div>
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'support_email', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.SUPPORT_EMAIL' | translate }}</div>
+                </div>
+            </div>
+
+            <!-- last steop seetings-->
+            <div class="row m--margin-top-15 setings-group">
+                <div class="col">
+                    <h4 class="m-portlet__head-text mb-4">
+                        {{'SETTINGS.STEP_FOUR_SETTINGS' | translate}}
+                    </h4>
+                </div>
+            </div>
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.system_before_meeting_video_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <input type="text" placeholder="{{'SETTINGS.system_before_meeting_video_url' | translate }}" class="form-control" id="mjlsi_system_before_meeting_video_url" name="mjlsi_system_before_meeting_video_url" [(ngModel)]="configration.mjlsi_system_before_meeting_video_url" >
+
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'mjlsi_system_before_meeting_video_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.system_before_meeting_video_url' | translate }}</div>
+                </div>
+            </div>
+            <!---->
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.explain_create_meeting_video_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <input type="text" placeholder="{{'SETTINGS.explain_create_meeting_video_url' | translate }}" class="form-control" id="explain_create_meeting_video_url" name="explain_create_meeting_video_url" [(ngModel)]="configration.explain_create_meeting_video_url" >
+
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'explain_create_meeting_video_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.explain_create_meeting_video_url' | translate }}</div>
+                </div>
+            </div>
+            <!---->
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.manage_board_meeting_video_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <input type="text" placeholder="{{'SETTINGS.manage_board_meeting_video_url' | translate }}" class="form-control" id="manage_board_meeting_video_url" name="manage_board_meeting_video_url" [(ngModel)]="configration.manage_board_meeting_video_url"  >
+
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'manage_board_meeting_video_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.manage_board_meeting_video_url' | translate }}</div>
+                </div>
+            </div>
+
+            <!---->
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.manage_board_meeting_extra_video_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <input type="text" placeholder="{{'SETTINGS.manage_board_meeting_extra_video_url' | translate }}" class="form-control" id="manage_board_meeting_extra_video_url" name="manage_board_meeting_extra_video_url" [(ngModel)]="configration.manage_board_meeting_extra_video_url" >
+
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'manage_board_meeting_extra_video_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.manage_board_meeting_extra_video_url' | translate }}</div>
+                </div>
+            </div>
+
+            <!---->
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.introduction_arabic_pdf_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <div class="custom-file">
+                        <input class="custom-file-input" id="introduction_arabic_pdf_url" type="file" name="introduction_arabic_pdf_url" (change)="fileChangeEvent($event,'introduction_arabic_pdf_url')" #introduction_arabic_pdf_url="ngModel" (ngModel)="introductionArabicPdfUrl"
+                            accept=".pdf">
+                        <label class="custom-file-label text-right" for="introduction_arabic_pdf_url" *ngIf="!introductionArabicPDFChangedEvent">{{'SETTINGS.CHOOSE_FILE' | translate}}</label>
+                        <label class="custom-file-label text-right" for="introduction_arabic_pdf_url" *ngIf="introductionArabicPDFChangedEvent">{{introductionArabicPDFChangedEvent.target.files[0].name}}</label>
+                        <label class="custom-file-label text-right" for="introduction_arabic_pdf_url" *ngIf="!introductionArabicPDFChangedEvent && configration.introduction_arabic_pdf_url">{{configration.introduction_arabic_pdf_url.split('/').pop() }}</label>
+                    </div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="hasIntroductionArabicPDFExtensionError">{{'SETTINGS.VALIDATION.FILE_EXTENSION' | translate}}</div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="introductionArabicPDFSizeError.length > 0">{{introductionArabicPDFSizeError}}</div>
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'introduction_arabic_pdf_url', 'required')">
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.introduction_arabic_pdf_url' | translate }}</div> 
+                </div>
+            </div>
+
+            <!---->
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.introduction_english_pdf_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <div class="custom-file">
+                        <input class="custom-file-input" id="introduction_english_pdf_url" type="file" name="introduction_english_pdf_url" (change)="fileChangeEvent($event,'introduction_english_pdf_url')" #introduction_english_pdf_url="ngModel" (ngModel)="introductionEnglishPdfUrl"
+                            accept=".pdf">
+                        <label class="custom-file-label text-right" for="introduction_english_pdf_url" *ngIf="!introductionEnglishPDFChangedEvent">{{'SETTINGS.CHOOSE_FILE' | translate}}</label>
+                        <label class="custom-file-label text-right" for="introduction_english_pdf_url" *ngIf="introductionEnglishPDFChangedEvent">{{introductionEnglishPDFChangedEvent.target.files[0].name}}</label>
+                        <label class="custom-file-label text-right" for="introduction_english_pdf_url" *ngIf="!introductionEnglishPDFChangedEvent && configration.introduction_english_pdf_url">{{configration.introduction_english_pdf_url.split('/').pop()}}</label>
+                    </div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="hasIntroductionEnglishPDFExtensionError">{{'SETTINGS.VALIDATION.FILE_EXTENSION' | translate}}</div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="introductionEnglishPDFSizeError.length > 0">{{introductionEnglishPDFSizeError}}</div>
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'introduction_english_pdf_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.introduction_english_pdf_url' | translate }}</div>
+                </div>
+            </div>
+
+            <!---->
+
+            <div class="form-group m-form__group row">
+                <label  class="col-lg-3 col-form-label">{{'SETTINGS.third_pdf_url' | translate }}
+                    <!-- <span class="m--font-danger">*</span> -->
+                </label>
+                <div class="col-lg-7">
+                    <div class="custom-file">
+                        <input class="custom-file-input" id="third_pdf_url" type="file" name="third_pdf_url" (change)="fileChangeEvent($event,'third_pdf_url')" #third_pdf_url="ngModel" (ngModel)="thirdPdfUrl"
+                            accept=".pdf">
+                        <label class="custom-file-label text-right" for="third_pdf_url" *ngIf="!thirdPDFChangedEvent">{{'SETTINGS.CHOOSE_FILE' | translate}}</label>
+                        <label class="custom-file-label text-right" for="third_pdf_url" *ngIf="thirdPDFChangedEvent">{{thirdPDFChangedEvent.target.files[0].name}}</label>
+                        <label class="custom-file-label text-right" for="third_pdf_url" *ngIf="!thirdPDFChangedEvent && configration.introduction_english_pdf_url">{{configration.introduction_english_pdf_url.split('/').pop()}}</label>
+                    </div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="hasThirdPDFExtensionError">{{'SETTINGS.VALIDATION.FILE_EXTENSION' | translate}}</div>
+                    <div class="m--font-danger form-control-feedback" *ngIf="thirdPDFSizeError.length > 0">{{thirdPDFSizeError}}</div>
+                    <div class="m--font-danger form-control-feedback" 
+                    [hidden]="!hasError(settingForm,'third_pdf_url', 'required')"> 
+                     {{'SETTINGS.VALIDATION.REQUIRED' | translate}} {{'SETTINGS.third_pdf_url' | translate }}</div>
+                </div>
+            </div>
+            <div class="m-form__actions mt-5">
+                <button class="btn primary-btn whiteSpinner" type="submit" [disabled]="spinner.active"> {{'BUTTON.SAVE' | translate}} 
+                    <mat-spinner class="d-inline-block " [diameter]="spinner.spinnerSize" *ngIf="spinner.active"></mat-spinner>
+                </button>
+            </div>
+        </form>
+    </div>
+    <!-- end: BOTTOM -->
+</ng-container>
+
+<!-- end::Body -->
+</m-portlet>

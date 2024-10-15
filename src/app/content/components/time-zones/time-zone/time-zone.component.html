@@ -1,0 +1,68 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				 {{'TIMEZONES.ADD.ADDNEW' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #timeZoneForm="ngForm" (ngSubmit)="save(timeZoneForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="timezonenamear">{{'TIMEZONES.ADD.TIMEZONENAMEAR' | translate}}</label>
+					<input type="text" placeholder="{{'TIMEZONES.ADD.TIME_ZONE_NAME_AR' | translate}}" class="form-control" id="timezonenamear"
+					name="timezonenamear" [(ngModel)]="timeZone.description_ar"
+						#timezonenamear="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(timeZoneForm,'timezonenamear', 'required')">{{'TIMEZONES.VALIDATION.TIMEZONENAMEAR' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="timezonenameen">{{'TIMEZONES.ADD.TIMEZONENAME' | translate}}</label>
+					<input type="text" class="form-control m-input" id="timezonenameen" 
+					name="timezonenameen" placeholder="{{'TIMEZONES.ADD.TIMEZONENAME' | translate}}" [(ngModel)]="timeZone.description_en"
+					#timezonenameen="ngModel">
+					</div>
+                </div>
+                <div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="timezonenamear">{{'TIMEZONES.ADD.TIME_ZONE_CODE' | translate}}*</label>
+						<input type="text" placeholder="{{'TIMEZONES.ADD.TIME_ZONE_CODE' | translate}}" class="form-control" id="timezonecode"
+							name="timezonecode" [(ngModel)]="timeZone.time_zone_code"
+							#timezonecode="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(timeZoneForm,'timezonecode', 'required')">{{'TIMEZONES.VALIDATION.TIME_ZONE_CODE' | translate}}
+						</div>
+					</div>
+                    <div class="col-lg-6">
+                        <label for="diffhours">{{'TIMEZONES.ADD.HOURSDIFFERENCE' | translate}}</label>
+                        <input type="number" class="form-control m-input" id="diffhours" name="diffhours" placeholder="{{'TIMEZONES.ADD.HOURS_DIFFERENCE' | translate}}"
+                        [(ngModel)]="timeZone.diff_hours" #diffhours="ngModel" required>
+                        <div class="error text-danger form-control-feedback" [hidden]="!hasError(timeZoneForm,'diffhours', 'required')">{{'TIMEZONES.VALIDATION.HOURSDIFFERENCE' | translate}}
+						</div>
+                    </div>
+                </div>
+
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted">{{'BUTTON.SAVE' | translate}} 
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

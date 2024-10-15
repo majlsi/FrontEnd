@@ -1,0 +1,61 @@
+<ng-template #addWorkModel let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{ "COMMITTEES.ADD.WORKDONE" | translate }}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="close()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<form name="memberForm" #memberForm="ngForm" (ngSubmit)="save(memberForm)" novalidate>
+			<div class="form-group row">
+
+
+				<div class="col-12">
+					<label>{{ "COMMITTEES.ADD.WORKDONE" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span> </label>
+					<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000" #work_done="ngModel" [(ngModel)]="works_done.work_done" placeholder="{{ 'COMMITTEES.ADD.WORKDONE' | translate }}" id="work_done" name="work_done"></textarea>
+
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(memberForm, 'work_done', 'required')">
+						{{ "COMMITTEES.VALIDATION.WORKDONE" | translate }}
+					</div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-12">
+					<label>{{ "FILES.DATE" | translate }}</label>
+					<div class="input-group">
+						<input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="workDoneDate"
+							[(ngModel)]="workDoneDateModel" ngbDatepicker #workDoneDate="ngbDatepicker"
+							[readonly]="true" />
+						<div class="input-group-append position-relative">
+							<span class="clear-input" (click)="clearDate('workDoneDate')">
+								<mat-icon matDatepickerToggleIcon>clear</mat-icon>
+							</span>
+							<button class="btn btn-outline-secondary calendar" type="button"
+								(click)="workDoneDate.toggle();$event.stopPropagation()"
+								(dateSelect)="workDoneDate.close()"
+								(document:click)="decideClosure($event, workDoneDate)">
+								<i class="fa fa-calendar-alt"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+					{{ "COMMITTEES.ADD.ADD" | translate }}
+					<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+				</button>
+				<button class="btn btn-secondary" type="button" (click)="close()">{{ "BUTTON.CANCEL" | translate }}</button>
+			</div>
+
+		</form>
+	</div>
+</ng-template>
+
+
+
+
+<button  type="button" class="btn btn-secondary btn-link" (click)="open(addWorkModel)">
+	<i class="fa fa-plus pb-1"></i><span> {{ "COMMITTEES.ADD.OTHERWORK" | translate }}</span>
+</button>

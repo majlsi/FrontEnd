@@ -1,0 +1,80 @@
+<div class="decision-card card-opened">
+	<div class="d-flex decision-header justify-content-between mx-3 pt-4">
+		<div class="d-flex align-items-center">
+			<div class="d-flex" data-cy="creatorAvatar">
+				<figure class="avatar-placeholder m-0">
+					<img alt="m" class="avatar medium no-border" *ngIf="decision.creator_image_url"
+						[src]="imagesBaseURL+decision.creator_image_url"
+						style="border-color: rgb(255, 255, 255);border-radius: 50%;">
+						<img alt="m" class="avatar medium no-border" *ngIf="!decision.creator_image_url"
+						[src]="imagesBaseURL+decision.organization_image_url"
+						style="border-color: rgb(255, 255, 255);border-radius: 50%;">
+					<p class="avatar-shortname medium"><!--<span>m</span>--></p>
+				</figure>
+			</div>
+			<div class="d-flex flex-column px-3">
+				<div class="d-flex">
+					<h5 class="" data-cy="cardTypeContainer">{{'CIRCULAR_DECISIONS.DETAILS.DECISION_CREATED' | translate}}</h5>
+					<span class="mx-2">{{'CIRCULAR_DECISIONS.DETAILS.BY' | translate}}</span>
+					<h5 class="" data-cy="cardCreatorContainer" title="m">{{isArabic? (decision.creator_name_ar? decision?.creator_name_ar : decision?.creator_name) : (decision.creator_name? decision?.creator_name : decision?.creator_name_ar)}} </h5>
+				</div>
+				<span class="text-muted">{{createdDate}}</span>
+			</div>
+		</div>
+		<div class="decision-status">
+			<span class="mx-2 mt-3 mb-4 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': decision.vote_result_status_id == voteResultStatusesEnum.approved,
+                            'm-badge--danger' : decision.vote_result_status_id == voteResultStatusesEnum.rejected,
+                            'm-badge--accent': decision.vote_result_status_id == voteResultStatusesEnum.balanced,
+							'm-badge--metal': decision.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+							'm-badge--warning': decision.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+				{{isArabic? decision.vote_result_status_name_ar : (decision.vote_result_status_name_en? decision.vote_result_status_name_en : decision.vote_result_status_name_ar)}}
+            </span>
+		</div>
+	</div>
+	<div class="px-4 mx-2">
+		<div class="decision-card-title mb-4">
+			<div class="d-flex flex-column" readonly="">
+				<div class=""
+					style="outline: none; white-space: pre-wrap; overflow-wrap: break-word;">
+					<div>
+						<span>
+							{{isArabic? (decision.vote_subject_ar? decision.vote_subject_ar : decision.vote_subject_en) : (decision.vote_subject_en? decision.vote_subject_en : decision.vote_subject_ar)}}
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="decision-time-container mb-4 border-bottom pb-3">
+
+			<div class="d-flex flex-wrap justify-content-between align-items-center  mb-3 mt-2 ">
+				<div class="d-flex ">
+				<div class="">
+					<span class="text-muted">{{'CIRCULAR_DECISIONS.LIST.DECISION_FROM_DATE' | translate}}:</span>
+					<span class="mx-2">{{decision.vote_schedule_from | date: 'dd-MM-yyyy, hh:mm a'}}</span>
+				</div>
+				<div class="enddate"><span class="text-muted"> {{'CIRCULAR_DECISIONS.LIST.DECISION_TO_DATE' | translate}}:</span><span class="mx-2">{{decision.vote_schedule_to | date: 'dd-MM-yyyy, hh:mm a'}}</span></div>
+				</div>
+					<div data-cy="set-deadline-btn" class="deadline-badge">
+						<i class="fas fa-clock time-constraint"></i>
+							<div data-cy="deadline-container" class="deadline-text">{{'CIRCULAR_DECISIONS.DETAILS.DUE_DATE' | translate}} {{dueDate}}</div>
+					</div>
+			</div>
+		</div>
+		<!-- <div class="optional-message-container pb-3">
+				<span class="formatted-text">
+					{{decision.vote_description}}
+				</span>
+		</div> -->
+
+
+		<!-----VOTE AREA ----->
+		
+			<m-tasks class="row" (getData)="getDecision()" [taskStatus]="taskStatus" [voteId]="decisionId" [tasks]="tasks"  [users]="decision.voters"></m-tasks>
+
+		<!-----VOTE AREA ----->
+
+
+	</div>
+
+</div>

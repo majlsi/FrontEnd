@@ -1,0 +1,139 @@
+.advanced-pie-legend .legend-items-container .legend-items .legend-item {
+    margin-right: 0px!important;
+    display: block!important;
+	cursor: pointer;
+	margin-left: 20px;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-color {
+    border-left-width: 30px!important;
+    width: 30px!important;
+    height: 6px!important;
+    float: left;
+    margin-right: 0px!important;
+    border-radius: 40px;
+}
+
+.advanced-pie-legend .total-value, .advanced-pie-legend .total-label,
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
+	display: none!important;
+}
+
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-label,
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    display: inline-block;
+}
+
+.advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
+    font-size: 14px!important;
+    font-weight: 500;
+}
+.ngx-charts-advanced-pie-chart-col{
+	overflow: hidden;
+    position: relative;
+    height: 100%;
+	min-height: 235px;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend .ngx-charts{
+    float: left;
+    right: unset;
+    left: 145px;
+    position: absolute;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+    top: 90px;
+    right: 135px;
+    position: absolute;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend .chart-no h2{
+   color: #231F20;
+   font-size:40px;
+   font-weight: 600;
+}
+.ngx-charts-advanced-pie-chart-col.no-legend{
+    position: relative;
+}
+
+
+.ngx-charts-advanced-pie-chart-col.no-legend .advanced-pie-legend-wrapper{
+        display: none !important;
+}
+
+.ngx-charts-advanced-pie-chart-col-sm {
+    min-height: 150px;
+}
+
+
+ngx-charts-advanced-pie-chart {
+    position: absolute;
+    left: 0;
+}
+
+.advanced-pie-legend-wrapper {
+    display: inline-block;
+    right: 15px;
+    position: absolute;
+}
+
+
+
+
+.m-widget17 .m-widget17__stats .m-widget17__items .m-widget17__item {
+	box-shadow: none;
+    margin-top: 0;
+}
+
+
+.grey-blue{
+	color: #868AA8;
+}
+
+
+ngx-charts-bar-vertical-2d .chart-legend {
+    display: block;
+    position: absolute;
+    top: 00;
+}
+ngx-charts-bar-vertical-2d .chart-legend > div,
+ngx-charts-bar-vertical-2d .chart-legend .legend-wrap  {
+	width: auto!important;
+}
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-label {
+    display: inline-block;
+}
+
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-title{
+	display: none;
+}
+
+
+ngx-charts-bar-vertical-2d .ngx-charts {
+    position: absolute;
+    left: 0;
+    top: 30px;
+}
+
+ngx-charts-bar-vertical-2d .chart-legend .legend-labels {
+    background: transparent!important;
+}
+@media(max-width: 1024px){
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        right:20%;
+    }
+}
+@media(max-width: 768px){
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        right:28%;
+    }
+}
+@media(max-width: 440px){
+    .ngx-charts-advanced-pie-chart-col.no-legend ngx-charts-advanced-pie-chart {
+        margin-left: -50px;
+    }
+    .ngx-charts-advanced-pie-chart-col.no-legend .chart-no{
+        right:37%;
+    }
+}

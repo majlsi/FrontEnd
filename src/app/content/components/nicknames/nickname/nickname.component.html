@@ -1,0 +1,50 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'NICKNAMES.ADD.ADDNEW' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #nicknameForm="ngForm" (ngSubmit)="save(nicknameForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<label for="nicknamear">{{'NICKNAMES.ADD.NICKNAMEAR' | translate}}</label>
+					<input type="text" placeholder="{{'NICKNAMES.ADD.NICKNAME_AR' | translate}}" class="form-control" id="nicknamear"
+					name="nicknamear" [(ngModel)]="nickname.nickname_ar"
+						#nicknamear="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(nicknameForm,'nicknamear', 'required')">{{'NICKNAMES.VALIDATION.NICKNAMEAR' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="nicknameen">{{'NICKNAMES.ADD.NICKNAME' | translate}}</label>
+					<input type="text" class="form-control m-input" id="nicknameen" 
+					name="nicknameen" placeholder="{{'NICKNAMES.ADD.NICKNAME' | translate}}" [(ngModel)]="nickname.nickname_en"
+					#nicknameen="ngModel">
+					</div>
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted">{{'BUTTON.SAVE' | translate}} 
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

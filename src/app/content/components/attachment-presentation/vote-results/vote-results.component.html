@@ -1,0 +1,140 @@
+<ng-template #content let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{'VIEW_MEETING.VOTES_RESULTS' | translate}}
+		</h4>
+		<button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<div class="modal-body p-0 mb-3 border-bottom-light-grey pb-3" style="border-bottom: 2px solid #f6f4f0;">
+		<div class="d-flex decision-header justify-content-between mx-3 pt-4">
+			<div class="d-flex flex-wrap align-items-center">
+
+				<div class="d-flex flex-column px-3">
+					<div class="d-flex">
+						<h5 class="" data-cy="cardTypeContainer">{{'DECISIONS.LIST.DECISION_TYPE' | translate}}: &nbsp;</h5>
+						<h5 class="" data-cy="cardCreatorContainer" title="m">{{isArabic? (vote.decision_type_name_ar? vote.decision_type_name_ar: vote.decision_type_name_en ) : (vote.decision_type_name_en? vote.decision_type_name_en : vote.decision_type_name_ar) }} </h5>
+					</div>
+					<span class="text-muted">{{'MEETINGS.VOTE.ADD.DECISION_DUE_DATE' | translate}}:  &nbsp;<span class="mx-2">{{vote.decision_due_date | date: 'dd/MM/yyyy'}}</span></span>
+				</div>
+			</div>
+			<div class="decision-status">
+
+				<span class="mx-0 mt-1 mb-3 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': vote.vote_result_status_id == voteResultStatusesEnum.approved,
+                            'm-badge--danger' : vote.vote_result_status_id == voteResultStatusesEnum.rejected,
+                            'm-badge--accent': vote.vote_result_status_id == voteResultStatusesEnum.balanced,
+							'm-badge--metal': vote.vote_result_status_id == voteResultStatusesEnum.noVotesYet
+							}">
+				{{isArabic? vote.vote_result_status_name_ar : (vote.vote_result_status_name_en? vote.vote_result_status_name_en : vote.vote_result_status_name_ar)}}
+            </span>
+			</div>
+		</div>
+	</div>
+	<div class="m-widget-agenda">
+		<div class="m-widget5 mt-3 d-flex justify-content-center">
+			<div class="m-widget5__item">
+				<div class="m-widget5__content">
+					<div class="m-widget5__pic">
+						<i class="fa fa-check"></i>
+					</div>
+					<div class="m-widget5__section">
+						<h4 class="m-widget5__title">
+							{{voteCounts?.yes_votes ? voteCounts?.yes_votes:0}}
+						</h4>
+						<span class="m-widget5__desc">
+							{{'VIEW_MEETING.VOTE_RESULTS.YES_VOTES' |translate}}
+						</span>
+
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="m-widget5__item">
+				<div class="m-widget5__content">
+					<div class="m-widget5__pic">
+						<i class="fa fa-times"></i>
+					</div>
+					<div class="m-widget5__section">
+						<h4 class="m-widget5__title">
+							{{voteCounts?.no_votes ? voteCounts?.no_votes:0}}
+						</h4>
+						<span class="m-widget5__desc">
+							{{'VIEW_MEETING.VOTE_RESULTS.NO_VOTES' |translate}}
+						</span>
+
+					</div>
+				</div>
+
+
+			</div>
+			<div class="m-widget5__item">
+				<div class="m-widget5__content">
+					<div class="m-widget5__pic">
+						<i class="fa fa-minus"></i>
+					</div>
+					<div class="m-widget5__section">
+						<h4 class="m-widget5__title">
+							{{voteCounts?.abstained_votes ? voteCounts?.abstained_votes:0}}
+						</h4>
+						<span class="m-widget5__desc">
+							{{'VIEW_MEETING.VOTE_RESULTS.ABSTAINED_VOTES' |translate}}
+						</span>
+
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+
+ <div>
+	<m-portlet>
+		<ng-container mPortletHeadTitle>
+			<div class="m-portlet__head-title py-3">
+				<h3 class="m-portlet__head-text py-1">
+					{{'VIEW_MEETING.VOTERS' | translate}}
+				</h3>
+			</div>
+		</ng-container>
+		<ng-container mPortletBody>
+			<div class="m-widget4">
+				<div class="m-widget4__item" *ngFor="let user of voteResults">
+					<div class="m-widget4__img m-widget4__img--pic">
+						<img *ngIf="user.image_url == null" [src]="imagesBaseURL+user.organization_image_url"
+							alt="" onerror="this.src='./assets/app/media/img/icons/individual.png';">
+						<img *ngIf="user.image_url != null" [src]="imagesBaseURL+user.image_url" alt="" onerror="this.src='./assets/app/media/img/icons/individual.png';">
+					</div>
+
+					<div class="m-widget4__info">
+						<span class="m-widget4__title">
+							{{isArabic? user.user_title_ar : user.user_title_en? user.user_title_en : user.user_title_ar}}
+						</span> &ensp;&ensp;
+						<span class="m-widget4__title">
+							{{(user.name_ar == null && user.name == null) ? (user.full_name??user.email):(isArabic? (user.name_ar??user.name) :
+							(user.name??user.name_ar))}}
+						</span>
+						<br>
+						<span class="m-widget19_ _time" *ngIf="user.vote_status_name_ar">
+							{{isArabic? user.vote_status_name_ar : user.vote_status_name_en}}
+						</span>
+						<span class="m-widget19_ _time" *ngIf="!user.vote_status_name_ar">
+							{{'VIEW_MEETING.VOTE_RESULTS.NOVOTEDYET' | translate}}
+						</span>
+
+					</div>
+
+				</div>
+				<div *ngIf="voteResults.length ==0">
+					{{'GENERAL.NORECORDSFOUND' | translate}}
+				</div>
+			</div>
+		</ng-container>
+	</m-portlet>
+</div>
+</ng-template>
+<span class="m--font-info clickable" (click)="open(content)">{{'VIEW_MEETING.VOTE_DETAILS' |translate}}</span>
+

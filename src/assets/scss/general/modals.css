@@ -1,0 +1,14 @@
+.modal-header{
+    padding: 25px;
+}
+.modal-body{
+    padding: 25px;
+}
+.modal-footer{
+    padding: 25px;
+}
+.mat-dialog-container {
+	padding:0 !important;;
+    overflow: hidden!important;
+}
+

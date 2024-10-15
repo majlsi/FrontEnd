@@ -1,0 +1,76 @@
+<div class="modal-header">
+  <h4 class="modal-title" style="font-size: 1.3rem; font-weight: 500;">{{'VIEW_MEETING.MEETING_STATISTICS.ATTENDANCE_STATISTICS' | translate}}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+
+</div>
+
+
+<div class="modal-body" style="min-height: fit-content;">
+
+  <div class="row mt-5">
+    <div class="col-3 ml-5 p-0">
+      
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.totalParticipants}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.INVITED_MEMBERS' | translate}}</p>
+      
+    </div>
+    <div class="col-7 ml-0 pl-5">
+      <div class="positon-relative col ngx-charts-advanced-pie-chart-col ngx-charts-advanced-pie-chart-col-sm">
+        <ngx-charts-advanced-pie-chart [view]="view" [scheme]="colorScheme" 
+        [results]="isArabic? statisticsDataAr : statisticsDataEn">
+
+        </ngx-charts-advanced-pie-chart>
+        <span class="position-absolute">{{ meetingData.attendPercentage}} </span>
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row mt-5">
+    <div class="col d-flex  align-items-start justify-content-center">
+      <span class="mr-2" style="width:10px; height: 49px; background-color: #28A745; border-radius: 2px;"></span>
+      <div class="content">
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.attend}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.ATTENDEES' | translate}}</p>
+      </div>
+    </div>
+
+    <div class="col d-flex  align-items-start justify-content-center">
+      <span class="mr-2" style="width:10px; height: 49px; background-color: #DC3545; border-radius: 2px;"></span>
+      <div class="content">
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.absent_without_accepted}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.ABSENTEES' | translate}}</p>
+      </div>
+    </div>
+    <div class="col d-flex  align-items-start justify-content-center">
+      <span class="mr-2" style="width:10px; height: 49px; background-color: #f07c12; border-radius: 2px;"></span>
+      <div class="content">
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.accept_absent}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.ACCEPT_ABSENT' | translate}}</p>
+      </div>
+    </div>
+
+    <div class="col d-flex  align-items-start justify-content-center">
+      <span class="mr-2" style="width:10px; height: 49px; background-color: #2F4F4F; border-radius: 2px;"></span>
+      <div class="content">
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.mayAttend}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.MAYBE' | translate}}</p>
+      </div>
+    </div>
+
+    <div class="col d-flex  align-items-start justify-content-center">
+      <span class="mr-2" style="width:10px; height: 49px; background-color: #D1D4D7; border-radius: 2px;"></span>
+      <div class="content">
+        <h4 class="mb-2 font-weight-bold" style="font-size:24px; color: #575962;">{{meetingData.noRespond}}</h4>
+        <p class="mt-0">{{'VIEW_MEETING.MEETING_STATISTICS.NO_REPLY' | translate}}</p>
+      </div>
+    </div>
+
+
+  </div>
+
+</div>

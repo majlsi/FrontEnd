@@ -1,0 +1,57 @@
+<div class="welcome-place-header-gradient d-flex pt-5">
+	<div
+		class="welcome-place-header__container container d-flex flex-wrap-reverse flex-row-reverse  justify-content-between mb-5 mb-lg-0">
+		<img class="welcome-place-header__img pt-3 mt-n5" *ngIf="(stepper.selectedIndex +1) < totalStepsCount"
+			src="./assets/app/media/img/icons/welcome-vector.png" alt="">
+		<img class="welcome-place-header__img pt-3 mt-n5" *ngIf="(stepper.selectedIndex +1) == totalStepsCount"
+			src="./assets/app/media/img/icons/confirm-vector.png" alt="">
+		<div class="welcome-place-header__text">
+			<h2 class="welcome-place-header__text_header">{{'WELCOME_SPLACH.WELCOME' | translate}}</h2>
+
+
+
+			<p class="welcome-place-header__text_sub welcome-place-header__text_sub--large">
+				{{'WELCOME_SPLACH.FEW_STEPS'| translate}}</p>
+			<p class="welcome-place-header__text_sub welcome-place-header__text_sub--medium mt-4">
+				<b>
+					{{stepper.selectedIndex +1}} </b> {{'WELCOME_SPLACH.OF'| translate}} {{totalStepsCount}}
+				{{'WELCOME_SPLACH.COMPLETE'| translate}}
+
+			</p>
+		</div>
+	</div>
+</div>
+
+
+
+
+<section>
+	<div class="container">
+
+		<mat-horizontal-stepper labelPosition="bottom" #stepper linear  ngClass="{{ 'last-edited-step-' + stepper.selectedIndex }}">
+			 <ng-template matStepperIcon="edit"><i class="fa fa-check"></i></ng-template>
+			<mat-step [stepControl]="" state="number">
+				<form id='form' #addForm="ngForm">
+					<m-step1-intro> </m-step1-intro>
+					<div class="row justify-content-between align-items-center m-0 my-5 pt-3 steps-action">
+						<button class="btn-back btn btn-default primary-font bold" mat-button
+							matStepperPrevious>{{'GENERAL.Back' | translate}}</button>
+						<button class="btn btn-primary btn-lg" mat-button
+							matStepperNext>{{'GENERAL.NEXT' | translate}}</button>
+					</div>
+				</form>
+			</mat-step>
+			<mat-step [stepControl]="">
+				<m-step2-organization-set-up (goToNextStep)="goForward()">
+				</m-step2-organization-set-up>
+			</mat-step>
+			<mat-step>
+				<m-step3-add-members (goToNextStep)="goForward()"></m-step3-add-members>
+			</mat-step>
+			<mat-step>
+				<m-step4-confirm class="mb-5"></m-step4-confirm>
+			</mat-step>
+		</mat-horizontal-stepper>
+
+	</div>
+</section>

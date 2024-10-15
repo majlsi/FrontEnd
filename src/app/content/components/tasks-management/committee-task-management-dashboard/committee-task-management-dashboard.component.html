@@ -1,0 +1,416 @@
+<!--Begin::Section-->
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{isArabic? committee?.committee_name_ar : (committee?.committee_name_en? committee?.committee_name_en : committee?.committee_name_ar)}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<a (click)="back()">
+			<span class="px-2">{{'TASKS_MANAGEMENT.DETAILS.BACK_TO_TASKS_LIST'|translate}}</span>
+			<i class="fa fa-arrow-left"></i>
+		</a>
+	</ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+
+
+
+		<div class="row">
+			<div class="col-12 col-lg-12">
+				<div class="row">
+					<div class="col-12 col-xl-4 pr-2">
+						<div class="bg-white--content" style='min-height: 210px;'>
+							<div class="m-widget14 py-3 pr-2 pl-3">
+								<div class="m-widget14__header">
+									<h3 class="m-widget14__title">
+										{{ "TASKS_MANAGEMENT.TASKS_STATISTICS" | translate }}
+									</h3>
+								</div>
+								<div class="row m-widget24 m-0">
+									<div class="col-md-12 col-lg-4 col-xl-4 pt-4">
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.total_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.total_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.TASKS_TOTAL' | translate}}
+											</span>
+										</div>
+									</div>
+									<div class="col-md-12 col-lg-8 col-xl-8 p-0">
+										<div class="row align-items-center m-widget14__chart">
+											<div
+												class="col ngx-charts-advanced-pie-chart-col ngx-charts-advanced-pie-chart-col-sm">
+												<ngx-charts-advanced-pie-chart [view]="view" [results]="tasksStatistics"
+													[scheme]="{domain: ['#CBCBCB','#4D97EE','#3AB288']}">
+												</ngx-charts-advanced-pie-chart>
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row m-widget24 m-0">
+									<div class="col-md-12 col-lg-4 col-xl-4 px-2 text-center">
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.new_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.new_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.NEW_TASKS' | translate}}
+											</span>
+
+										</div>
+									</div>
+									<div
+										class="col-md-12 col-lg-4 col-xl-4 px-2 text-center border-left-1 border-right-1 border-left-light border-right-light">
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.progress_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.progress_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.PROGRESS_TASKS' | translate}}
+											</span>
+
+										</div>
+									</div>
+									<div class="col-md-12 col-lg-4 col-xl-4 px-2 text-center">
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.done_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.done_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.DONE_TASKS' | translate}}
+											</span>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-xl-8 pl-2">
+						<div class="row">
+							<div class="col-md-12 col-lg-6 col-xl-6 pr-2">
+								<div class="bg-white--content">
+
+									<!--begin::Total Profit-->
+									<div class="m-widget24 d-flex py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand widget-circle-icon info">
+												<i class="fas fa-file-medical"></i>
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.tasks_of_week)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.tasks_of_week}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.WEEK_TASKS' | translate}}
+											</span>
+
+										</div>
+										<div class="show-more-abs" title="Second Group">
+											<a class=" px-4" style="color: #5fb3ee;" *ngIf="canViewTaskStatistic"
+												(click)="redirectToTasksStatistic(taskStatisticTypes.tasks_of_week)">{{'TASKS_MANAGEMENT.SHOW_ALL' | translate}}</a>
+										</div>
+									</div>
+									<!--end::Total Profit-->
+
+
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-6 pl-2">
+								<div class="bg-white--content">
+
+									<!--begin::Total Profit-->
+									<div class="m-widget24 d-flex py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-info widget-circle-icon warning">
+												<i class="fas fa-check"></i>
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.tasks_of_month)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.tasks_of_month}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.MONTH_TASKS' | translate}}
+											</span>
+
+										</div>
+										<div class="show-more-abs" title="Second Group">
+											<a class=" px-4" style="color: #5fb3ee;" *ngIf="canViewTaskStatistic"
+												(click)="redirectToTasksStatistic(taskStatisticTypes.tasks_of_month)">{{'TASKS_MANAGEMENT.SHOW_ALL' | translate}}</a>
+										</div>
+									</div>
+									<!--end::Total Profit-->
+
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12 col-lg-6 col-xl-6 pr-2">
+								<div class="bg-white--content">
+									<!--begin::Total Profit-->
+									<div class="m-widget24 d-flex py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-brand widget-circle-icon danger">
+												<i class="fas fa-file-medical"></i>
+												<!-- $18M/ -->
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.delay_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.delay_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.DELAY_TASKS' | translate}}
+											</span>
+
+										</div>
+										<div class="show-more-abs" title="Second Group">
+											<a class=" px-4" style="color: #5fb3ee;" *ngIf="canViewTaskStatistic"
+												(click)="redirectToTasksStatistic(taskStatisticTypes.delay_tasks)">{{'TASKS_MANAGEMENT.SHOW_ALL' | translate}}</a>
+										</div>
+									</div>
+									<!--end::Total Profit-->
+
+								</div>
+							</div>
+							<div class="col-md-12 col-lg-6 col-xl-6 pl-2">
+								<div class="bg-white--content">
+
+									<!--begin::Total Profit-->
+									<div class="m-widget24 d-flex py-4">
+										<div class="d-flex align-items-center px-4">
+											<span class="m-widget24__stats m--font-danger widget-circle-icon dark">
+												<i class="fas fa-tasks"></i>
+											</span>
+										</div>
+										<div class="m-widget24__item d-flex justify-content-center flex-column"
+											(click)="redirectToTasksStatistic(taskStatisticTypes.later_tasks)"
+											[ngClass]="{'pointer' : canViewTaskStatistic}">
+											<h3 class="m-widget24__title m-0 font-24">
+												{{taskCount?.later_tasks}}
+											</h3>
+											<span class="m-widget24__desc m-0">
+												{{'TASKS_MANAGEMENT.LATER_TASKS' | translate}}
+											</span>
+
+										</div>
+										<div class="show-more-abs" title="Second Group">
+											<a class=" px-4" style="color: #5fb3ee;" *ngIf="canViewTaskStatistic"
+												(click)="redirectToTasksStatistic(taskStatisticTypes.later_tasks)">{{'TASKS_MANAGEMENT.SHOW_ALL' | translate}}</a>
+										</div>
+									</div>
+									<!--end::Total Profit-->
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!--<div class="col-12 col-lg-12">
+				<div class="bg-white--content  m--padding-15">
+					<div class="row">
+						<div class="col">
+							<h4 class="m-portlet__head-text mb-4">
+								{{'TASKS_MANAGEMENT.MONTH_STATISTICS' | translate}}
+							</h4>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<ngx-charts-area-chart
+							[scheme]="colorScheme"
+							[legend]="legend"
+							[legendTitle]="legendTitle"
+							[showXAxisLabel]="showXAxisLabel"
+							[showYAxisLabel]="showYAxisLabel"
+							[xAxis]="xAxis"
+							[yAxis]="yAxis"
+							[xAxisLabel]="xAxisLabel"
+							[yAxisLabel]="yAxisLabel"
+							[timeline]="timeline"
+							[results]="chartData"
+							[xAxisTicks]="Xticks"
+							(select)="onSelect($event)"
+							(activate)="onActivate($event)"
+							(deactivate)="onDeactivate($event)">
+						</ngx-charts-area-chart>
+						</div>
+
+					</div>
+				</div>
+			</div>-->
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<div class="row">
+				<div class="col">
+					<h4 class="m-portlet__head-text mb-4">
+						{{ "TASKS_MANAGEMENT.ALL" | translate }}
+					</h4>
+				</div>
+				<div class="m-portlet__head-tools pt-2 px-3">
+					<button (click)="downloadCommitteeTasks()" class="btn btn-primary m-widget4__icon pull-left mb-4">
+						<i class="fa fa-download"></i>
+						{{'TASKS_MANAGEMENT.DOWNLOAD_COMMITTEE_TASKS' | translate}}
+					</button>
+				</div>
+			</div>
+			<!----START:: Table ---->
+			<div class="row">
+				<div class="col-12">
+					<div class=" mat-table__wrap per">
+						<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc"
+							matSortDisableClear class="table table-hover m-table  table-scroll clickable mat-table
+							table-grey-header">
+
+							<!-- task_title Column -->
+							<ng-container [matColumnDef]="isArabic? 'description' : 'description'">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{'MEETINGS.TASK.LIST.DESCRIPTION' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<a *ngIf="canViewDetails"
+										[routerLink]="['/tasks-management/task-details',element.id]">
+										{{element.description}}
+									</a>
+
+									<a *ngIf="!canViewDetails">
+										{{element.description}}
+									</a>
+
+								</td>
+							</ng-container>
+
+							<ng-container matColumnDef="serial_number">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.TASK.LIST.SERIAL_NUMBER' | translate}} </th>
+								<td mat-cell *matCellDef="let element"> {{element.serial_number}} </td>
+							</ng-container>
+
+							<!-- Assignee Column -->
+							<ng-container matColumnDef="assigned_to">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{'MEETINGS.TASK.LIST.ASSIGNEE'| translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<div class="m-widget4__info m-widget__member-name">
+										<span class="m-widget4__sub"
+											*ngIf="element.assignee.user_title_ar || element.assignee.user_title_en">
+											{{isArabic? element.assignee.user_title_ar : element.assignee.user_title_en? element.assignee.user_title_en : element.assignee.user_title_ar}}/
+										</span>
+
+										<span class="m-widget4__title">
+											{{isArabic? (element.assignee.name_ar? element.assignee.name_ar : element.assignee.name) : (element.assignee.name? element.assignee.name : element.assignee.name_ar)}}
+										</span>
+										<br>
+										<span class="m-widget19_ _time">
+											{{isArabic? element.assignee.job_title_ar : element.assignee.job_title_en? element.assignee.job_title_en : element.assignee.job_title_ar}}
+										</span>
+									</div>
+
+								</td>
+							</ng-container>
+
+							<!-- task_committe Column -->
+							<ng-container [matColumnDef]="isArabic? 'committee_name_ar' : 'committee_name_en'">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{'MEETINGS.TASK.LIST.COMMITTEE' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<a >
+										{{isArabic? element.committee_name_ar : (element.committee_name_en? element.committee_name_en : element.committee_name_ar)}}
+									</a>
+								</td>
+							</ng-container>
+
+							<!-- task_from Column -->
+							<ng-container matColumnDef="start_date">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{'MEETINGS.TASK.LIST.SCHEDULE' | translate}} </th>
+								<td mat-cell *matCellDef="let element"> {{element.start_date | date: 'MMMM d, y'}} </td>
+							</ng-container>
+
+							<!-- task_status Column -->
+							<ng-container matColumnDef="task_status_id">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>
+									{{'MEETINGS.TASK.LIST.STATUS'| translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': element.task_status_id == taskStatusEnum.DONE,
+												'm-badge--accent': element.task_status_id == taskStatusEnum.INPROGRESS,
+												'm-badge--metal': element.task_status_id == taskStatusEnum.NEW}">
+										{{isArabic? element.task_status_name_ar : (element.task_status_name_en? element.task_status_name_en : element.task_status_name_ar)}}
+									</span>
+								</td>
+							</ng-container>
+
+							<!-- actions Column -->
+							<ng-container matColumnDef="actions">
+								<th mat-header-cell *matHeaderCellDef> {{'GENERAL.ACTIONS' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<button type="button"
+										*ngIf="editFlag && element.task_status_id == taskStatusEnum.NEW"
+										(click)="edit(element)"
+										class="btn btn-black m-btn m-btn--icon m-btn--outline-2x p-0 text-center"
+										matTooltip="{{'BUTTON.EDIT' | translate}}">
+										<i class="flaticon-edit-1"></i>
+									</button>
+
+									<button type="button" *ngIf="deleteFlag" (click)="delete(element.id)"
+										class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x p-0 text-center"
+										matTooltip="{{'BUTTON.DELETE' | translate}}">
+										<i class="flaticon-delete-2"></i>
+									</button>
+								</td>
+							</ng-container>
+
+							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+							<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+						</table>
+
+						<div class="mat-table__message" *ngIf="dataSourceLength">
+							{{'GENERAL.NORECORDSFOUND' | translate}}
+						</div>
+					</div>
+				</div>
+
+				<!-- start: BOTTOM -->
+				<div class="mat-table__bottom col-12">
+					<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+					<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+					</mat-paginator>
+				</div>
+			</div>
+			<!----END:: Table ---->
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>
+<!--End::Section-->

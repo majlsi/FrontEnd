@@ -1,0 +1,45 @@
+.mt-item {
+    border: 1px solid #d8d8d8;
+    background: #f0f0f0;
+    color: #000000;
+}
+
+.m-badge--btn {
+    background-color: #8dceb1;
+    color: #fff;
+}
+.deleteBadge{
+    background: #FC4F59;
+    color: #fff;
+}
+.deleteBadge:hover,
+.deleteBadge:focus , .deleteBadge:active , .deleteBadge.active{
+    background-color: #f12143;
+    border-color: #f01539;
+}
+
+.card-header {
+    background-color: #EFEFF4;
+    border-bottom: 1px solid rgba(0,0,0,0.125);
+}
+
+.attachment-row {
+    border-top: 1px dashed #ddd;
+}
+
+.transparent--bg{
+    background-color: transparent;
+}
+
+
+.m-widget4__item .m-widget4__icon>i.la-television.open {
+    color: #ff0000;
+}
+
+.m-aside-menu .m-menu__nav>.m-menu__item>.m-menu__submenu .m-menu__subnav>.m-menu__item>.m-menu__link {
+	padding: 0 15px;
+}
+.m-aside-menu .m-menu__nav>.m-menu__item .m-menu__submenu .m-menu__item>.m-menu__heading .m-menu__link-icon,
+.m-aside-menu .m-menu__nav>.m-menu__item .m-menu__submenu .m-menu__item>.m-menu__link .m-menu__link-icon {
+    width: 25px;
+}

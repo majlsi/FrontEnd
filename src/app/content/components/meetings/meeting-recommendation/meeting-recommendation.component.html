@@ -1,0 +1,151 @@
+<div class="m--padding-15 m--padding-top-0">
+	<div class="row">
+		<div class="col-lg-6">
+			<h3>
+				{{ "MEETINGS.GENERAL.RECOMMENDATION" | translate }}
+			</h3>
+		</div>
+
+		<div class="col-lg-6 text-right card-header-action">
+			<button class="btn btn-light-grey title-action-btn" (click)="appendNewRecommendation()" [hidden]="!canEditMeeting">
+				<i class="fa fa-plus"></i>
+
+				{{ "MEETINGS.RECOMMENDATION.ADD.ADDNEWRECOMMENDATION" | translate }}
+			</button>
+		</div>
+	</div>
+	<div [hidden]="errors.length == 0" class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+		<p *ngFor="let error of errors">
+			{{ isArabic ? error?.message_ar : error?.message ? error?.message : error?.message_ar }}
+		</p>
+	</div>
+	<div class="mat-table__wrapper mat-table__message" *ngIf="recommendations?.length == 0">
+		{{ "MEETINGS.RECOMMENDATION.ADD.NORECORDSFOUND" | translate }}
+	</div>
+
+	<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate #recommendationForm="ngForm" (ngSubmit)="save(recommendationForm)">
+		<div>
+			<div class="card card-row card-header p-b-0 mb-3" *ngFor="let recommendation of recommendations; let i = index; trackBy: trackFunction" [attr.data-index]="i">
+				<h5 class="mb-0">
+					<div class="form-gro up m-form__g roup row no-pad">
+						<div class="col-lg-12">
+							<span class="m-list-timeline__time">
+								<span class="m-menu__link-badge">
+									<span class="m-badge m-badge--btn editBadge deleteBadge" (click)="removeRecommendation(i)" [hidden]="!canEditMeeting">
+										<i class="la la-trash"></i>
+									</span>
+								</span>
+							</span>
+						</div>
+					</div>
+				</h5>
+
+				<div class="row m-b-15">
+					<div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+						<div class="form-group m-form__group row">
+							<label class="col-lg-3 col-form-label">
+								{{ "MEETINGS.RECOMMENDATION.ADD.RECOMMENDATION" | translate }}
+								<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+								<input class="form-control m-input" placeholder="{{ 'COMMITTEES.RECOMMENDATIONS.SECTION_BODY_COLUMN' | translate }}" type="text" #recommendationText="ngModel" name="{{ 'recommendationText' + i }}" [(ngModel)]="recommendation.recommendation_text" required [disabled]="!canEditMeeting" />
+								<div class="error text-danger form-control-feedback" [hidden]="!hasError(recommendationForm, 'recommendationText' + i, 'required')">
+									{{ "MEETINGS.RECOMMENDATION.VALIDATION.RECOMMENDATION" | translate }}
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-form__group row">
+							<label class="col-lg-3 col-form-label">
+								{{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY" | translate }}
+								<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+								<input class="form-control m-input" placeholder="{{ 'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY' | translate }}" type="text" #recommendationResponsibleParty="ngModel" name="{{ 'recommendationResponsibleParty' + i }}" [(ngModel)]="recommendation.responsible_party" required [disabled]="!canEditMeeting" />
+								<div class="error text-danger form-control-feedback" [hidden]="!hasError(recommendationForm, 'recommendationResponsibleParty' + i, 'required')">
+									{{ "MEETINGS.RECOMMENDATION.VALIDATION.RESPONSIBLEPARTY" | translate }}
+								</div>
+							</div>
+						</div>
+						<div class="form-group m-form__group row">
+							<label class="col-lg-3 col-form-label">
+								{{ "MEETINGS.RECOMMENDATION.ADD.RECOMMENDATIONDATE" | translate }}
+								<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+								<div class="input-group col-lg-12 p-0">
+									<input class="form-control m-input" placeholder="yyyy-mm-dd" [disabled]="!canEditMeeting" name="{{'recommendationDate' + i }}" [(ngModel)]="recommendation.recommendationDateModel" ngbDatepicker #d="ngbDatepicker" [readonly]="true" required/>
+									<div class="input-group-append">
+										<button class="btn btn-outline-secondary calendar" (click)="d.toggle(); $event.stopPropagation()" (dateSelect)="d.close()" type="button">
+											<i class="fa fa-calendar-alt"></i>
+										</button>
+									</div>
+								</div>
+								<div class="error text-danger form-control-feedback" [hidden]="!hasError(recommendationForm, 'recommendationDate' + i, 'required')">
+									{{ "MEETINGS.RECOMMENDATION.VALIDATION.RECOMMENDATIONDATE" | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label class="col-lg-3 col-form-label">
+								{{ "MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER" | translate }}
+								<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+								<ng-select [compareWith]="compareFn" placeholder="{{ 'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER' | translate }}" [hideSelected]="true" name="{{ 'recommendationResponsibleUser' + i }}" [searchable]="true" [(ngModel)]="recommendation.responsible_user" [multiple]="false" [hideSelected]="true" required [disabled]="!canEditMeeting" [addTag]="addNewTag">
+									<!-- Participants -->
+									<ng-option *ngFor="let participant of participants; let index = rowIndex" id="{{ index }}" [value]="getParticipantValue(participant)">
+										{{ getParticipantsLabel(participant) }}
+									</ng-option>
+								</ng-select>
+								<div class="error text-danger form-control-feedback" [hidden]="!hasError(recommendationForm, 'recommendationResponsibleUser' + i, 'required')">
+									{{ "MEETINGS.RECOMMENDATION.VALIDATION.RESPONSIBLEUSER" | translate }}
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label class="col-lg-3 col-form-label">
+								{{ "COMMITTEES.RECOMMENDATION_STATUS.LABEL" | translate }}
+								<span class="MandatoryAsterisk">*</span>
+							</label>
+							<div class="col-lg-9">
+								<ng-select [searchable]="true" [appendTo]="'body'" [hideSelected]="true"
+									[placeholder]="'COMMITTEES.RECOMMENDATION_STATUS.PLACEHOLDER' | translate"
+									[name]="'recommendationStatus' + i" [multiple]="false"
+									[(ngModel)]="recommendation.recommendation_status_id" required>
+									<!-- Statuses -->
+									<ng-option *ngFor="let statusItem of recommendationStatues;" [value]="statusItem.id">
+										{{ isArabic ? statusItem.recommendation_status_name_ar : statusItem.recommendation_status_name_en }}
+									</ng-option>
+								</ng-select>
+								<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(recommendationForm, 'recommendationStatus' + i, 'required')">
+									{{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'COMMITTEES.RECOMMENDATION_STATUS.LABEL' | translate } }}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" [disabled]="submitted" *ngIf="canEditMeeting">
+						{{ "BUTTON.SAVE" | translate }}
+						<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+					</button>
+					<button type="button" class="btn btn-primary" (click)="saveMeetingVersion(recommendationForm)" [disabled]="submitted" *ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+						{{ "MEETINGS.INFO.ADD.PREVIEW_MEETING" | translate }}
+						<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+					</button>
+					<button type="reset" (click)="redirect()" class="btn btn-secondary">
+						{{ "BUTTON.CANCEL" | translate }}
+					</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

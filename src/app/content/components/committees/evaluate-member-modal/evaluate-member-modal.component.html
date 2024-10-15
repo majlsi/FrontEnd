@@ -1,0 +1,47 @@
+<div class="modal-header">
+	<h4 class="modal-title" id="modal-basic-title">{{ "COMMITTEES.LIST.MEMBEREVALUATION" | translate }}</h4>
+	<button type="button" class="close" aria-label="Close" (click)="dismiss()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="modal-body">
+	<form name="evaluateForm" id="evaluateForm" #evaluateForm="ngForm" (ngSubmit)="save(evaluateForm)" novalidate>
+		<div class="form-group row">
+			<div class="col-12">
+				<label>{{ "COMMITTEES.LIST.EVALUATION" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span> </label>
+				<div class="radio-card-group">
+					<label class="radio-card" *ngFor="let theEvaluation of evaluationList">
+						<input name="evaluation_id" class="radio" type="radio" id="{{ theEvaluation.id }}" [value]="theEvaluation.id" [(ngModel)]="evaluation.evaluation_id"  required />
+						<span class="radio-card__details">
+							<span class="radio-card__title">
+								{{ isArabic ? theEvaluation.evaluation_name_ar : theEvaluation.evaluation_name_en }}
+							</span>
+						</span>
+					</label>
+
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(evaluateForm, 'evaluation_id', 'required')">
+						{{ "COMMITTEES.VALIDATION.EVALUATION" | translate }}
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12">
+				<label>{{ "COMMITTEES.LIST.EVALUATIONREASON" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span> </label>
+				<textarea class="form-control form-control-solid" required rows="3" [maxlength]="2000" #evaluation_reason="ngModel" [(ngModel)]="evaluation.evaluation_reason" placeholder="{{ 'COMMITTEES.LIST.EVALUATIONREASON' | translate }}" id="evaluation_reason" name="evaluation_reason"></textarea>
+
+				<div class="error text-danger form-control-feedback" [hidden]="!hasError(evaluateForm, 'evaluation_reason', 'required')">
+					{{ "COMMITTEES.VALIDATION.EVALUATIONREASON" | translate }}
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal-footer">
+			<button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+				{{ "BUTTON.SAVE" | translate }}
+				<i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+			</button>
+			<button class="btn btn-secondary" type="button" (click)="dismiss()">{{ "BUTTON.CANCEL" | translate }}</button>
+		</div>
+	</form>
+</div>

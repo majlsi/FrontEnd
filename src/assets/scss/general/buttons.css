@@ -1,0 +1,100 @@
+.btn {
+    box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: 0;
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: baseline;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: .3px;
+    font-size: 14px;
+    min-width: 99px;
+    line-height: 32px;
+    padding: 0 16px;
+    border-radius: 2px;
+    overflow: visible;
+    transform: translate3d(0, 0, 0);
+	transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+	
+}
+.btn i {
+    line-height: 0;
+    vertical-align: initial;
+}
+
+.btn-sm, .btn-group-sm>.btn{
+	font-size:13px;
+}
+.btn a {
+	color: white;
+	text-decoration: none;
+}
+.btn:hover a{
+	text-decoration: none;
+	color: white;
+}
+.m-login.m-login--2 .m-login__wrapper .m-login__container .m-login__form .m-login__form-action .m-login__btn {
+    padding: 1rem 10rem;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.btn{
+	font-weight: 400;
+    letter-spacing: .3px;
+    font-size: 14px;
+    min-width: 80px;
+    line-height: 31px;
+    margin: 0 0 0 4px;
+    padding: 0 5px 0 5px;
+    border-radius: 6px;
+}
+
+.btn-outline-black {
+    border-color: #000;
+    background: #fff;
+}
+.btn-outline-black:hover,
+.btn-outline-black:focus,
+.btn-outline-black:active,
+.btn-outline-black.active {
+    border-color: #000;
+    background: #000;
+    color: #fff;
+}
+
+
+.btn.btn-default, .btn.btn-secondary {
+    background: #ebedf2;
+    border-color: #ebedf2;
+    color: #000;
+}
+
+.btn.btn-secondary {
+    background: #C8C4A0;
+    border-color: #B3B08F;
+}
+.btn.btn-secondary:hover:not(:disabled), 
+.btn.btn-secondary.active, 
+.btn.btn-secondary:active, 
+.btn.btn-secondary:focus {
+    background: #B3B08F;
+    border-color: #B3B08F;
+}
+
+
+
+
+.btn [class^="flaticon-"]:before, 
+.btn [class*=" flaticon-"]:before{
+	font-size: 14px;
+}
+
+.m-portlet .m-portlet__head .m-portlet__head-tools .btn.disabled {
+    cursor: not-allowed;
+    margin: 0 0 0 0;
+}

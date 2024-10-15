@@ -1,0 +1,99 @@
+<m-portlet [options]="{headLarge: true}">
+  <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+  <ng-container mPortletHeadTitle>
+    <div class="m-portlet__head-title">
+      <h3 class="m-portlet__head-text">
+        {{'MENU.DASHBOARD' | translate}}
+      </h3>
+    </div>
+  </ng-container>
+  <ng-container mPortletHeadTools>
+
+
+  </ng-container>
+  <!-- end::Header -->
+
+
+
+  <!-- start::Body (attribute: mPortletBody) -->
+  <ng-container mPortletBody *ngIf="dashboard">
+    <div class="">
+
+
+      <div class="row">
+        <div class="col-lg-8 my-3">
+          <div class="bg-white--content dashboard-card mt-0 h-100">
+            <h3>{{'MEETINGS_DASHBOARD.LIST.MYMEETINGS' | translate}}</h3>
+            <m-dashboard-meetings
+              [dashboardMeetings]="{meetings_statistics:dashboard.meetings_statistics,meetings:dashboard.meetings}">
+            </m-dashboard-meetings>
+          </div>
+
+        </div>
+        <div class="col-lg-4 mb-3">
+          <div class="bg-white--content dashboard-card mt-3 h-100">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3>{{'DASHBOARD.MYTASKS'|translate}}</h3>
+            </div>
+            <m-dashboard-tasks (reload)="getMemberDashboard()"
+              [dashboardTasks]="{tasks:dashboard.tasks,tasks_statistics:dashboard.tasks_statistics}">
+            </m-dashboard-tasks>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="bg-white--content dashboard-card mt-0 h-100">
+
+            <h3>{{'DASHBOARD.MYCOMMITTEES'|translate}}</h3>
+            <m-member-commities [committees]="dashboard.committees"
+              [committeesCount]="dashboard.committees_count"></m-member-commities>
+
+
+
+
+
+          </div>
+
+        </div>
+
+        <div class="col-lg-4">
+          <div class="bg-white--content dashboard-card mt-0 h-100">
+            <ul ngbNav #nav="ngbNav" class="nav-pills sm-nav">
+              <li ngbNavItem>
+                <button ngbNavLink>{{'DASHBOARD.MY_DECISIONS'|translate}}</button>
+                <ng-template ngbNavContent>
+                  <m-dashboard-decision
+                    [dashboardDecisions]="{decisions:dashboard.meeting_decisions,decisions_statistics:dashboard.meeting_decisions_statistics}">
+                  </m-dashboard-decision>
+                </ng-template>
+              </li>
+              <li ngbNavItem>
+                <button ngbNavLink>{{'DASHBOARD.MY_CIRCULAR_DECISIONS'|translate}}</button>
+                <ng-template ngbNavContent>
+                  <m-dashboard-circular-decisions
+                    [dashboardDecisions]="{decisions:dashboard.circular_decisions,decisions_statistics:dashboard.circular_decisions_statistics}">
+                  </m-dashboard-circular-decisions>
+                </ng-template>
+              </li>
+            </ul>
+            <div [ngbNavOutlet]="nav" class="mt-2"></div>
+          </div>
+
+        </div>
+        <div class="col-lg-4">
+          <div class="bg-white--content dashboard-card mt-0 h-100">
+            <h3>{{'REVIEWS_ROOM.REVIEW.MYREVIEWS'|translate}}</h3>
+            <m-dashboard-reviews
+              [dashboardDocuments]="{documents:dashboard.documents,documents_statistics:dashboard.documents_statistics}">
+            </m-dashboard-reviews>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+    </div>
+  </ng-container>
+  <!-- end::Body -->
+</m-portlet>

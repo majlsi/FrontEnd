@@ -1,0 +1,17 @@
+<h3 class="mt-5">
+	{{'WELCOME_SPLACH.COMPLETED_SUCC' | translate}}
+</h3>
+
+<p>
+	{{'WELCOME_SPLACH.CLICK_BUTTON_BELOW' | translate}}
+</p>
+
+<div class="row align-items-center m-0 my-5 pb-3 pb-5 steps-action">
+
+	<button class="btn btn-green btn-primary-lg" mat-button (click)="goToCreateMeeting()">
+		{{'WELCOME_SPLACH.CREATE_MEETING'| translate}}</button>
+	<button class="btn btn-default primary-font  mx-3 px-4 bold" (click)="goToDashboard()" mat-button>
+		{{'WELCOME_SPLACH.GO_TO_DASHBOARD'| translate}}</button>
+</div>
+
+<m-user-guide-files></m-user-guide-files>

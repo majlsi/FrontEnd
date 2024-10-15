@@ -1,0 +1,83 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{ "PROFILE.DISCLOSURE_FILE_NAME" | translate }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form name="disclosureForm" id="cForm" #disclosureForm="ngForm" (ngSubmit)="save(disclosureForm)" novalidate>
+        <div class="form-group row">
+            <div class="col-12">
+                <label>{{ "COMMITTEES.GENERAL.IS_CONFLICT" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span>
+                </label>
+                <div class="radio-card-group">
+                    <label class="radio-card">
+                        <input name="disclosureId" class="radio" type="radio" [value]="true"
+                            [(ngModel)]="user.is_conflict" required />
+                        <span class="radio-card__details">
+                            <span class="radio-card__title">
+                                {{ "ORGANIZATIONS.ADD.YES" | translate }}
+                            </span>
+                        </span>
+                    </label>
+                    <label class="radio-card">
+                        <input name="disclosureId" class="radio" type="radio" [value]="false"
+                            [(ngModel)]="user.is_conflict" required />
+                        <span class="radio-card__details">
+                            <span class="radio-card__title">
+                                {{ "ORGANIZATIONS.ADD.NO" | translate }}
+                            </span>
+                        </span>
+                    </label>
+                    <div class="error text-danger form-control-feedback"
+                        [hidden]="!hasError(disclosureForm, 'disclosureId', 'required')">
+                        {{ "COMMITTEES.VALIDATION.EVALUATION" | translate }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label>{{ "PROFILE.DISCLOSURE_FILE_NAME" | translate }} &nbsp;<span class="MandatoryAsterisk">*</span>
+                </label>
+                <label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+                    for="attachmentDisclosureFile">
+                    <input type="file" class="d-none" id="attachmentDisclosureFile" name="attachmentDisclosure"
+                        (change)="fileDisclosureUrlChangeEvent($event)" #attachmentDisclosure="ngModel"
+                        accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt"
+                        (ngModel)="attachmentDisclosureUrl" required />
+                    <span id="attachmentDisclosureFile" *ngIf="!attachmentDisclosureUrl">
+                        {{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}
+                    </span>
+                    <span id="attachmentDisclosureFile" *ngIf="attachmentDisclosureUrl">
+                        {{ attachmentDisclosureUrl }}
+                    </span>
+                    <span class="btn btn-default px-0 mx-0">
+                        {{ "REVIEWS_ROOM.ADD.BROWSE" | translate }}
+                    </span>
+                </label>
+                <div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+                    {{ "COMMITTEES.VALIDATION.GOVERNANCE_REGULATION_UPLOAD_FILE_TYPE" | translate }}
+                </div>
+                <div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+                    {{ attachmentSizeError }}
+                </div>
+                <div class="error text-danger form-control-feedback"
+                    [hidden]="!hasError(disclosureForm, 'attachmentDisclosure', 'required')">
+                    {{ 'AUTH.VALIDATION.REQUIRED' | translate
+                    :{ name: 'PROFILE.DISCLOSURE_FILE_NAME' | translate}
+                    }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+                {{ "BUTTON.SAVE" | translate }}
+                <i class="fa fa-spinner fa-spin" *ngIf="submitted"></i>
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="dismiss()">{{ "BUTTON.CANCEL" | translate
+                }}</button>
+        </div>
+    </form>
+</div>

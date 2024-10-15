@@ -1,0 +1,298 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'PROFILE.PROFILEDATA' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div [hidden]="!showError"
+			class="m--margin-top-15 m--padding-15 m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+			role="alert" *ngFor="let error of errors">
+			<span>
+				{{error}}
+			</span>
+		</div>
+		<div class="bg-white--content m--padding-15">
+
+
+			<form class="m-form m-form--p-top-bottom-10 m-form--profile m-form--label-align-right" novalidate
+				#profileForm="ngForm" (ngSubmit)="save(profileForm)">
+				<div class="m-form__section m-form__section--first mt-2 mb-3">
+					<div class="m-form__heading mb-0">
+						<h3 class="m-form__heading-title">
+							<span class="number_block">1</span>&nbsp;
+							{{'PROFILE.GENERALACCOUNTINFO' | translate}}</h3>
+					</div>
+					<div class="form-group m-form__group row">
+						<label for="email" class="col-lg-2 col-form-label">{{'PROFILE.USEREMAIL' | translate}}</label>
+						<div class="col-lg-6">
+							<input type="email" placeholder="User email" class="form-control" id="email" name="email"
+								[(ngModel)]="user.email" #email="ngModel">
+						</div>
+					</div>
+					<div class="form-group m-form__group row" *ngIf="isArabic">
+						<label for="namear" class="col-lg-2 col-form-label">{{'PROFILE.USERNAMEAr' | translate}}</label>
+						<div class="col-lg-6">
+							<input type="text" placeholder="{{'PROFILE.USER_NAME_Ar' | translate}}" class="form-control"
+								id="namear" name="namear" [(ngModel)]="user.name_ar" #namear="ngModel" required>
+							<div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(profileForm,'namear', 'required')">
+								{{'PROFILE.USERNAMEARREQUIRED' | translate}}
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group m-form__group row" *ngIf="!isArabic">
+						<label for="name" class="col-lg-2 col-form-label">{{'PROFILE.USERNAME' | translate}}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control m-input" id="name" name="name"
+								placeholder="{{'PROFILE.USER_NAME' | translate}}" [(ngModel)]="user.name"
+								#name="ngModel" required>
+								<div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(profileForm,'name', 'required')">
+								{{'PROFILE.USERNAME_ENREQUIRED' | translate}}
+							</div>
+						</div>
+					</div>
+					<div class="form-group m-form__group row">
+						<label class="col-lg-2 col-form-label">{{'USERS.ADD.PHONE_NUMBER' | translate}}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" name="PhoneNo"
+							placeholder="{{'USERS.ADD.PHONE_NUMBER' | translate}}" autocomplete="off"
+							[(ngModel)]="user.user_phone" #PhoneNo="ngModel" pattern="[0-9]+">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(profileForm,'PhoneNo', 'pattern')">
+							{{'USERS.VALIDATION.PHONENO_INVALID' | translate}}</div>
+						</div>
+					</div>
+
+					<div class="form-group m-form__group row" *ngIf="user.role_id == roles.ORGANIZATIONADMIN">
+						<label for="titleAr"
+							class="col-lg-2 col-form-label">{{'USERS.ADD.USER_TITLE_AR' | translate}}</label>
+						<div class="col-lg-6">
+								<ng-select  [searchable]="true" [(ngModel)]="user.user_title_id" name="userTitleAr" 
+								#userTitleAr="ngModel" [items]="userTitles" [bindLabel]="bindLabelUserTitle" bindValue="id"
+								placeholder="{{'USERS.ADD.USERTITLE_AR' | translate}}">
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.user_title_name_ar"
+										class="ng-option-label">{{isArabic? item.user_title_name_ar : (item.user_title_name_en? item.user_title_name_en : item.user_title_name_ar)}}</span>
+								</ng-template>
+							</ng-select>
+							<!-- <div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(profileForm,'userTitleAr', 'required')">
+								{{'USERS.VALIDATION.TITLE_AR' | translate}}</div> -->
+						</div>
+					</div>
+
+					<div class="form-group m-form__group row" *ngIf="user.role_id == roles.ORGANIZATIONADMIN">
+						<label for="jobTitleAr"
+							class="col-lg-2 col-form-label">{{'USERS.ADD.JOB_TITLE_AR' | translate}}</label>
+						<div class="col-lg-6">
+							<ng-select  [searchable]="true" [(ngModel)]="user.job_title_id"  name="jobTitleAr"
+							#jobTitleAr="ngModel"  [items]="jobTitles" [bindLabel]="bindLabelJobTitle" bindValue="id"
+							placeholder="{{'USERS.ADD.JOBTITLE_AR' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.job_title_name_ar"
+									class="ng-option-label">{{isArabic? item.job_title_name_ar : (item.job_title_name_en? item.job_title_name_en : item.job_title_name_ar)}}</span>
+							</ng-template>
+						 </ng-select>
+							<!-- <div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(profileForm,'jobTitleAr', 'required')">
+								{{'USERS.VALIDATION.JOB_TITLE_AR' | translate}}</div> -->
+						</div>
+					</div>
+
+					<div class="form-group m-form__group row" *ngIf="user.role_id == roles.ORGANIZATIONADMIN">
+						<label for="nickNameAr"
+							class="col-lg-2 col-form-label">{{'USERS.ADD.NICKNAME_LABLE_AR' | translate}}</label>
+						<div class="col-lg-6">
+							<ng-select  [searchable]="true" [(ngModel)]="user.nickname_id"  name="nickNameAr"
+								#nickNameAr="ngModel" [items]="nicknames" [bindLabel]="bindLabelNickname" bindValue="id"
+								placeholder="{{'USERS.ADD.NICKNAME_AR' | translate}}">
+								<ng-template ng-option-tmp let-item="item">
+									<span [title]="item.nickname_ar"
+										class="ng-option-label">{{isArabic? item.nickname_ar : (item.nickname_en? item.nickname_en : item.nickname_ar)}}</span>
+								</ng-template>
+						 	</ng-select>
+							<!-- <div class="error text-danger form-control-feedback"
+								[hidden]="!hasError(profileForm,'nickNameAr', 'required')">
+								{{'USERS.VALIDATION.NICKNAME_AR' | translate}}</div> -->
+						</div>
+					</div>
+
+				<div class="form-group m-form__group row">
+					<label for="mainPage" class="col-lg-2 col-form-label">{{'PROFILE.MAINPAGE' | translate}}</label>
+					<div class="col-lg-6">
+						<ng-select [searchable]="true" [(ngModel)]="user.main_page_id" name="mainPage"
+							#mainPage="ngModel" [items]="accessRights" [bindLabel]="bindLabel" bindValue="id"
+							placeholder="{{'PROFILE.MAINPAGE' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.name"
+									class="ng-option-label">{{isArabic? item.right_name_ar : (item.right_name? item.right_name : item.right_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label for="language" class="col-lg-2 col-form-label">{{'USERS.ADD.LANG' | translate}}</label>
+					<div class="col-lg-6">
+						<ng-select  [searchable]="true" [(ngModel)]="user.language_id" name="language"
+							#language="ngModel" required [items]="languages" [bindLabel]="bindLabelLang" bindValue="id"
+							placeholder="{{'USERS.ADD.LANG' | translate}}">
+							<ng-template ng-option-tmp let-item="item">
+								<span [title]="item.language_name_ar"
+									class="ng-option-label">{{isArabic? item.language_name_ar : (item.language_name_en? item.language_name_en : item.language_name_ar)}}</span>
+							</ng-template>
+						</ng-select>
+
+						<div class="error text-danger form-control-feedback"
+									[hidden]="!hasError(profileForm,'language', 'required')">
+									{{'USERS.VALIDATION.LANG' | translate}}
+						</div>
+					</div>
+				</div>
+
+
+		</div>
+		<div class="m-form__seperator m-form__seperator--dashed m--margin-0"></div>
+
+		<div class="m-form__section m-form__section--first mt-3 mb-3">
+			<div class="m-form__heading mb-0">
+				<h3 class="m-form__heading-title">
+					<span class="number_block">2</span>&nbsp; {{'PROFILE.UPLOADPROFILEPICTURE' | translate}}
+				</h3>
+			</div>
+			<div
+				class="form-group m-form__group m--padding-15 m--padding-top-15 m-form__group--profile_img m-form__group--org_avtr row">
+				<div class="col-md-3">
+					<div class="org_avtr profile-img--large imgLogo">
+						<!-- <div > -->
+						<img *ngIf="image_url" [src]="image_url" class="rounded" id="profileImg">
+						<!-- </div> -->
+						<div class="">
+							<i class="fa fa-image" (click)="file.click()"></i>
+							<input type="file" accept="image/*" class="no-opacity" id="profileimage" #file
+								(ngModel)="user.profile_image.image_url" name="file" (change)="detectFiles($event)">
+						</div>
+						<span class="enz_editImg updateLogo"
+							(click)="file.click()">{{'PROFILE.EDITIMAGE' | translate}}</span>
+					</div>
+				</div>
+				<div class="col-md-4 text-col">
+					<h3>{{'PROFILE.UPLOADPHOTO' | translate}} </h3>
+					<p>{{'PROFILE.FROMYOURCOMPUTER' | translate}}</p>
+					<p>{{'PROFILE.MESSAGE' | translate}}</p>
+					<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+						{{logoImageSizeError }}</div>
+					<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+						{{ 'AUTH.VALIDATION.PROFILE_LOGO_INVALID' | translate }}</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="m-form__seperator m-form__seperator--dashed m--margin-0"></div>
+
+		<div class="m-form__section m-form__section--last mt-3 mb-3">
+			<div class="m-form__heading mb-0">
+				<h3 class="m-form__heading-title">
+					<span class="number_block">3</span>&nbsp;
+					{{'PROFILE.CHANGEPASSWORD' | translate}}</h3>
+			</div>
+
+			<div class="form-group m-form__group row">
+				<label for="password" class="col-lg-2 col-form-label">{{'PROFILE.PASSWORD' | translate}}</label>
+				<div class="col-lg-6">
+					<input type="password" class="form-control m-input" id="password" name="password"
+						placeholder="{{'PROFILE.USER_PASSWORD' | translate}}" [(ngModel)]="user.password"
+						#password="ngModel">
+				</div>
+			</div>
+			<div class="form-group m-form__group row">
+				<label for="rpassword" class="col-lg-2 col-form-label">{{'PROFILE.CONFIRMPASSWORD' | translate}}</label>
+				<div class="col-lg-6">
+					<input type="password" class="form-control m-input" id="rpassword" name="rpassword"
+						placeholder="{{'PROFILE.USER_CONFIRM_PASSWORD' | translate}}" [(ngModel)]="user.rpassword"
+						#rpassword="ngModel">
+					<div class="error text-danger form-control-feedback" *ngIf="(user.rpassword != user.password) && edit">
+						{{'AUTH.VALIDATION.CONFIRM_PASSWORD' | translate}}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="m-form__seperator m-form__seperator--dashed m--margin-0"></div>
+
+		<div class="m-form__section m-form__section--last mt-3 mb-3">
+			<div class="m-form__heading mb-0">
+				<h3 class="m-form__heading-title">
+					<span class="number_block">4</span>&nbsp;
+					{{'PROFILE.UPLOAD_DISCLOSURE' | translate}}
+					&nbsp;
+					<div class="m-mat-alert__text m--font-warning" style="display: inline;" *ngIf="!user.disclosure_url">
+						<i class="la la-warning m--font-warning"></i>
+						{{'PROFILE.ALERT' | translate}}
+					</div>
+				</h3>
+			</div>
+			<div class="form-group m-form__group row">
+				<div class="col">
+					<label class="col-form-label">{{'REVIEWS_ROOM.ADD.UPLOAD_FILE' | translate}}
+						&nbsp;<span class="MandatoryAsterisk"></span>
+					</label>
+				</div>
+				<div class="col ml-auto text-right">
+					<a (click)="downloadFile()" class="m-widget4__icon col-md-12" style="margin-right: 0;" *ngIf="user.disclosure_url">
+						{{'PROFILE.DOWNLOAD_DISCLOSURE' | translate}}
+						<i class="la la-download"></i>
+					</a>
+					<a (click)="downloadOriginalFile()" class="m-widget4__icon col-md-12" style="margin-right: 0;">
+						{{'PROFILE.DOWNLOAD_ORIGINAL_DISCLOSURE' | translate}}
+						<i class="la la-download"></i>
+					</a>
+				</div>
+				<div class="input-group mr-3 ml-3">
+			 		<label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center" 
+						for="thefile">
+							<input type="file" class="d-none" id="thefile" accept=".pdf"
+							 (change)="fileChangeEvent($event)" #disclosure="ngModel" name="disclosure" (ngModel)="attachmentUrl"/>
+							<span id="fileName" *ngIf="!attachmentUrl">{{ 'REVIEWS_ROOM.ADD.NO_CHOSEN_FILE' | translate }}</span>
+							<span id="fileName" *ngIf="attachmentUrl">{{attachmentUrl}}</span>
+							<span class="btn btn-default px-0 mx-0">{{'REVIEWS_ROOM.ADD.BROWSE' | translate}}</span>
+					</label>
+				</div>					
+			</div>
+			<div class="error text-danger form-control-feedback"
+				*ngIf="attachmentTypeError">
+				{{'PROFILE.VALIDATION.UPLOAD_FILE_TYPE' | translate}}
+			</div>
+			<div class="error text-danger form-control-feedback"
+				*ngIf="attachmentSizeError">
+				{{attachmentSizeError}}
+			</div>
+		</div>
+				
+		<div class="m-form__seperator m-form__seperator--dashed m--margin-0"></div>
+
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" [disabled]="submitted">
+						{{'BUTTON.SAVE' | translate}} <i class="fa fa-check" aria-hidden="true"></i>
+						<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		</form>
+		</div>
+	</ng-container>
+
+</m-portlet>

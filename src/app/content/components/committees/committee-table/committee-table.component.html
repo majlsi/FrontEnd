@@ -1,0 +1,76 @@
+<div class="bg-white--cont ent tabs Wrabber">
+	<div class="px-lg-0 px-3">
+		<div class="mat-table__wrapper">
+			<table mat-table
+				class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table"
+				[dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+				<ng-container matColumnDef="committee_name_en">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEENAME" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committee_name_en }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="committee_name_ar">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEENAMEAR" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committee_name_ar }}</td>
+				</ng-container>
+
+				<ng-container *ngIf="!removeCommitteeCode" matColumnDef="committee_code">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEECODE" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committee_code }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="committee_type_name_ar">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.COMMITTEE_TYPE" | translate }}</th>
+					<td *matCellDef="let committee">{{ isArabic ? committee.committee_type_name_ar :
+						committee.committee_type_name_en }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="name">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.COMMITTEEHEAD" | translate }}</th>
+					<td *matCellDef="let committee">{{ isArabic ? (committee.name_ar ? committee.name_ar :
+						committee.name) : committee.name ? committee.name : committee.name_ar }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="committeee_members_count">
+					<th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.LIST.MEMBERSNUMBER" | translate }}</th>
+					<td *matCellDef="let committee">{{ committee.committeee_members_count }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="actions">
+					<th *matHeaderCellDef>
+						{{ "GENERAL.ACTIONS" | translate }}
+					</th>
+					<td *matCellDef="let committee" class="mat-column-action">
+						<button type="button" (click)="edit(committee.id)" *ngIf="actions && editFlag"
+							class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+							matTooltip="{{ 'BUTTON.EDIT' | translate }}">
+							<i class="flaticon-edit-1"></i>
+						</button>
+
+						<button type="button" (click)="delete(committee.id)"
+							*ngIf="actions && committee.can_delete && deleteFlag"
+							class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"
+							matTooltip="{{ 'BUTTON.DELETE' | translate }}">
+							<i class="flaticon-delete-2"></i>
+						</button>
+
+						<button type="button" (click)="deleteRequest(committee.request_id)" *ngIf="!actions"
+							matTooltip="{{ 'BUTTON.DELETE' | translate }}"
+							class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x">
+							<i class="flaticon-delete-2"></i>
+						</button>
+					</td>
+				</ng-container>
+
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+			</table>
+			<div class="mat-table__message" *ngIf="dataSourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+		</div>
+	</div>
+	<!-- start: BOTTOM -->
+	<div class="mat-table__bottom">
+		<mat-spinner [diameter]="20" *ngIf="loading$ | async"></mat-spinner>
+		<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+	</div>
+</div>

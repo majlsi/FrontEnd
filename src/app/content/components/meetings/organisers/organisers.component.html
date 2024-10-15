@@ -1,0 +1,118 @@
+<div class="m--padding-15 m--padding-top-0">
+
+
+	<div class="row m--padding-bottom-10">
+		<div class="col-lg-6">
+			<h4>{{'MEETINGS.ORGANISERS.ADD.ADDORGANISER' | translate}}</h4>
+		</div>
+		<div class="col-lg-6 text-right">
+			<button type="button" class="btn btn-light-grey title-action-btn" (click)="addOrganiser()"
+				[hidden]="!canEditMeeting" [disabled]="noUsers">
+				<i class="fa fa-plus"></i>&nbsp;{{'MEETINGS.ORGANISERS.ADD.ADDMEMBER' | translate}}
+			</button>
+		</div>
+	</div>
+
+	<div class="mat-table__wrapper mat-table__message" *ngIf="organisers?.length == 0">
+		{{'MEETINGS.ORGANISERS.ADD.NORECORDSFOUND' | translate}}</div>
+
+	<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate
+		#organiserForm="ngForm" (ngSubmit)="save(organiserForm)">
+
+		<div class="card card-row" *ngFor="let user of organisers; let i = index; trackBy: trackParticipants">
+			<div class="card-header " id="restaurantChoice.id-header" role="tab">
+				<span class="m-list-timeline__time">
+					<span class="m-menu__link-badge">
+						<span class="m-badge m-badge--btn editBadge deleteBadge " style="top: 0;"
+							(click)="deleteOrganiser(user)" [hidden]="!canEditMeeting">
+							<i class="la la-trash"></i>
+						</span>
+					</span>
+				</span>
+
+
+				<div class="row">
+
+					<div class="m-form col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+
+						<h5 class="mb-0">
+							<div class="form-gro up m-form__g roup row no-pad">
+								<div class="col-lg-4">
+									<div class="attendee-detail-row">
+										<div class="attendee-item-name">
+											<div class="attendee-name">
+												<span>
+													{{isArabic? user.user_title_ar : (user.user_title_en? user.user_title_en : user.user_title_ar)}}</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="attendee-detail-row">
+										<div class="attendee-item-name">
+											<div class="attendee-name">
+												<ng-select [searchable]="true" [clearable]="false"
+													placeholder="{{'MEETINGS.ORGANISERS.ADD.MEETINGORGANISER' | translate}}"
+													[(ngModel)]="user.id" name="{{'meetinguser'+i}}"
+													(change)="prepareUsersDropDown($event,i)" #meetinguser="ngModel" required
+													[disabled]="!canEditMeeting" [items]="usersDropDown[i]"
+													[bindLabel]="bindLabel" bindValue="id"
+													(search)="searchForUsersInLdap($event)"
+													>
+
+													<ng-template ng-label-tmp let-item="item">				
+														{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name : item.name_ar)}}
+													</ng-template>
+													<ng-template ng-option-tmp let-item="item">
+														<span [title]="item.name"
+															class="ng-option-label">{{isArabic? (item.name_ar? item.name_ar : item.name)  : (item.name? item.name : item.name_ar)}}</span>
+													</ng-template>
+
+												</ng-select>
+
+												<div class="error text-danger form-control-feedback"
+													[hidden]="!hasError(organiserForm,'meetinguser'+i, 'required')">
+													{{'MEETINGS.ORGANISERS.VALIDATION.MEETINGORGANISER' | translate}}
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</h5>
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+
+		<div class="form-group m-form__group row">
+			<input type="checkbox" id="users" name="users" [(ngModel)]="memberOrganiserSelectet" #users="ngModel" hidden
+				required>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(organiserForm,'users', 'required')">
+				{{'MEETINGS.ORGANISERS.VALIDATION.MEETINGORGANISERS' | translate}}</div>
+		</div>
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" [disabled]="submitted" *ngIf="canEditMeeting">
+						{{'BUTTON.SAVE' | translate}}
+						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+					</button>
+					<button type="button" class="btn btn-primary" (click)="saveMeetingVersion(organiserForm)" [disabled]="submitted"
+					*ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+						{{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+						<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+					</button>
+					<button type="reset" (click)="redirect()"
+						class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div>

@@ -1,0 +1,202 @@
+<ng-template #content let-c="close" let-d="dismiss">
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{'MEETINGS.VOTE.ADD.ADDVOTE' |
+			translate}}
+		</h4>
+		<button type="button" class="close" aria-label="Close" (click)="close();">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<form novalidate #votesForm="ngForm" (ngSubmit)="save(votesForm)">
+		<div class="modal-body px-4">
+			<div [hidden]="!agendaVotesError"
+				class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger"
+				role="alert">
+				<p>
+					{{'MEETINGS.AGENDA.VALIDATION.AGENDA_VOTES'| translate}}
+				</p>
+			</div>
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+				<label for="relatedAgendaItem" class="col-12 col-form-label">
+					{{'MEETINGS.VOTE.ADD.RELATEDAGENDAITEM' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-12">
+					<ng-select [items]="agendas"
+						(change)="autoFillVoteSubject(vote,vote.agenda_id)"
+						placeholder="{{'MEETINGS.VOTE.ADD.RELATEDAGENDAITEM' | translate}}"
+						[bindLabel]="agendabindLabel" bindValue="id" name="agenda"
+						[searchable]="true" [clearable]="false" [(ngModel)]="vote.agenda_id"
+						required>
+						<ng-template ng-label-tmp let-item="item">
+							{{isArabic? (item.agenda_title_ar? item.agenda_title_ar :
+							item.agenda_title_en) : (item.agenda_title_en? item.agenda_title_en :
+							item.agenda_title_ar)}}
+						</ng-template>
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.name"
+								class="ng-option-label">{{isArabic? (item.agenda_title_ar?
+								item.agenda_title_ar : item.agenda_title_en) : (item.agenda_title_en?
+								item.agenda_title_en : item.agenda_title_ar)}}</span>
+						</ng-template>
+					</ng-select>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(votesForm,'agenda', 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.RELATEDAGENDAITEM' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+				<label for="DECISION_TYPE" class="col-12 col-form-label">
+					{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-12">
+					<ng-select [items]="decisionTypes"
+						placeholder="{{'MEETINGS.VOTE.ADD.DECISION_TYPE' | translate}}"
+						[bindLabel]="decisionTypeBindLabel" bindValue="id" name="decision_type"
+						[searchable]="true" [clearable]="false"
+						[(ngModel)]="vote.decision_type_id" required>
+						<ng-template ng-label-tmp let-item="item">
+							{{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar :
+							item.decision_type_name_en) : (item.decision_type_name_en?
+							item.decision_type_name_en : item.decision_type_name_ar)}}
+						</ng-template>
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.name"
+								class="ng-option-label">{{isArabic? (item.decision_type_name_ar?
+								item.decision_type_name_ar : item.decision_type_name_en) :
+								(item.decision_type_name_en? item.decision_type_name_en :
+								item.decision_type_name_ar)}}</span>
+						</ng-template>
+					</ng-select>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(votesForm,'decision_type', 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.DECISION_TYPE' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+				<label for="DECISION_TYPE" class="col-lg-2 col-form-label">
+					{{'CIRCULAR_DECISIONS.ADD.IS_SECRET' | translate }}
+					<!-- &nbsp;<span class="MandatoryAsterisk">*</span> -->
+				</label>
+				<div class="col-12">
+					<input class="mr-2" type="checkbox" [(ngModel)]="vote.is_secret"
+						[checked]="vote.is_secret"
+						style="margin-top: 13px;width: 20px;height: 20px;"
+						name="issecret">
+				</div>
+			</div>
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+				<label for="MOM_TITLE_AR" class="col-lg-2 col-form-label">
+					{{'MEETINGS.AGENDA.ADD.VOTE_PARTICIPANTS' | translate}}
+					<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-lg-9">
+					<ng-select (click)="onVoteParticipantListOpen(null)"
+						placeholder="{{'MEETINGS.AGENDA.ADD.VOTE_PARTICIPANTS' | translate}}" [hideSelected]="true"
+						name="{{'agendaParticipants'+i}}" [searchable]="true" [(ngModel)]='vote.vote_participants' [multiple]="true"
+						[hideSelected]="true" required [compareWith]="compareFn">
+						<ng-option *ngFor="let participation of customVoteParticipants" [value]="participation">
+							{{participation.name}}
+						</ng-option>
+					</ng-select>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(votesForm,'agendaParticipants'+i, 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.PARTICIPATION' | translate}}
+					</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+				<label for="DUE_DATE" class="col-12 col-form-label">
+					{{'MEETINGS.VOTE.ADD.DECISION_DUE_DATE' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-12">
+					<div class="form-group row">
+						<div class="input-group col-lg-12 m-b-1">
+							<input class="form-control m-input"
+								placeholder="{{'MEETINGS.VOTE.ADD.DECISION_DUE_DATE' | translate}}"
+								name="dueDate" [(ngModel)]="vote.decision_due_date" ngbDatepicker
+								#ngDatePick="ngbDatepicker" [readonly]="true"
+								(ngModelChange)="setToDateEqualFrom()" required>
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary calendar"
+									(click)="ngDatePick.toggle();$event.stopPropagation();"
+									(dateSelect)="ngDatePick.close()"
+									type="button">
+									<i class="fa fa-calendar-alt"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(votesForm,'dueDate', 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.DECISION_DUE_DATE' | translate}}
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;"
+				*ngIf="isArabic">
+				<label for="subject" class="col-12 col-form-label">
+					{{'MEETINGS.VOTE.ADD.SUBJECTAR' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-12">
+					<textarea class="form-control m-input" [(ngModel)]="vote.vote_subject_ar"
+						placeholder="{{'MEETINGS.VOTE.ADD.SUBJECTAR' | translate}}"
+						id="subject" name="subjectAr" required [maxlength]="1000">
+					</textarea>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(votesForm,'subjectAr', 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.SUBJECTAR' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						*ngIf="vote.vote_subject_ar?.length == 1000">
+						{{'MEETINGS.VOTE.VALIDATION.SUBJECTAR_LENGTH'|translate}}</div>
+				</div>
+			</div>
+			<div class="form-group m-form__group row" style="padding: 5px 0 20px;"
+				*ngIf="!isArabic">
+				<label for="subject" class="col-12 col-form-label">
+					{{'MEETINGS.VOTE.ADD.SUBJECTEN' | translate}}
+					&nbsp;<span class="MandatoryAsterisk">*</span>
+				</label>
+				<div class="col-12">
+					<textarea class="form-control m-input" [(ngModel)]="vote.vote_subject_en"
+						placeholder="{{'MEETINGS.VOTE.ADD.SUBJECTEN' | translate}}"
+						[maxlength]="1000"
+						id="subject" name="subjectEn" required>
+					</textarea>
+					<div class="error text-danger form-control-feedback"
+						[hidden]="!hasError(votesForm,'subjectEn', 'required')">
+						{{'MEETINGS.VOTE.VALIDATION.SUBJECTEN' | translate}}
+					</div>
+					<div class="error text-danger form-control-feedback"
+						*ngIf="vote.vote_subject_en?.length == 1000">
+						{{'MEETINGS.VOTE.VALIDATION.SUBJECTEN_LENGTH'|translate}}</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button mat-button type="submit" cdkFocusInitial class="btn btn-primary"
+				[disabled]="submitted">
+				{{'BUTTON.SAVE' | translate}}
+				<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+			</button>
+			<button class="btn btn-secondary" mat-button
+				(click)="close();d('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+		</div>
+
+	</form>
+
+</ng-template>
+
+<span class="btn  btn-link btn-block my-3" (click)="open(content)"><i
+		class="fa fa-plus-circle primary-color"></i>
+	<span class="mx-2 primary-color">
+		{{'PRESENTATION.ADDVOTE' | translate}}
+	</span></span>

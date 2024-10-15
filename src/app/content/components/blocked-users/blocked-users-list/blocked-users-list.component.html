@@ -1,0 +1,120 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'BLOCKED_USERS.LIST.BLOCKED_USERS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+	</ng-container>
+	<!-- end::Header -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #roleForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'BLOCKED_USERS.LIST.IP_ADDRESS' | translate}}</th>
+									<th>{{'BLOCKED_USERS.LIST.EMAIL' | translate}}</th>
+									<th> {{'BLOCKED_USERS.LIST.USER_NAME' | translate}}</th>
+                                    <th> {{'ROLES.LIST.OPERATIONS' | translate}}</th>
+                                </tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'BLOCKED_USERS.LIST.IP_ADDRESS' | translate}}" class="form-control form-filter input-sm" id="ip_address" name="ip_address"
+										 [(ngModel)]="filterObject.SearchObject.ip_address" #ip_address="ngModel">
+
+									</td>
+									<td>
+										<input type="text" placeholder="{{'BLOCKED_USERS.LIST.EMAIL' | translate}}" class="form-control form-filter input-sm" id="email_address" name="email_address"
+											[(ngModel)]="filterObject.SearchObject.email_address" #email_address="ngModel">
+	
+                                        </td>
+                                        <td>
+                                            <input type="text" placeholder="{{'BLOCKED_USERS.LIST.USER_NAME' | translate}}" class="form-control form-filter input-sm" id="user_name" name="user_name"
+                                             [(ngModel)]="filterObject.SearchObject.user_name" #user_name="ngModel">
+    
+                                        </td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary-outline m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</ng-container>
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table [dataSource]="dataSource" matSort matSortActive="failed_login_date" matSortDirection="desc" matSortDisableClear
+				 class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+					
+					<ng-container matColumnDef="ip_address">
+						<th *matHeaderCellDef mat-sort-header>{{'BLOCKED_USERS.LIST.IP_ADDRESS' | translate}}</th>
+						<td *matCellDef="let attempt">{{attempt.ip_address}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="email_address">
+						<th *matHeaderCellDef mat-sort-header>{{'BLOCKED_USERS.LIST.EMAIL' | translate}}</th>
+						<td *matCellDef="let attempt">{{attempt.email_address}}</td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="failed_login_date">
+                        <th *matHeaderCellDef mat-sort-header>{{'BLOCKED_USERS.LIST.ATTEMPT_DATE' | translate}}</th>
+						<td *matCellDef="let attempt">{{attempt.failed_login_date | date: 'MMMM d, y, h:mm a'}}</td>
+                    </ng-container>
+                    
+                    <ng-container matColumnDef="name">
+                        <th *matHeaderCellDef mat-sort-header>{{'BLOCKED_USERS.LIST.USER_NAME' | translate}}</th>
+						<td *matCellDef="let attempt">{{isArabic? attempt.name_ar : (attempt.name? attempt.name : attempt.name_ar)}}</td>
+                    </ng-container>
+
+					<ng-container matColumnDef="actions">
+						<th *matHeaderCellDef>
+							{{'ROLES.LIST.ACTIONS' | translate}}
+						</th>
+						<td *matCellDef="let attempt">
+							<button type="button" *ngIf="deleteFlag" (click)="delete(attempt.id)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"
+							 matTooltip="Delete">
+								<i class="flaticon-delete-2"></i>{{'BUTTON.DELETE' | translate}}
+							</button>
+						</td>
+					</ng-container>
+
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+				</table>
+
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'BLOCKED_USERS.LIST.NORECORDSFOUND' | translate}}</div>
+			</div>
+
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+			</div>
+		</div> 
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

@@ -1,0 +1,67 @@
+@import "../theme";
+@import "../mixins";
+
+.m-portlet {
+.m-portlet__head {
+    .m-portlet__head-caption {
+        .m-portlet__head-title {
+            .m-portlet__head-text {
+        display: flex;
+        align-items: center;
+        font-size: 1.15rem;
+        font-weight: 600;
+        font-family: poppins;
+        margin: 0;
+        padding: 0;
+        color: #000;
+    }
+}
+}
+
+.m-portlet__head-tools {
+    .btn {
+        padding: 0 15px;
+    }
+.btn.btn-link{
+    border: 0px;
+    font-size: 12px;
+    color: #000;
+    font-weight: 400;
+    background: transparent;
+    i{
+        color: #000;
+    }
+}
+
+
+}
+}
+}
+
+.m-portlet.m-portlet--rounded-force {
+    overflow: initial!important;
+}
+
+.m-portlet{
+    box-shadow: none;
+    background-color: transparent;
+    .mat-table__wrapper .mat-table {
+        margin-bottom: 0;
+    }
+    .bg-white--content {
+        margin: 20px 0 0;
+		border: 1px solid #ebedf2;
+		background: white;
+		box-shadow: 0px 1px 15px 1px rgba(69,65,78,0.08);
+		border-radius: 15px;
+    }
+    .m-portlet__head {
+        .m-portlet__head-caption {
+           .m-portlet__head-title {
+              .m-portlet__head-text {
+                 font-weight: 500;
+              }
+           }
+        }
+     }
+}

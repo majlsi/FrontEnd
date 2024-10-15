@@ -1,0 +1,5 @@
+@mixin custombtns($color,$background,$borderColor){
+	background:$background;
+	border:1px solid $borderColor;
+	color:$color;
+}

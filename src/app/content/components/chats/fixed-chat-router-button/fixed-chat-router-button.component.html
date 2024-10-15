@@ -1,0 +1,10 @@
+<!-- START:: FIXED CHAT BUTTON-->
+<button (click)="createChat()" class="d-lg-flex align-items-center d-none btn btn-primary btn-chat-widget btn-lg-fixed">
+	<i class="fas fa-comments"></i>
+	<span class="text-truncate mw-100 d-inline-block mx-1">
+		 {{meeting.chat_room_id? (isArabic? meeting.meeting_title_ar : (meeting.meeting_title_en? meeting.meeting_title_en : meeting.meeting_title_ar))
+			: ('CONVERSATIONS.START_MEETING_CONVERSATION' | translate)}}
+	</span>
+
+</button>
+<!-- END:: FIXED CHAT BUTTON-->

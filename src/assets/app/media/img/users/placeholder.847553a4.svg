@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="96" height="96" viewBox="0 0 96 96">
+  <defs>
+    <path id="avatar-placeholder-a" d="M48,0 C74.509668,0 96,21.490332 96,48 C96,74.509668 74.509668,96 48,96 C21.490332,96 0,74.509668 0,48 C0,21.490332 21.490332,0 48,0 Z"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <mask id="avatar-placeholder-b" fill="#fff">
+      <use xlink:href="#avatar-placeholder-a"/>
+    </mask>
+    <use fill="#566073" xlink:href="#avatar-placeholder-a"/>
+    <circle cx="42" cy="-6" r="18" fill="#2B3548" mask="url(#avatar-placeholder-b)"/>
+    <circle cx="18" cy="102" r="26" fill="#2B3548" mask="url(#avatar-placeholder-b)"/>
+    <polygon fill="#2B3548" points="75.574 77.11 95.316 -5.536 153.536 43.316" mask="url(#avatar-placeholder-b)"/>
+    <polygon fill="#2B3548" points="-79.854 85.77 -54.916 -18.624 18.624 43.084" mask="url(#avatar-placeholder-b)"/>
+  </g>
+</svg>

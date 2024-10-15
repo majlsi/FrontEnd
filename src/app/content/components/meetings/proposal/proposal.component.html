@@ -1,0 +1,28 @@
+<div class="m--padding-15 m--padding-top-0">
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>
+                {{'MEETINGS.GENERAL.Proposals' | translate}}
+            </h3>
+        </div>
+
+    </div>
+
+	<!-- <div class="mat-table__wrapper mat-table__message" *ngIf="moms.length == 0">{{'MEETINGS.MOM.ADD.NORECORDSFOUND' | translate}}</div> -->
+            <div class="m-widget4" *ngFor="let proposal of proposals">
+                    <!--begin::Widget 14 Item-->
+                    <div class="m-widget4__item">
+                            <div class="m-widget4__img m-widget4__img--pic align-top">
+                                <img [src]="imagesBaseURL+proposal.image_url" alt="">
+                            </div>
+                            <div class="m-widget4__info">
+                                    <h5 class="mt-0">{{isArabic? proposal.name_ar : (proposal.name? proposal.name : proposal.name_ar)}}</h5>
+                                   <div [innerHTML]="proposal.proposal_text"> </div>
+
+                            </div>
+                        </div>
+
+                        <!--end::Widget 14 Item-->
+            </div>
+</div>

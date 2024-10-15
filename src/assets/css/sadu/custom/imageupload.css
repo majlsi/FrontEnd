@@ -1,0 +1,165 @@
+.no-opacity {
+    display: none;
+}
+
+.imgLogo {
+    position: relative;
+}
+
+.org_avtr.imgLogo {
+    font-size: 30px;
+    width: 64px;
+    height: 64px;
+    line-height: 55px;
+}
+
+.imgLogo {
+    background-color: rgba(240, 124, 18, 0.35);
+    border-color: #f07c12;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 6px;
+}
+
+.imgLogo .rounded {
+    top: 0;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    min-width: 75px;
+    min-height: 75px;
+    width: auto;
+    height: 100%;
+}
+
+.imgLogo .fa-image {
+    line-height: 3px;
+    font-size: 16px;
+    color: #f07c12;
+}
+
+.enz_editImg {
+    background-color: #000;
+    background-color: rgba(0, 0, 0, .7);
+    bottom: 0;
+    color: #fff;
+    font-size: 0.875rem;
+    left: 0;
+    line-height: normal;
+    padding: 14px;
+    position: absolute;
+    right: 0;
+    text-transform: none;
+    top: 0;
+    visibility: hidden;
+    opacity: 0;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+.org_avtr.imgLogo:hover {
+    cursor: pointer;
+}
+
+.org_avtr.imgLogo:hover .enz_editImg {
+    opacity: 1;
+    visibility: visible;
+}
+
+.m-form__group--org_avtr h3 {
+    font-size: 16px;
+    line-height: 18px;
+    margin: 8px 0 0;
+    padding: 0;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.m-form__group--org_avtr p {
+    line-height: 20px;
+    margin: 0;
+    padding: 8px 0 0;
+    color: #555;
+}
+
+/*REGISTER */
+
+.m-login .imgLogo {
+    background-color: #f8dfc7;
+    border-color: #f07c12;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 22%;
+}
+
+.m-login .org_avtr.imgLogo {
+    font-size: 30px;
+    width: 75px;
+    height: 75px;
+    border-radius: 22px;
+    line-height: 66px;
+}
+
+.m-login .m-form__group--org_avtr h3 {
+    color: #fff;
+    margin: 15px 0 0;
+}
+
+.m-login .m-form__group--org_avtr p {
+    color: rgba(247, 246, 249, 0.5);
+}
+
+.m-login .m-form__group--org_avtr .col-md-10 {
+    padding-left: 0px;
+}
+
+.m-login .imgLogo .fa-image {
+    line-height: 3px;
+    font-size: 21px;
+    color: #f07c12;
+}
+
+
+.m-form__group--profile_img .org_avtr.profile-img--large.imgLogo {
+    width: 150px;
+    height: 150px;
+}
+.m-form__group--profile_img.m-form__group--org_avtr h3 {
+    font-size: 20px;
+    line-height: 18px;
+    margin: 8px 0 0;
+    padding: 0;
+}
+
+.m-form__group--profile_img .org_avtr.profile-img--large.imgLogo .rounded {
+        min-width: 150px;
+        min-height: 150px;
+        width: auto;
+        height: 100%;
+        object-fit: cover;
+        background-color: #fff;
+}
+.m-form__group--profile_img.m-form__group--org_avtr p {
+    line-height: 20px;
+    margin: 0;
+    padding: 8px 0 0;
+    color: #bbb;
+    font-size: 14px;
+    letter-spacing: 0.21rem;
+}
+.m-form__group--profile_img.m-form__group--org_avtr .text-col{
+    padding: 3.8rem 0;
+}
+
+.m-form__group--profile_img .enz_editImg {
+    padding: 5rem 0;
+}

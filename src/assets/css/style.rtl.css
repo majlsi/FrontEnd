@@ -1,0 +1,278 @@
+/*
+@import "./theme";
+@import "./mixins"; */
+
+@import './custom/theme.css';
+@import "./general/base.css";
+@import "./general/forms.css";
+@import "./general/modals.css";
+/* Custom css */
+
+@import "./custom/base.css";
+@import "./general/buttons.css";
+@import "./custom/font.css";
+@import "./custom/portlet.css";
+@import "./custom/login.css";
+@import "./custom/form.css";
+@import "./custom/table.css";
+@import "./custom/tabs.css";
+@import "../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
+/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+
+@import "./custom/imageupload.css";
+@import "./custom/dropzone.css";
+@import "./custom/layout.rtl.css";
+@import "./custom/meeting-preview.css";
+@import "./custom/invitation-media-rtl.css";
+@import "./custom/comments.css";
+@import "./custom/charts.rtl.css";
+@import "./custom/widget.css";
+/* @import "./custom/table.scss";
+// @import "./custom/layout.scss";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "./custom/imageupload"; */
+
+@import "./custom/dragula.css";
+/* @import 'custom.css'; */
+
+@import "./presentation/presentation.css";
+@import "./presentation/presentation.rtl.css";
+@import './custom/responsive.css';
+@import'./custom/splash.css';
+@import './custom/chat-media.css';
+@import './custom/decisions.css';
+
+@import './custom/help-center.css';
+@import './custom/help-center-rtl.css';
+
+@import './custom/modal.css';
+@import './custom/modal-rtl.css';
+
+input {
+	direction: rtl;
+}
+
+.btn-group>.m-radio-btn-group:not(:last-child)>.m-btn {
+	border-top-left-radius: 0!important;
+	border-bottom-left-radius: 0!important;
+}
+
+.btn-group>.m-radio-btn-group:not(:first-child)>.m-btn {
+	border-top-right-radius: 0!important;
+	border-bottom-right-radius: 0!important;
+}
+.m-portlet .m-portlet__head.m-portlet__head--fit {
+    padding: 1.5rem 2.2rem 1.2rem;
+}
+.m-widget4 .m-widget4__item .m-widget4__ext .m-widget4__icon>i:hover {
+	cursor: pointer;
+}
+
+.topbar.navbar-light[_ngcontent-c1] .navbar-nav[_ngcontent-c1] .nav-item[_ngcontent-c1] .nav-link[_ngcontent-c1]:hover {
+	cursor: pointer;
+}
+
+#pointer {
+	width: 10px;
+	height: 10px;
+	background-color: rgb(255, 287, 0);
+	border-radius: 50%;
+	border: 15px rgb(255, 199, 0) solid;
+	display: none;
+	z-index: 9999;
+	position: absolute;
+}
+
+.highlighted {
+	background-color: #e6e6e6;
+}
+
+.enz-spinner {
+	width: 90px;
+	margin-bottom: 30px;
+}
+
+
+
+/* .cdk-overlay-container {
+	z-index: 9999999999;
+} */
+
+.m-demo {
+	background: #fdfcfa
+}
+
+.m-demo.mb-2 {
+	position: relative;
+	padding: 15px 0;
+}
+
+.m-demo__preview.m-demo__preview-not-allowed {
+	position: absolute;
+	top: 15px;
+	display: block;
+	right: 0;
+	left: 0;
+	color: #d22121;
+	background: rgba(255, 255, 255, 0.34)!important;
+}
+
+.time-picker-direction {
+	direction: ltr;
+}
+
+.navbar-nav.bd-navbar-nav .btn.btn-default i {
+	transform: rotate(0deg);
+}
+
+input[type="email"] {
+	text-align: right;
+}
+
+.presentation-container .navbar-main-col {
+	border-left: 1px solid #e3e3e5;
+}
+
+.m-widget-agenda__countdown {
+	direction: initial!important;
+}
+
+th.mat-header-cell {
+	text-align: right!important;
+}
+
+/*tasks chart*/
+
+ngx-charts-advanced-pie-chart .ngx-charts {
+	float: right;
+	left: unset;
+	right: 35px;
+}
+
+.new-chat-table .mat-radio-checked .mat-radio-label-content .chat-item-row .btn-dark:after, .new-chat-table .mat-checkbox-checked .mat-checkbox-layout .chat-item-row .btn-dark::after {
+	content: 'تم الإختيار';
+}
+
+
+m-aside-left .m-0.m-badge.m-badge--accent {
+    position: relative;
+    top: -58px;
+    left: 28px;
+}
+.chat-box-heading i.fa-chevron-left {
+	-webkit-transition: all 0.15s ease;
+	transition: all 0.15s ease;
+	-webkit-transform: rotate(-180deg);
+	transform: rotate(-180deg);
+}
+
+.box-footer .btn {
+	min-width: unset;
+	border-radius: 4px 0 0 4px;
+}
+
+.search-box .btn {
+	border-radius: 4px 0 0 4px;
+}
+
+.modal-body .ngx-charts-advanced-pie-chart-col span{
+
+	top:48%;
+	left: 21%;
+	font-size: 2.5rem;
+	font-weight: 500;
+}
+.ngx-charts-tooltip-content {
+	z-index: 160000!important;
+
+}
+.m-portlet .m-portlet__head.m-portlet__head--fit{
+
+	height: auto!important;
+}
+
+.mt-20-rem{
+	margin-top: 20rem!important;
+}
+.bottom-left{
+    left: unset!important;
+    right: 12px!important;
+}
+
+.btn:not(.m-btn--icon-only) i{
+	margin-left: 4px;
+	margin-right:0
+}
+.fa-play{
+transform: rotate(180deg)!important;
+right:30%!important;
+}
+
+
+/* Files Pages Start */
+.ellipsis-btn-absolute {
+	top: 15px;
+	left: 50px !important;
+	right: unset !important;
+}
+@media (min-width: 992px) {
+	.ellipsis-btn-absolute {
+		left: 30px !important;
+	}
+}
+
+.m-checkbox label {
+    left: 7px;
+    right: unset;
+  }
+
+.fileMenu.fileMenu-active {
+	border-right: 4px solid #F5851F ;
+	border-left: none ;
+	border-bottom: none ;
+	color: #F5851F ;
+}
+@media (max-width: 768px) {
+	.fileMenu.fileMenu-active {
+		border-bottom: 4px solid #F5851F ;
+		border-left: none ;
+		border-right: none ;
+		color: #F5851F ;
+	}
+}
+.folder__contributors {
+	margin-left: unset !important;
+	margin-right: -10px;
+}
+
+.dropdown-menu.show {
+    left: 0 !important;
+    right: auto !important;
+}
+
+.backdrop-middle-content {
+	flex-direction: row-reverse;
+}
+
+.joyride-step__container {
+	box-shadow: none!important;
+	font-family: "Kawak" , DIN NEXT,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Noto Sans,Ubuntu,Droid Sans,Helvetica Neue,sans-serif !important;
+
+}
+
+.joyride-step__close {
+    right: unset!important;
+	left: 10px;
+}
+
+/* .backdrop-container {
+	z-index: 100000!important;
+}
+ 
+/* .joyride-step__holder {  
+	z-index: 100001!important;
+} */ 
+
+.h-unset{
+	height: unset;
+}

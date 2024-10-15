@@ -1,0 +1,30 @@
+.enz--user-comment .enz--comment-owner-name {
+	font-weight: 500;
+	font-size: 16px;
+}
+
+.enz--user-comment .enz--space-separator {
+
+}
+
+/*
+background: #fdfcfa;
+    padding: 10px 0 0;
+    border: 0;
+	border-top: 1px solid #f5f4f1;
+} */
+.enz--grey-link-btn span{
+	font-size: 14px;
+    text-decoration: underline;
+    color: rgb(113, 106, 202);
+    margin: 0 0 15px 0;
+	display: block;
+}
+
+.form-control.m-input--solid.white-bg {
+    background-color: #ffffff;
+    border-color: #e6e6e6;
+    color: #575962;
+}
+
+

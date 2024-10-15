@@ -1,0 +1,17 @@
+<div ngbDropdown class="d-flex align-items-center justify-content-end">
+    <a
+        class="d-flex align-items-start justify-content-center border-0 font-size-14 text-white dropdown_no_arrow"
+        id="dropdownBasic1" ngbDropdownToggle><span class="m-badge m-badge--btn position-3rem editBadge" [hidden]="!canEdit||!can_upload">
+            <i class="fas fa-plus-square"></i></span></a>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1"  [ngClass]="{'dropdown-menu-right': isArabic, 'dropdown-menu-left': !isArabic}" class="mt-5 position-3rem">
+                <button ngbDropdownItem class="btn bg-white d-flex align-items-center color-dark-grey m-0 p-0"
+                  (click)="selectFileModal($event)"><i class="icon-Icon-awesome-folder-plus font-size-11"></i>
+                  {{'FILES.SELECTFROMSTORAGE'|translate}}</button>
+        <button ngbDropdownItem class="btn bg-white d-flex align-items-center color-dark-grey m-0 p-0"
+            (click)="addFileModal($event)"><i class="icon-Icon-awesome-file-upload font-size-15"></i>{{'FILES.UPLOADFILES'|translate}}</button>
+    </div>
+</div>
+
+
+
+

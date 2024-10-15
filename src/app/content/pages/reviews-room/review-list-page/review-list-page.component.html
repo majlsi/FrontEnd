@@ -1,0 +1,156 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'REVIEWS_ROOM.LIST.REVIEWS_ROOM' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed"
+			[attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<a [routerLink]="['/reviews-room/add']" type="button" class="btn btn-primary" [hidden]="!addFlag" joyrideStep="addDocument" [title]="'TUTORIALGUIDE.ADD_DOCUMENT_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_DOCUMENT_BODY' | translate">
+			<i class="fa fa-plus"></i>{{'REVIEWS_ROOM.ADD.ADD_NEW_DOC' | translate}}
+		</a>
+	</ng-container>
+	<!-- end::Header -->
+
+	<!--! filter  -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #roleForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'MEETINGS_DASHBOARD.LIST.DATEFROM' | translate}}</th>
+                                    <th>{{'MEETINGS_DASHBOARD.LIST.DATETO' | translate}}</th>
+                                    <th>{{'REVIEWS_ROOM.LIST.DOCUMENT_STATUS' | translate}}</th>
+                                    <th>{{'REVIEWS_ROOM.ADD.COMMITTEES' | translate}}</th>
+									<th> {{'ROLES.LIST.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<div class="input-group">
+											<input class="form-control form-control-solid" placeholder="yyyy-mm-dd"
+												name="startDate" [(ngModel)]="startDateModel" ngbDatepicker
+												#startDate="ngbDatepicker" (click)="startDate.toggle()" [readonly]="true">
+											<div class="input-group-append">
+												<button class="btn btn-outline-secondary calendar"
+													(click)="startDate.toggle();$event.stopPropagation();" type="button"><i
+														class="fa fa-calendar-alt"></i></button>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="input-group">
+											<input class="form-control form-control-solid" placeholder="yyyy-mm-dd"
+												name="endDate" [(ngModel)]="endDateModel" ngbDatepicker
+												#endDate="ngbDatepicker" (click)="endDate.toggle()" [readonly]="true">
+											<div class="input-group-append">
+												<button class="btn btn-outline-secondary calendar"
+													(click)="endDate.toggle();$event.stopPropagation();" type="button"><i
+														class="fa fa-calendar-alt"></i></button>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="input-group">
+											<ng-select class="bg-light w-100" [searchable]="true" [items]="documentStatuses" [bindLabel]="statusBindLabel"
+												name="status" #status="ngModel"
+												placeholder="{{'REVIEWS_ROOM.LIST.SELECT_STATUS' | translate}}" bindValue="id" [(ngModel)]="filterObject.SearchObject.document_status_id">
+												<ng-template ng-label-tmp let-item="item">
+													{{isArabic? item.document_status_name_ar : (item.document_status_name_en? item.document_status_name_en : item.document_status_name_ar)}}
+												</ng-template>
+												<ng-template ng-option-tmp let-item="item">
+													<span [title]="item.name"
+														class="ng-option-label">{{isArabic? item.document_status_name_ar : (item.document_status_name_en? item.document_status_name_en : item.document_status_name_ar)}}</span>
+												</ng-template>
+											</ng-select>
+										</div>
+									</td>
+									<td>
+										<div class="input-group">
+											<ng-select class="bg-light w-100" [searchable]="true" [items]="committees" [bindLabel]="committeeBindLabel"
+												name="committee" #committee="ngModel" bindValue="id"
+												placeholder="{{'REVIEWS_ROOM.ADD.SELECT_COMMITTEE' | translate}}" [(ngModel)]="filterObject.SearchObject.committee_id">
+												<ng-template ng-label-tmp let-item="item">
+													{{isArabic? item.committee_name_ar : (item.committee_name_en? item.committee_name_en : item.committee_name_ar)}}
+												</ng-template>
+												<ng-template ng-option-tmp let-item="item">
+													<span [title]="item.name"
+														class="ng-option-label">{{isArabic? item.committee_name_ar : (item.committee_name_en? item.committee_name_en : item.committee_name_ar)}}</span>
+												</ng-template>
+											</ng-select>
+										</div>
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i
+													class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary-outline m-btn--icon"
+												(click)=resetSearch()> <i
+													class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</ng-container>
+	<!-- start::Body (attribute: mPortletBody) -->
+
+	<!--! tabs  -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content tabsWrabber">
+			<ul ngbNav #nav="ngbNav" class="nav-pills" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+				<li ngbNavItem="allDocuments">
+					<button ngbNavLink>{{'REVIEWS_ROOM.LIST.ALL_DOCUEMNT'|translate}}</button>
+					<ng-template ngbNavContent>
+						<m-review-list [filterObject]="filterObject"
+							[documentStatuses]="documentStatuses" [loadingSubject]="loadingSubject"
+							[dataSourceLength]="dataSourceLength" [paginatorTotal$]="paginatorTotal$"
+							[dataSource]="dataSource" [activeIdString]="activeIdString">
+						</m-review-list>
+					</ng-template>
+				</li>
+				<li ngbNavItem="createdByMe">
+					<button ngbNavLink>{{'REVIEWS_ROOM.LIST.MY_DOCUEMNT'|translate}}</button>
+					<ng-template ngbNavContent>
+						<m-review-list [filterObject]="filterObject"
+							[documentStatuses]="documentStatuses" [loadingSubject]="loadingSubject"
+							[dataSourceLength]="dataSourceLength" [paginatorTotal$]="paginatorTotal$"
+							[dataSource]="dataSource" [activeIdString]="activeIdString">
+						</m-review-list>
+					</ng-template>
+				</li>
+				<li ngbNavItem="assignToMe">
+					<button ngbNavLink>{{'REVIEWS_ROOM.LIST.DOCUEMNT_ASSIGN_TO_ME'|translate}}</button>
+					<ng-template ngbNavContent>
+						<m-review-list [filterObject]="filterObject"
+							[documentStatuses]="documentStatuses" [loadingSubject]="loadingSubject"
+							[dataSourceLength]="dataSourceLength" [paginatorTotal$]="paginatorTotal$"
+							[dataSource]="dataSource" [activeIdString]="activeIdString">
+						</m-review-list>
+					</ng-template>
+				</li>
+			</ul>
+			<div [ngbNavOutlet]="nav" class="mt-2"></div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

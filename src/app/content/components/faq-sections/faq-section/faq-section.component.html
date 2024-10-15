@@ -1,0 +1,64 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'FAQSECTIONS.ADD.ADDNEW' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #faqSectionForm="ngForm" (ngSubmit)="save(faqSectionForm)">
+				<div class="form-group m-form__group row">
+					<div class="col-lg-4">
+						<label for="faqSectionar">{{'FAQSECTIONS.ADD.FAQSECTION_AR' | translate}}</label>
+					<input type="text" placeholder="{{'FAQSECTIONS.ADD.FAQSECTIONAR' | translate}}" class="form-control" id="faqSectionar"
+					name="faqSectionar" [(ngModel)]="faqSection.faq_section_name_ar"
+						#faqSectionar="ngModel" required>
+						<div class="error text-danger form-control-feedback" [hidden]="!hasError(faqSectionForm,'faqSectionar', 'required')">{{'FAQSECTIONS.VALIDATION.FAQSECTIONNAMEAR' | translate}}
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<label for="faqSectionen">{{'FAQSECTIONS.ADD.FAQSECTIONEN' | translate}}</label>
+					<input type="text" class="form-control m-input" id="faqSectionen"
+					name="faqSectionen" placeholder="{{'FAQSECTIONS.ADD.FAQSECTIONEN' | translate}}" [(ngModel)]="faqSection.faq_section_name_en"
+					#faqSectionen="ngModel" required>
+					<div class="error text-danger form-control-feedback" [hidden]="!hasError(faqSectionForm,'faqSectionen', 'required')">{{'FAQSECTIONS.VALIDATION.FAQSECTIONEN' | translate}}
+					</div>
+					</div>
+
+
+					<div class="col-lg-4" *ngIf="!faqSection.hasChilds">
+						<label for="faqSectionen">{{'FAQSECTIONS.ADD.FAQSECTIONPARENT' | translate}}</label>
+						<ng-select class="custom"  id="faqparentsection" name="faqparentsection" [searchable]="true"
+						placeholder="{{'FAQSECTIONS.ADD.FAQSECTIONPARENT' | translate}}"
+							[(ngModel)]="faqSection.parent_section_id" #faqparentsection="ngModel">
+									<ng-option *ngFor="let section of faqParentSections" [value]="section.id">
+										{{isArabic? section.faq_section_name_ar : section.faq_section_name_en}}
+									</ng-option>
+						</ng-select>
+					</div>
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted">{{'BUTTON.SAVE' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

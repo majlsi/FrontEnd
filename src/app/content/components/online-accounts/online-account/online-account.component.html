@@ -1,0 +1,196 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{onlineCongigurationId? ('ONLINE_CONFIGURATIONS.ADD.EDIT' | translate) : ('ONLINE_CONFIGURATIONS.ADD.ADD_NEW' | translate)}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content m--padding-15">
+			<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed" novalidate #onlineConfigurationForm="ngForm" (ngSubmit)="save(onlineConfigurationForm)">
+				<div class="form-group m-form__group row" joyrideStep="addOnlineConfigurationData" [stepPosition]="'bottom'"
+				[title]="'TUTORIALGUIDE.ADD_ONLINE_CONFIGURATION_DATA_TITLE' | translate" [text]="'TUTORIALGUIDE.ADD_ONLINE_CONFIGURATION_DATA_BODY' | translate">
+					<div class="col-lg-6" *ngIf="isArabic">
+						<label>{{'ONLINE_CONFIGURATIONS.LIST.ONLINE_CONFIGURATION_NAME' | translate}}</label>
+						<input type="text" placeholder="{{'ONLINE_CONFIGURATIONS.LIST.ONLINE_CONFIGURATION_NAME' | translate}}"
+							class="form-control" id="onlineConfigurationNameAr" name="onlineConfigurationNameAr"
+							[(ngModel)]="onlineCongiguration.configuration_name_ar" #onlineConfigurationNameAr="ngModel" required>
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'onlineConfigurationNameAr', 'required')">
+							{{'ONLINE_CONFIGURATIONS.VALIDATION.ONLINE_CONFIGURATION_NAME' | translate}}</div>
+					</div>
+					<div class="col-lg-6" *ngIf="!isArabic">
+						<label>{{'ONLINE_CONFIGURATIONS.LIST.ONLINE_CONFIGURATION_NAME' | translate}}</label>
+						<input type="text" placeholder="{{'ONLINE_CONFIGURATIONS.LIST.ONLINE_CONFIGURATION_NAME' | translate}}"
+							class="form-control" id="onlineConfigurationNameEn" name="onlineConfigurationNameEn" required
+							[(ngModel)]="onlineCongiguration.configuration_name_en" #onlineConfigurationNameEn="ngModel">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'onlineConfigurationNameEn', 'required')">
+							{{'ONLINE_CONFIGURATIONS.VALIDATION.ONLINE_CONFIGURATION_NAME' | translate}}</div>
+                    </div>
+				 <!-- Change here-->   
+				 <div class="col-lg-6 mt-5 ">
+						<!-- <label for="enableOnlineMeetings">{{'ONLINE_CONFIGURATIONS.LIST.IS_ACTIVE' | translate }}&nbsp;<span
+								class="MandatoryAsterisk">&nbsp;</span></label> -->
+								<label  for="enableOnlineMeetings" class="checkbox MandatoryAsterisk">
+									<input class="mr-2" type="checkbox" [(ngModel)]="onlineCongiguration.is_active" 
+                            [checked]="onlineCongiguration.is_active" (change)="changeIsActive()"
+                            name="isactive" #isactive="ngModel">
+									<span></span>{{'ONLINE_CONFIGURATIONS.LIST.IS_ACTIVE' | translate }}&nbsp;</label>
+                        
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-6">
+						<label for="enableOnlineMeetings">{{'ZOOM_CONFIGURATION.ENABLE_ZOOM' | translate }}&nbsp;<span
+								class="MandatoryAsterisk">&nbsp;</span></label>
+						<ng-select id="enable_vote" name="enableOnlineMeetings" [clearable]="false"
+							[(ngModel)]="onlineCongiguration.online_meeting_app_id" (ngModelChange)="setAppsFlags()" required>
+							<ng-option *ngFor="let app of onlineMeetingApps" [value]="app.id">
+								{{isArabic? app.app_name_ar : app.app_name_en}}
+							</ng-option>
+                        </ng-select>
+                        <div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'enableOnlineMeetings', 'required')">
+							{{'ONLINE_CONFIGURATIONS.VALIDATION.enable_Online_Meetings' | translate}}</div>
+					</div>
+                </div> 
+                <div class="form-group m-form__group row" *ngIf="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.zoom">
+					<div class="col-lg-6">
+						<label for="apiKey">{{'ZOOM_CONFIGURATION.ZOOM_API_KEY' | translate }}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'ZOOM_CONFIGURATION.ZOOM_API_KEY' | translate }}"
+							class="form-control" id="apiKey" name="apiKey"
+							[(ngModel)]="onlineCongiguration.zoom_configuration.zoom_api_key" #apiKey="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.zoom">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'apiKey', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'ZOOM_CONFIGURATION.ZOOM_API_KEY' | translate }}</div>
+					</div>
+
+					<div class="col-lg-6">
+						<label for="secretKey">{{'ZOOM_CONFIGURATION.ZOOM_API_SECRET' | translate}}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'ZOOM_CONFIGURATION.ZOOM_API_SECRET' | translate}}"
+							class="form-control" id="secretKey" name="secretKey"
+							[(ngModel)]="onlineCongiguration.zoom_configuration.zoom_api_secret" #secretKey="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.zoom">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'secretKey', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'ZOOM_CONFIGURATION.ZOOM_API_SECRET' | translate }}</div>
+					</div>
+
+					<div class="col-lg-12 mt-4">
+						<div class="alert m-alert m-alert--default" role="alert">
+							<i class="fa fa-info-circle"></i>
+
+							{{ 'ZOOM_CONFIGURATION.ZOOM_DOCUMENTATION' | translate }}
+							<a class="link-underline-md" href="https://marketplace.zoom.us/docs/guides/build/jwt-app"
+								target="_blank">
+								{{ 'ZOOM_CONFIGURATION.ZOOM_DOCUMENTATION_FROM_HERE' | translate }}.
+							</a>
+						</div>
+					</div>
+
+
+                </div>
+                <div class="form-group m-form__group row" *ngIf="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+					<div class="col-lg-6">
+						<label for="appid">{{'MICROSOFT_TEAMS_CONFIGURATION.APP_ID' | translate }}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'MICROSOFT_TEAMS_CONFIGURATION.APP_ID' | translate }}"
+							class="form-control" id="appid" name="appid"
+							[(ngModel)]="onlineCongiguration.microsoft_team_configuration.microsoft_azure_app_id" #appid="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'appid', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'MICROSOFT_TEAMS_CONFIGURATION.APP_ID' | translate }}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="tenantid">{{'MICROSOFT_TEAMS_CONFIGURATION.TENANT_ID' | translate}}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'MICROSOFT_TEAMS_CONFIGURATION.TENANT_ID' | translate}}"
+							class="form-control" id="tenantid" name="tenantid"
+							[(ngModel)]="onlineCongiguration.microsoft_team_configuration.microsoft_azure_tenant_id" #tenantid="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'tenantid', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'MICROSOFT_TEAMS_CONFIGURATION.TENANT_ID' | translate }}</div>
+					</div>
+				</div>
+				<div class="form-group m-form__group row" *ngIf="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+					<div class="col-lg-6">
+						<label for="clientsecret">{{'MICROSOFT_TEAMS_CONFIGURATION.CLIENT_SECRET' | translate }}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'MICROSOFT_TEAMS_CONFIGURATION.CLIENT_SECRET' | translate }}"
+							class="form-control" id="clientsecret" name="clientsecret"
+							[(ngModel)]="onlineCongiguration.microsoft_team_configuration.microsoft_azure_client_secret" #clientsecret="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'clientsecret', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'MICROSOFT_TEAMS_CONFIGURATION.CLIENT_SECRET' | translate }}</div>
+					</div>
+					<div class="col-lg-6">
+						<label for="userid">{{'MICROSOFT_TEAMS_CONFIGURATION.USER_ID' | translate }}
+							<span class="">*</span>
+						</label>
+						<input type="text" placeholder="{{'MICROSOFT_TEAMS_CONFIGURATION.USER_ID' | translate }}"
+							class="form-control" id="userid" name="userid"
+							[(ngModel)]="onlineCongiguration.microsoft_team_configuration.microsoft_azure_user_id" #userid="ngModel"
+							[required]="onlineCongiguration.online_meeting_app_id == onlineMeetingAppsEnum.microsoftTeams">
+						<div class="error text-danger form-control-feedback"
+							[hidden]="!hasError(onlineConfigurationForm,'userid', 'required')">
+							{{'SETTINGS.VALIDATION.REQUIRED' | translate}}
+							{{'MICROSOFT_TEAMS_CONFIGURATION.USER_ID' | translate }}</div>
+					</div>
+
+					<div class="col-lg-12 mt-4">
+						<div class="alert m-alert m-alert--default" role="alert">
+							<i class="fa fa-info-circle"></i>
+
+							{{ 'ZOOM_CONFIGURATION.MICROSOFT_TEAMS_DOCUMENTATION' | translate }}
+							<!-- <a class="link-underline-md" href="https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app"
+								target="_blank">
+								{{ 'ZOOM_CONFIGURATION.MICROSOFT_TEAMS_DOCUMENTATION_FROM_HERE' | translate }}.
+							</a> -->
+							<a class="link-underline-md" (click)="downloadMicrosoftTeamsDocumentation()">
+								{{ 'ZOOM_CONFIGURATION.MICROSOFT_TEAMS_DOCUMENTATION_FROM_HERE' | translate }}.
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-12 m--align-left">
+							<button type="submit" class="btn btn-primary"
+							[disabled]="submitted" joyrideStep="saveOnlineConfiguration" [stepPosition]="isArabic?'left':'right'"
+							[title]="'TUTORIALGUIDE.SAVE_ONLINE_CONFIGURATION_TITLE' | translate" [text]="'TUTORIALGUIDE.SAVE_ONLINE_CONFIGURATION_BODY' | translate">{{'BUTTON.SAVE' | translate}} 
+							<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+						</button>
+							<button type="reset" (click)="redirect()" class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!-- end: BOTTOM -->
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

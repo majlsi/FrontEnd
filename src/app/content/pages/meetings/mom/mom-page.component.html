@@ -1,0 +1,187 @@
+<div class="main-portlet">
+	<div class="m-subheader ">
+		<div class="d-flex flex-lg-wrap flex-wrap-reverse align-items-center justify-content-between">
+			<div class="mr-auto">
+				<h3 class="m-subheader__title">{{'MEETINGS.GENERAL.MOM' | translate}}</h3>
+			</div>
+			<div class="align-items-center text-left">
+				<a (click)="back()">
+					<span class="px-2">{{'MEETINGS.MOM.GENERAL.BACKTOMEETIG'| translate}}</span>
+					<i class="fa fa-arrow-left"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- end::Header -->
+
+
+	<div class="m--padding-15 m--padding-top-0 mx-3">
+		<!-- START:: MOM widget -->
+		<div class="bg-white--content m--border-radius-15 enz--relative kt-widget kt-widget--3 bg-white">
+			<div class="media agenda-media p-4">
+				<div class="align-self-start mr-3 text-center py-4"
+					style="background-color: #F6F6F6;border-radius: 4px;    width: 110px;">
+					<div class="month-header">
+						{{isArabic? meetingData.meeting_month_ar :meetingData.meeting_month}}
+					</div>
+					<div class="grey-lg-text"> {{meetingData.meeting_day}} </div>
+					<div class="week-day-text">
+						{{isArabic? meetingData.meeting_day_name_ar : meetingData.meeting_day_name}}
+					</div>
+				</div>
+				<div class="media-body py-1">
+					<div class="d-flex justify-content-between pr-3 flex-wrap align-items-top m-0">
+						<div>
+							<span class="d-block"
+								style="font-size: smaller;color: #6f727d;margin:0 10px;">{{meetingData.meeting_code}}</span>
+							<h3 class=" p-0 m-0">
+								{{isArabic? (meetingData.meeting_title_ar?
+								meetingData.meeting_title_ar : meetingData.meeting_title_en) :
+								(meetingData.meeting_title_en? meetingData.meeting_title_en :
+								meetingData.meeting_title_ar)}}
+							</h3>
+						</div>
+
+						<div>
+							<button type="submit" [hidden]="meetingData.is_signature_sent" class="btn btn-primary"
+								(click)="sendMom()"
+								[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted">
+								{{'MEETINGS.INFO.STATUS.SENDEMAIL' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+							</button>
+							<button type="submit" class="btn btn-primary" (click)="viewMom()"
+								[hidden]="meetingData.is_signature_sent"
+								[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted">
+								{{'MEETINGS.INFO.STATUS.VIEWMOMBEFORESEND' | translate}}
+								<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+							</button>
+
+							<button type="submit" class="btn btn-primary" (click)="sendSignEmail()"
+								[disabled]="meetingData.meeting_status_id != meetingStatus.RECOMMENDATION_SEND || submitted"
+								[hidden]="!meetingData.is_mom_sent || meetingData.is_signature_sent">
+								<i class="fas fa-file-signature"
+									*ngIf="changeStatusLoad"></i>&nbsp;{{'MEETINGS.PARTICIPANTS.SIGNATURE.SEND_SIGNATURE_ALL'
+								| translate}}
+							</button>
+						</div>
+					</div>
+
+					<div class="kt-widget__info d-flex justify-content-between flex-wrap flex-column flex-lg-row">
+						<div class="kt-widget__desc">
+							{{isArabic? (meetingData.meeting_description_ar? meetingData.meeting_description_ar :
+							meetingData.meeting_description_en) : (meetingData.meeting_description_en?
+							meetingData.meeting_description_en :
+							meetingData.meeting_description_ar)}}
+						</div>
+						<div class="kt-widget__stats d-flex align-items-center">
+							<div class="kt-widget__item">
+								<div class="kt-widget__label">
+									<span class="mx-2 mt-0 mb-3 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': meetingData.meeting_status_id == meetingStatuses.STARTED ,
+												'm-badge--warning': meetingData.meeting_status_id == meetingStatuses.DRAFT,
+												'm-badge--danger' : meetingData.meeting_status_id == meetingStatuses.CANCELED,
+												'm-badge--accent': (meetingData.meeting_status_id == meetingStatuses.PUBLISHED || meetingData.meeting_status_id == meetingStatuses.AGENDAPUBLISHED),
+												'm-badge--metal': meetingData.meeting_status_id == meetingStatuses.ENDED
+												}" ng-reflect-klass="mx-2 mt-0 mb-4 m-badge m-badge" ng-reflect-ng-class="[object Object]">
+										{{isArabic? meetingData.meeting_status_name_ar :
+										(meetingData.meeting_status_name_en? meetingData.meeting_status_name_en :
+										meetingData.meeting_status_name_ar)}}
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="kt-widget__bottom d-flex px-2 pb-3 flex-wrap">
+				<div class="kt-widget__item d-flex col-12 col-lg-3">
+					<div class="kt-widget__icon">
+						<img src="./assets/app/media/img/icons/committee_icon.png" alt="" class="mt-0">
+					</div>
+					<div class="kt-widget__details d-flex flex-row  px-3">
+						<span class="kt-widget__title">
+							{{isArabic? meetingData.meeting_committee.committee_name_ar :
+							meetingData.meeting_committee.committee_name_en }}
+						</span>
+					</div>
+				</div>
+
+				<div class="kt-widget__item d-flex col-12 col-lg-3">
+					<div class="kt-widget__icon">
+						<img src="./assets/app/media/img/icons/map-marker-alt-solid.png" alt="" class="mt-0">
+					</div>
+					<div class="kt-widget__details d-flex flex-column px-3">
+						<span class="kt-widget__title ">{{isArabic? (meetingData.meeting_venue_ar?
+							meetingData.meeting_venue_ar : meetingData.meeting_venue_en) :
+							(meetingData.meeting_venue_en? meetingData.meeting_venue_en :
+							meetingData.meeting_venue_ar)}}</span>
+						<a *ngIf="meetingData.location_lat && meetingData.location_long"
+							[href]="'https://www.google.com/maps/search/?api=1&query=' + meetingData.location_lat + ',' + meetingData.location_long"
+							class="kt-widget__value kt-font-brand  mt-n3" target='_blank'>
+							<small>{{'VIEW_MEETING.SHOW_ON_MAP' | translate }}</small>
+						</a>
+					</div>
+				</div>
+				<div class="kt-widget__item d-flex col-12 col-lg-3">
+					<div class="kt-widget__icon">
+						<img src="./assets/app/media/img/icons/agenda.png" alt="" class="mt-0">
+					</div>
+					<div class="kt-widget__details d-flex flex-row px-3">
+						<span class="kt-widget__title"> {{'VIEW_MEETING.AGENDAS' | translate }}:</span>
+						<a class="kt-widget__value kt-font-brand mx-3">{{meetingData.meeting_agendas?.length}}</a>
+					</div>
+				</div>
+				<div class="kt-widget__item  d-flex col-12 col-lg-3">
+					<div class="kt-widget__icon">
+						<img src="./assets/app/media/img/icons/attach.png" alt="" class="mt-0">
+					</div>
+					<div class="kt-widget__details d-flex flex-row px-3">
+						<span class="kt-widget__title"> {{'VIEW_MEETING.ATTACHMENTS' | translate }}: </span>
+						<a class="kt-widget__value kt-font-brand mx-3">{{meetingData.meeting_attachments?.length}}</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- END:: MOM widget -->
+	</div>
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<div class="tabsWrabber">
+
+		<ul ngbNav #nav="ngbNav" class="nav-tabs" [(activeId)]="activeIdString" (navChange)="beforeChange($event)">
+			<li title="{{'MEETINGS.GENERAL.MOM' | translate}}" ngbNavItem="mom">
+				<button ngbNavLink>{{'MEETINGS.GENERAL.MOM'|translate}}</button>
+				<ng-template ngbNavContent>
+					<m-mom (tabChanged)="changeTab($event)" [meeting]="meetingData"
+						[canEditMeeting]="meetingData.can_edit_meeting" [agendas]="meetingData.meeting_agendas"
+						[hideAddCancel]="true" [momSummaryTemplates]="momSummaryTemplates" [momTemplates]="momTemplates"
+						[is_mom_sent]="meetingData.is_mom_sent" [is_signature_sent]="meetingData.is_signature_sent"
+						(getMeetingEmitter)="getMeeting()"></m-mom>
+
+				</ng-template>
+			</li>
+			<li ngbNavItem="participants">
+				<button ngbNavLink>{{'MEETINGS.GENERAL.PARTICIPANTS'|translate}}</button>
+				<ng-template ngbNavContent>
+					<m-participants (tabChanged)="changeTab($event)"
+						[showSendSignButton]="meetingData.show_send_sign_button"
+						[canEditMeeting]="meetingData.can_edit_meeting"
+						[participants]="meetingData.meeting_participants" [users]="users"
+						(getMeetingEmitter)="getMeeting()" [hideAddCancel]="true"></m-participants>
+				</ng-template>
+			</li>
+			<li ngbNavItem="tasks">
+				<button ngbNavLink>{{'MEETINGS.GENERAL.TASKS'|translate}}</button>
+				<ng-template ngbNavContent>
+					<m-tasks (getData)="getMeeting()" [taskStatus]="taskStatus" [meetingId]="meetingId"
+						[tasks]="meetingData.meeting_tasks" [agendas]="meetingData.meeting_agendas"
+						[users]="meetingData.meeting_participants"></m-tasks>
+				</ng-template>
+			</li>
+		</ul>
+		<div [ngbNavOutlet]="nav" class="mt-2"></div>
+	</div>
+	<!-- end::Body -->
+
+
+</div>

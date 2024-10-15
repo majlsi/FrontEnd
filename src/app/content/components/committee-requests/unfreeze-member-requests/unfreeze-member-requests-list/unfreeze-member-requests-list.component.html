@@ -1,0 +1,51 @@
+<!--! table -->
+<ng-container>
+	<div class="bg-white--content">
+		<div class="d-flex justify-content-end mx-2">
+			<button type="button" (click)="exportUnfreezeMembersRequests()" class="btn btn-primary" matTooltip="{{ 'COMMITTEES.LIST.EXPORTCOMMITTEESDATA' | translate }}">
+				<i class="fa fa-file-download"></i>
+				{{ "COMMITTEES.ADD.EXPORTCOMMITTEEDATA" | translate }}
+			</button>
+		</div>
+		<div class="mat-table__wrapper">
+			<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+				<ng-container matColumnDef="reason">
+					<th *matHeaderCellDef mat-sort-header>{{ "REQUEST.LIST.UNFREEZEREASON" | translate }}</th>
+					<td *matCellDef="let request">{{ request.request_body.reason }}</td>
+				</ng-container>
+
+				<ng-container matColumnDef="committee_start_date">
+					<th *matHeaderCellDef mat-sort-header>{{ "REQUEST.LIST.COMMITTEESTARTDATE" | translate }}</th>
+					<td *matCellDef="let request">{{ request.request_body.committee_start_date | date : "dd/MM/yyyy" }}</td>
+				</ng-container>
+				<ng-container matColumnDef="committee_expired_date">
+					<th *matHeaderCellDef mat-sort-header>{{ "REQUEST.LIST.COMMITTEEEXPIREDDATE" | translate }}</th>
+					<td *matCellDef="let request">{{ request.request_body.committee_expired_date | date : "dd/MM/yyyy" }}</td>
+				</ng-container>
+				<ng-container matColumnDef="status">
+					<th *matHeaderCellDef>{{ "REQUEST.COMMITTEE_NEW_REQUESTS.REQUEST_STATUS" | translate }}</th>
+					<td *matCellDef="let request">{{ request.is_approved == true  ? ("REQUEST.COMMITTEE_NEW_REQUESTS.APPROVED" | translate) : (request.is_approved == false ?  ("REQUEST.COMMITTEE_NEW_REQUESTS.REJECTED" | translate):("REQUEST.COMMITTEE_NEW_REQUESTS.NEW" | translate) ) }}</td>
+				</ng-container>
+				<ng-container matColumnDef="actions">
+					<th *matHeaderCellDef>
+						{{ "GENERAL.ACTIONS" | translate }}
+					</th>
+					<td *matCellDef="let request" class="mat-column-action">
+						<button type="button" (click)="show(request.id)" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x" matTooltip="{{ 'BUTTON.DETAILS' | translate }}">
+							{{ "BUTTON.DETAILS" | translate }}
+						</button>
+					</td>
+				</ng-container>
+				<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+				<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+			</table>
+			<div class="mat-table__message" *ngIf="dataSourceLength">{{ "GENERAL.NORECORDSFOUND" | translate }}</div>
+		</div>
+
+		<!-- start: BOTTOM -->
+		<div class="mat-table__bottom">
+			<mat-spinner [diameter]="20" *ngIf="loading$ | async"></mat-spinner>
+			<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+		</div>
+	</div>
+</ng-container>

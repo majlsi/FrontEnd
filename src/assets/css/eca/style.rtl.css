@@ -1,0 +1,96 @@
+/*
+@import "./theme";
+@import "./mixins"; */
+@import "./general/base.css";
+@import "./general/forms.css";
+ /* custom css */
+ @import "./custom/base.css";
+ @import "./general/buttons.css";
+/* @import "./custom/font.css"; */
+@import "./custom/portlet.css";
+@import "./custom/login.css";
+@import "./custom/form.css";
+@import "./custom/table.css";
+@import "./custom/tabs.css";
+@import "../../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
+/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+@import "./custom/imageupload.css";
+@import "./custom/dropzone.css";
+@import "./custom/layout.css";
+
+@import "./custom/meeting-preview.css";
+@import "./custom/invitation-media-rtl.css";
+@import "./custom/comments.css";
+
+@import "./custom/charts.rtl.css";
+@import "./presentation/presentation.css";
+/* @import "./custom/table.scss";
+// @import "./custom/layout.scss";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "./custom/imageupload"; */
+
+
+/* @import 'custom.css'; */
+body,
+.blockquote,
+.blockquote *,
+.button,
+.container--nav-dropdown .container--nav-dropdown__content .h2,
+.container--nav-dropdown .container--nav-dropdown__content h2,
+.content-hub--navigation--list .article-wrapper .link .article .heading,
+.customer-story-full-width-image h2,
+.dynamic-hero-section--block--inner-content--title,
+.dynamic-hero-section--block--inner-content--title p,
+.eyebrows,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+.header-dropdown--products .header-product::before,
+.imkt-countdown-timer--shipit .imkt-countdown-timer__digit,
+.imkt-countdown-timer--shipit .imkt-countdown-timer__label,
+.imkt-navbar__title-text, .price,
+.subnavigation--company__heading .item-2 a,
+.subnavigation--mobile--header a.cms-link,
+.subnavigation--product li a,
+.text-oversized :not(.heading),
+.webinar-block__cta p,
+.wpl .p--oversized p,
+.wpl .webinar-block__cta p,
+.wpl blockquote.large-quote::before,
+.wpl p.p--oversized, blockquote,
+blockquote *,
+h1, h2, h3, h4, h5, h6,
+input.global-nav--wac__search-input[type=text],
+input.global-nav--wac__search-input[type=text]::placeholder,
+nav.component-nav a,
+p.hero,
+p.oversize ,
+a, a.button,
+body, cite,
+cite *,
+h2.quote,
+ p,
+ small,
+ svg * {
+	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif!important;
+}
+
+
+#pointer{
+    border: 15px rgb(255, 199, 0) solid;
+}
+
+.highlighted {
+    background-color:#e6e6e6;
+  }
+
+
+  .enz-spinner{
+    width: 160px;
+  }
+  input[type="email"] {
+    text-align: right;
+}

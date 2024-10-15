@@ -1,0 +1,128 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'PROPOSALS.ADD.PROPOSALSLIST' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<a [routerLink]="['/proposals/add']" type="button" *ngIf="addFlag" class="btn btn-primary">
+			<i class="fa fa-plus"></i>{{'PROPOSALS.ADD.ADDPROPOSAL' | translate}}
+		</a>
+	</ng-container>
+	<!-- end::Header -->
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<div class="bg-white--content">
+					<form class="" novalidate #meetingtypeForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'PROPOSALS.ADD.PROPOSALTITLE' | translate}}</th>
+									<th width="30%">{{'PROPOSALS.ADD.PROPOSALCREATEDBY' | translate}}</th>
+								
+								
+									<th> {{'GENERAL.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'PROPOSALS.ADD.PROPOSALTITLE' | translate}}" class="form-control form-filter input-sm" id="title" name="title"
+										 [(ngModel)]="filterObject.SearchObject.proposal_title" #title="ngModel">
+
+									</td>
+									<td>
+											<ng-select [clearable]="true" [searchable]="true" [(ngModel)]="filterObject.SearchObject.created_by" name="user" #user="ngModel" required [items]="organizationUsers" [bindLabel]="bindLabel" bindValue="id" placeholder="{{'PROPOSALS.ADD.PROPOSALCREATEDBY' | translate}}">
+												<ng-template ng-option-tmp let-item="item">
+													<span [title]="item.name" class="ng-option-label">{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name : item.name_ar)}}</span>
+												</ng-template>
+											</ng-select>
+										
+
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary-outline m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+
+			</div>
+		</div>
+	</ng-container>
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear
+				 class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+					<!--- Note that these columns can be defined in any order.
+									  The actual rendered columns are set as a property on the row definition" -->
+
+					<!-- role_name Column -->
+					<ng-container matColumnDef="proposal_title">
+						<th *matHeaderCellDef mat-sort-header>{{'PROPOSALS.ADD.PROPOSALTITLE' | translate}}</th>
+						<td *matCellDef="let proposal">{{proposal.proposal_title}}</td>
+					</ng-container>
+
+					<!-- role_name_ar Column -->
+					<ng-container matColumnDef="created_by">
+						<th *matHeaderCellDef mat-sort-header>{{'PROPOSALS.ADD.PROPOSALCREATEDBY' | translate}}</th>
+						<td *matCellDef="let proposal">
+							{{isArabic? (proposal.name_ar? proposal.name_ar : proposal.name) : (proposal.name? proposal.name : proposal.name_ar)}}
+
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="created_at">
+						<th *matHeaderCellDef mat-sort-header>{{'PROPOSALS.ADD.PROPOSALTIME' | translate}}</th>
+						<td *matCellDef="let proposal">{{proposal.created_at}}</td>
+					</ng-container>
+
+					<!-- actions Column -->
+					<ng-container matColumnDef="actions" >
+						<th *matHeaderCellDef [hidden]="!editFlag">
+							{{'GENERAL.ACTIONS' | translate}}
+						</th>
+						<td *matCellDef="let proposal" [hidden]="!editFlag">
+							<button type="button" (click)="show(proposal.id)" class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+							 matTooltip="Edit" >
+								<i class="flaticon-edit-1"></i> {{'PROPOSALS.ADD.PROPOSALDETAILS' | translate}}
+							</button>
+
+						</td>
+					</ng-container>
+
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+				</table>
+
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+			</div>
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- end::Body -->
+</m-portlet>

@@ -1,0 +1,60 @@
+
+
+  <div class="row mt-2">
+    <div class="col-12">
+      <div class="m-widget1 p-0">
+        <div class="m-widget1__item py-2">
+          <div class="row m-row--no-padding align-items-center">
+            <div class="col">
+              <h3 class="m-widget1__title">
+                {{'DASHBOARD.COMMITTEES_NUMBER'|translate}}
+              </h3>
+            </div>
+            <div class="col m--align-right">
+              <span class="m-widget1__number m--font-primary">
+                {{committeesCount}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="m-widget1__item py-2">
+          <div class="row m-row--no-padding align-items-center">
+            <div class="col">
+              <h3 class="m-widget1__title">
+                {{'COMMITTEES.LIST.MEMBERSNUMBER'|translate}}
+              </h3>
+            </div>
+            <div class="col m--align-right">
+              <span class="m-widget1__number m--font-success">
+                {{membersCount}}
+              </span>
+            </div>
+          </div>
+        </div>
+ 
+
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end" *ngIf="committees.length && listFlag">
+    <div class="mt-1 m--font-bolder"><a class="m--font-info" [routerLink]="['/committees']">{{'DASHBOARD.SHOW_ALL'|translate}} <i
+          class="align-middle la" [ngClass]="{'la-arrow-left ':isArabic,'la-arrow-right ': !isArabic}"></i></a></div>
+  </div>
+  <div class="bg-white--content m--border-radius-15 enz--relative mt-2" *ngFor="let committee of committees">
+    <div class="d-flex align-items-center justify-content-between  p-3">
+      <div>
+        <h5 class="m-0">{{isArabic? (committee.committee_name_ar? committee.committee_name_ar : committee.committee_name_en) : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)}}
+
+        </h5>
+        <div class="d-flex align-items-center mt-2">
+          <span class=" font-sm" *ngIf="committee.name_ar||committee.name"> <i class="fa fa-user-circle align-text-bottom"></i><span class="mx-1">{{isArabic?(committee.name_ar?committee.name_ar:committee.name):(committee.name?committee.name:committee.name_ar)}}</span></span>
+          <span class=" font-sm mx-3"> <i class="fa fa-users  align-text-bottom"></i><span class="mx-1">{{committee.committeee_members_count}} {{'CONVERSATIONS.MEMBER'|translate}}</span></span>
+        </div>
+      </div>
+      <button class="btn btn-secondary m-btn--icon-only px-2" (click)="downloadFile(committee)"  *ngIf="committee.governance_regulation_url" ><i
+        class="fa fa-download"></i></button>
+    </div>
+  </div>
+
+
+

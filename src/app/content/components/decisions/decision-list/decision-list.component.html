@@ -1,0 +1,211 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{'DECISIONS.LIST.DECISIONS' | translate}}
+			</h3>
+		</div>
+	</ng-container>
+	<ng-container mPortletHeadTools>
+		<!-- <a [routerLink]="['/permissions/add']" mat-raised-button color="primary" matTooltip="Create new Uers">New Permission</a> -->
+		<button type="button" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+		</button>
+		<!-- <a [routerLink]="['add']" type="button" class="btn btn-primary">
+			{{'COMMITTEES.LIST.ADDNEWCOMMITTEE' | translate}}
+			<i class='fa fa-spinner fa-spin '></i>
+		</a> -->
+	</ng-container>
+	<!-- end::Header -->
+
+	<ng-container mPortletBody>
+		<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+			<div class="m-form col-md-12">
+				<form class="row" novalidate #committeeForm="ngForm" (ngSubmit)="getList()">
+
+					<table class="table table-bordered table-hover">
+						<thead class="">
+							<tr>
+								<th>{{'DECISIONS.LIST.SUBJECT' | translate}}</th>
+								<th>{{'DECISIONS.LIST.DECISION_TYPE' | translate}}</th>
+								<th>{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}</th>
+                                <th>{{'DECISIONS.LIST.MEETING_TITLE' | translate}}</th>
+                                <th>{{'DECISIONS.LIST.AGENDA_TITLE' | translate}}</th>
+                                <th> {{'GENERAL.OPERATIONS' | translate}}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input type="text" placeholder="{{'DECISIONS.LIST.SUBJECT' | translate}}" class="form-control form-filter input-sm" id="vote_subject"
+									 name="voteSubject" [(ngModel)]="filterObject.SearchObject.vote_subject" #voteSubject="ngModel">
+								</td>
+								<td>
+									<ng-select class="" [searchable]="true"
+											[(ngModel)]="filterObject.SearchObject.decision_type_id" name="decision_type_id"
+											#decision_type_id="ngModel" [items]="decisionTypes" [bindLabel]="bindLabel"
+											bindValue="id" placeholder="{{'DECISIONS.LIST.DECISION_TYPE' | translate}}">
+											<ng-template ng-label-tmp let-item="item">
+												{{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar : item.decision_type_name_en) : (item.decision_type_name_en? item.decision_type_name_en : item.decision_type_name_ar)}}
+											</ng-template>
+											<ng-template ng-option-tmp let-item="item">
+												<span [title]="item.name"
+													class="ng-option-label">{{isArabic? (item.decision_type_name_ar? item.decision_type_name_ar : item.decision_type_name_en) : (item.decision_type_name_en? item.decision_type_name_en : item.decision_type_name_ar)}}</span>
+											</ng-template>
+										</ng-select>
+								</td>
+								<td>
+									<ng-select class="" [searchable]="true"
+											[(ngModel)]="filterObject.SearchObject.vote_result_status_id" name="vote_result_status_id"
+											#vote_result_status_id="ngModel" [items]="decisionResultStatuses" [bindLabel]="decisionResultStatusBindLabel"
+											bindValue="id" placeholder="{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}">
+											<ng-template ng-label-tmp let-item="item">
+												{{isArabic? (item.vote_result_status_name_ar? item.vote_result_status_name_ar : item.vote_result_status_name_en) : (item.vote_result_status_name_en? item.vote_result_status_name_en : item.vote_result_status_name_ar)}}
+											</ng-template>
+											<ng-template ng-option-tmp let-item="item">
+												<span [title]="item.name"
+													class="ng-option-label">{{isArabic? (item.vote_result_status_name_ar? item.vote_result_status_name_ar : item.vote_result_status_name_en) : (item.vote_result_status_name_en? item.vote_result_status_name_en : item.vote_result_status_name_ar)}}</span>
+											</ng-template>
+										</ng-select>
+								</td>
+								<td>
+									<input type="text" placeholder="{{'DECISIONS.LIST.MEETING_TITLE' | translate}}" class="form-control form-filter input-sm" id="meeting_title"
+									 name="meetingTitle" [(ngModel)]="filterObject.SearchObject.meeting_name" #meetingTitle="ngModel">
+                                </td>
+                                <td>
+									<input type="text" placeholder="{{'DECISIONS.LIST.AGENDA_TITLE' | translate}}" class="form-control form-filter input-sm" id="agenda_title"
+									 name="agendaTitle" [(ngModel)]="filterObject.SearchObject.agenda_name" #agendaTitle="ngModel">
+								</td>
+								<td>
+									<div class="margin-bottom-5 in-b  serchbtnMar">
+										<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i> {{'BUTTON.SEARCH' |translate}}</button>
+										<button type="button" class="btn btn-secondary m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+
+
+									</div>
+
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
+	</ng-container>
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<div class="bg-white--content">
+			<div class="mat-table__wrapper">
+				<table mat-table class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table" [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc"
+				 matSortDisableClear>
+					<ng-container matColumnDef="vote_subject_ar">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.SUBJECT' | translate}}</th>
+						<td *matCellDef="let decision">{{decision.vote_subject_ar? decision.vote_subject_ar : decision.vote_subject_en}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="vote_subject_en">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.SUBJECT' | translate}}</th>
+						<td *matCellDef="let decision">{{decision.vote_subject_en? decision.vote_subject_en : decision.vote_subject_ar}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="decision_due_date">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.DUE_DATE' | translate}}</th>
+						<td *matCellDef="let decision">{{decision.decision_due_date? (decision.decision_due_date | date: 'MMMM d, y') : ''}}</td>
+                    </ng-container>
+
+					<ng-container matColumnDef="decision_type_name_ar">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.DECISION_TYPE' | translate}}</th>
+						<td *matCellDef="let decision">{{decision.decision_type_name_ar? decision.decision_type_name_ar : decision.decision_type_name_en}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="decision_type_name_en">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.DECISION_TYPE' | translate}}</th>
+						<td *matCellDef="let decision">{{decision.decision_type_name_en? decision.decision_type_name_en : decision.decision_type_name_ar}}</td>
+					</ng-container>
+
+					<ng-container matColumnDef="vote_result_status_name_ar">
+						<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}</th>
+						<td *matCellDef="let decision">
+							<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': decision.vote_result_status_id == voteResultStatusesEnum.approved,
+								'm-badge--accent': decision.vote_result_status_id == voteResultStatusesEnum.balanced,
+								'm-badge--metal': decision.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+								'm-badge--danger': decision.vote_result_status_id == voteResultStatusesEnum.rejected,
+								'm-badge--warning': decision.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+								{{decision.vote_result_status_name_ar? decision.vote_result_status_name_ar : decision.vote_result_status_name_en}}
+							</span>
+						</td>
+					</ng-container>
+					<ng-container matColumnDef="vote_result_status_name_en">
+						<th *matHeaderCellDef mat-sort-header>{{'CIRCULAR_DECISIONS.LIST.STATUS' | translate}}</th>
+						<td *matCellDef="let decision">
+							<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': decision.vote_result_status_id == voteResultStatusesEnum.approved,
+							'm-badge--accent': decision.vote_result_status_id == voteResultStatusesEnum.balanced,
+							'm-badge--metal': decision.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+							'm-badge--danger': decision.vote_result_status_id == voteResultStatusesEnum.rejected,
+							'm-badge--warning': decision.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+								{{decision.vote_result_status_name_en? decision.vote_result_status_name_en : decision.vote_result_status_name_ar}}
+							</span>
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="meeting_title_ar">
+						<th *matHeaderCellDef mat-sort-header>{{'DECISIONS.LIST.MEETING_TITLE' | translate}}</th>
+						<td *matCellDef="let decision" >
+							<a [routerLink]="['/view-meetings',decision.meeting_id]" type="button" class="">
+								{{decision.meeting_title_ar? decision.meeting_title_ar : decision.meeting_title_en}}
+							</a>
+						</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="meeting_title_en">
+						<th *matHeaderCellDef mat-sort-header>{{'DECISIONS.LIST.MEETING_TITLE' | translate}}</th>
+						<td *matCellDef="let decision" >
+							<a [routerLink]="['/view-meetings',decision.meeting_id]" type="button" class="">
+								{{decision.meeting_title_en? decision.meeting_title_en : decision.meeting_title_ar}}
+							</a>
+						</td>
+					</ng-container>
+
+					<ng-container matColumnDef="agenda_title_ar">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.AGENDA_TITLE' | translate}}</th>
+						<td *matCellDef="let decision" >
+							<!-- <a [routerLink]="['/meetings/edit',decision.meeting_id]" type="button" class="" [queryParams]="{tab: tabs.TAB5}"> -->
+							{{decision.agenda_title_ar? decision.agenda_title_ar : decision.agenda_title_en}}
+							<!-- </a> -->
+						</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="agenda_title_en">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.AGENDA_TITLE' | translate}}</th>
+						<td *matCellDef="let decision" >
+							<!-- <a [routerLink]="['/meetings/edit',decision.meeting_id]" type="button" class="" [queryParams]="{tab: tabs.TAB5}"> -->
+							{{decision.agenda_title_en? decision.agenda_title_en : decision.agenda_title_ar}}
+								<!-- </a> -->
+						</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="created_at">
+						<th *matHeaderCellDef mat-sort-header >{{'DECISIONS.LIST.CREATE_DATE' | translate}}</th>
+						<td *matCellDef="let decision" >{{decision.created_at | date : 'MMMM d, y'}}</td>
+                    </ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+					<tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+				</table>
+				<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+
+			</div>
+	
+
+			<!-- start: BOTTOM -->
+			<div class="mat-table__bottom">
+				<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+				<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true"></mat-paginator>
+			</div>
+		</div>
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

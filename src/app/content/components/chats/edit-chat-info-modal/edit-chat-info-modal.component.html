@@ -1,0 +1,111 @@
+<div class="modal-header d-flex justify-content-xl-between">
+	<div class="d-flex align-items-center modal-title d-flex" id="modal-basic-title">
+		<h4 class="modal-title" id="modal-basic-title">
+			<b>
+				{{chatGroupId? ('CONVERSATIONS.EDIT_CHAT_GROUP' | translate) : ('CONVERSATIONS.CREATE_CHAT_GROUP' | translate)}}
+			</b>
+		</h4>
+	</div>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<form novalidate #GroupForm="ngForm" (ngSubmit)="save(GroupForm)">
+	<div class="modal-body">
+		<div [hidden]="errors.length == 0"
+			class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert"
+			*ngFor="let errorGroup of errors">
+			<p *ngFor="let error of errorGroup">
+				{{isArabic? error?.message_ar : error?.message? error?.message : error?.message_ar}}
+			</p>
+		</div>
+		<div class="form-group m-form__group m-form__group--org_avtr row">
+			<div class="d-flex flex-column align-items-center justify-content-center m-auto text-center">
+
+				<a (click)="file.click()" class="profile-pic mb-3">
+					<div class="profile-pic" [ngStyle]="{'background-image': 'url(' + image_url + ')'}">
+						<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)" #file
+							name="file" (ngModel)="chatGroup.chat_group_logo.image_url">
+						<div class="d-flex relative">
+							<div class="d-flex flex-column edit-profile-pic p-5">
+								<span class="fa fa-camera mt-4 p-0"></span>
+								<span class="m-0 p-0">
+									{{'CONVERSATIONS.GROUP_IMAGE' | translate}}
+								</span>
+							</div>
+							<img [src]="image_url" alt="" class="absolute"
+								style="width:100%;height: 100%;border-radius: 50%;">
+
+						</div>
+
+					</div>
+				</a>
+
+
+				<!-- <div class="org_avtr imgLogo">
+					<div>
+						<img *ngIf="image_url" [src]="image_url" class="rounded">
+					</div>
+					<div class="">
+						<i class="fa fa-image" (click)="file.click()"></i>
+						<input type="file" accept="image/*" class="no-opacity" (change)="detectFiles($event)" #file
+							name="file" (ngModel)="organization.logo_image.image_url">
+					</div>
+					<span class="enz_editImg updateLogo"
+						(click)="file.click()">{{'ORGANIZATIONS.ADD.EDITIMAGE' | translate}}</span>
+				</div> -->
+
+
+				<div class="error text-danger form-control-feedback" [hidden]="!hasError(GroupForm,'file', 'required')">
+					{{'CONVERSATIONS.VALIDATION.FILE' | translate}}</div>
+
+				<div class="error text-danger form-control-feedback" *ngIf="logoImageSizeError.length > 0">
+					{{logoImageSizeError }}</div>
+				<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+					{{ 'CONVERSATIONS.VALIDATION.LOGO_INVALID' | translate }}</div>
+				<div class="error text-danger form-control-feedback" *ngIf="fileRequiredError">
+					{{ 'ORGANIZATIONS.MANAGE.VALIDATION.ORGANIZATIONIMAGE' | translate }}</div>
+
+			</div>
+
+
+		</div>
+		<div class="form-group m-form__group mt-3 row" *ngIf="isArabic">
+			<label for="groupnamear">
+				{{'CONVERSATIONS.CHAT_GROUP_NAME' | translate}}
+			</label>
+			<input type="text" class="form-control" id="groupnamear" name="groupnamear" required
+				placeholder="{{'CONVERSATIONS.CHAT_GROUP_NAME' | translate}} "
+				[(ngModel)]="chatGroup.chat_group_name_ar" #groupnamear="ngModel">
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(GroupForm,'groupnamear', 'required')">
+				{{'CONVERSATIONS.VALIDATION.CHAT_GROUP_NAME' | translate}}</div>
+
+		</div>
+		<div class="form-group m-form__group mt-3 row" *ngIf="!isArabic">
+			<label for="groupnameen">
+				{{'CONVERSATIONS.CHAT_GROUP_NAME' | translate}}
+			</label>
+			<input type="text" class="form-control" id="groupnameen" name="groupnameen" required
+				placeholder="{{'CONVERSATIONS.CHAT_GROUP_NAME' | translate}} "
+				[(ngModel)]="chatGroup.chat_group_name_en" #groupnameen="ngModel">
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(GroupForm,'groupnameen', 'required')">
+				{{'CONVERSATIONS.VALIDATION.CHAT_GROUP_NAME' | translate}}</div>
+
+		</div>
+
+	</div>
+	<!-- <p *ngIf="error.length > 0" class="error text-danger form-control-feedback">{{error}}</p> -->
+	<div class="modal-footer pt-4 d-flex justify-content-between">
+		<button type="button" class="btn btn-light mr-3" (click)="close();activeModal.dismiss('Cross click')">
+			{{'BUTTON.CANCEL' | translate}}
+		</button>
+		<button type="submit" class="btn btn-primary" [disabled]="submitted">
+			{{chatGroupId? ('BUTTON.SAVE' | translate) : ('BUTTON.CONTINUE' | translate)}}
+			<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+		</button>
+	</div>
+
+</form>

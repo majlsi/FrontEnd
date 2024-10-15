@@ -1,0 +1,67 @@
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">{{is_changed_publish? ('MEETINGS.STATUSACTIONS.START.DESCRIPTION' | translate) : ('MEETINGS.STATUSACTIONS.START.CHANGES_DESCRIPTION' | translate)}}
+		</h4>
+		<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click');close()">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+	<form  novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">		
+		<div class="modal-body px-6">	
+			<b>{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.SELECTATTACHMENT'|translate}}	</b>
+		<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+			<label for="relatedAgendaItem" class="col-12 col-form-label">
+				{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.AGENDAITEM' | translate}}
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="agendas" (change)="autoFillAttachments(presenation.agendaId)"
+					placeholder="{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.AGENDAITEM' | translate}}"
+					[bindLabel]="agendabindLabel" bindValue="id" name="agenda"
+					[searchable]="true" [clearable]="false" [(ngModel)]="presenation.agendaId" required
+					>
+					<ng-template ng-label-tmp let-item="item">
+						{{isArabic? (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en) : (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}
+					</ng-template>
+					<ng-template ng-option-tmp let-item="item">
+						<span [title]="item.name"
+							class="ng-option-label">{{isArabic? (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en) : (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}</span>
+					</ng-template>
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					[hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate}}
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
+			<label for="subject" class="col-12 col-form-label">
+				{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.ATTACHMENTS' | translate}}
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="agendaAttachments" 
+				placeholder="{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.ATTACHMENTS' | translate}}"
+				bindLabel="attachment_name" bindValue="id" name="attachments"
+				[searchable]="true" [clearable]="false" [(ngModel)]="presenation.attachmentId" [required]="presenation.agendaId != 0"
+				>
+					</ng-select>
+					<div class="error text-danger form-control-feedback"
+					[hidden]="!hasError(startMeetingForm,'attachments', 'required')">
+					{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.ATTACHMENTS' | translate}}
+						</div>
+				
+					</div>
+			</div>
+		</div>	
+		<div class="modal-footer">
+			<button mat-button type="submit" cdkFocusInitial  class="btn btn-primary" [disabled]="submitted"
+						>
+						{{'BUTTON.START' | translate}}
+						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+					</button>
+			<button type="button" class="btn btn-secondary" mat-button (click)="close();activeModal.dismiss('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp; 
+		</div>
+
+	</form>

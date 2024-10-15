@@ -1,0 +1,185 @@
+<div class="m--padding-15 m--padding-top-0">
+
+	<div class="row m--padding-bottom-10" [hidden]="hideAddCancel">
+		<div class="col-lg-6">
+			<h3>
+				{{'MEETINGS.PARTICIPANTS.ADD.ADDPARTICIPANTS' | translate}}
+			</h3>
+
+		</div>
+		<div class="col-lg-6 text-right">
+
+			<m-participant-conflict [participants]="participants" [meetingId]="meetingId" [canEdit]="canEditMeeting">
+			</m-participant-conflict>
+
+			<!-- <button type="button" class="btn btn-light-grey title-action-btn" (click)="addParticipant()"
+				[hidden]="!canEditMeeting" [disabled]="noUsers">
+				<i class="fa fa-plus"></i>&nbsp;{{'MEETINGS.PARTICIPANTS.ADD.ADD' | translate}}
+			</button> -->
+			<div ngbDropdown class="d-inline-block">
+				<button class="btn btn-light-grey title-action-btn" id="dropdownBasic1" ngbDropdownToggle>
+					{{'MEETINGS.PARTICIPANTS.ADD.ADD' | translate}}
+				</button>
+				<div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+				  <li ngbDropdownItem class="border-bottom cursor-pointer" (click)="addParticipant()">
+					{{'MEETINGS.PARTICIPANTS.ADD.ADDMEMBER' | translate}}
+				  </li>
+				  <li ngbDropdownItem class="cursor-pointer" (click)="addGuest()">
+					{{'MEETINGS.PARTICIPANTS.ADD.ADDGUEST' | translate}}
+				  </li>
+				</div>
+			  </div>
+			<m-participants-attendance [meetingId]="meetingId" [canEditMeeting]="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT" (tackAttendanceEmiter)="getMeetingData()"></m-participants-attendance>
+		</div>
+	</div>
+
+	<div class="mat-table__wrapper mat-table__message" *ngIf="participants.length == 0">
+		{{'MEETINGS.PARTICIPANTS.ADD.NORECORDSFOUND' | translate}}</div>
+	<form class="m-form m-form--p-top-bottom-10 m-form--fit m-form--label-align-right" novalidate
+		#participatForm="ngForm" (ngSubmit)="save(participatForm)">
+
+		<div  dragula="members" [(dragulaModel)]="participants" >
+			<div class="card card-row card-header p-b-0 cursor-grab mb-3" *ngFor="let user of participants; let i = index;trackBy:trackParticipants;">
+				<!-- *ngFor="let user of participants" -->
+			
+					<span class="m-list-timeline__time">
+						<span class="m-menu__link-badge">
+							<span class="m-badge m-badge--btn deleteBadge" style="top: 0;"
+							[hidden]="!canEditMeeting" (click)="deleteParticipant(user)">
+								<i class="la la-trash"></i>
+							</span>
+							<span class="m-badge m-badge--btn editBadge" style="top: 0;" *ngIf="user.isGuest"
+							[hidden]="!canEditMeeting" (click)="editGuest(user)">
+							<i class="fas fa-pencil-alt fa-fw"></i>
+							</span>
+
+						</span>
+					</span>
+
+
+
+
+					<div class="row">
+						<div class="m-form align-items-center col-lg-10 ng-untouched ng-pristine ng-valid" novalidate="">
+
+							<h5 class="mb-0">
+								<div class="form-gro up m-form__g roup row no-pad align-items-center">
+									
+									<div class="col-lg-3">
+										<div class="attendee-detail-row">
+											
+											<div class="attendee-item-name">
+												<div class="attendee-name">
+													<span class="handle mx-2"><i class="fa fa-grip-vertical"></i></span>
+													<span *ngIf="!user.isGuest">
+														{{isArabic? user.user_title_ar : (user.user_title_en? user.user_title_en : user.user_title_ar)}}</span>
+
+													<span *ngIf="user.isGuest" class="badge primary-badge rounded-pill font-weight-500 px-3 py-2 float-right">
+														{{'MEETINGS.PARTICIPANTS.ADD.GUEST' | translate}}
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-9 d-flex flex-wrap p-0">
+										<div class="col-lg-5">
+											<ng-container *ngIf="user.isGuest">
+												<input type="text" disabled class="form-control ltr text-truncate" value="{{user.email}}">
+											</ng-container>
+
+											<ng-container *ngIf="!user.isGuest">
+												<ng-select [searchable]="true" [clearable]="false"
+													(change)="prepareCommitteeUsersDropDown($event,i)"
+													placeholder="{{'MEETINGS.PARTICIPANTS.ADD.MEETINGPARTICIPANT' | translate}}"
+													[(ngModel)]="user.id" name="{{'meetinguser'+user.id}}" #meetinguser="ngModel"
+													required [disabled]="!canEditMeeting"
+													(search)="searchForUsersInLdap($event)"
+													>
+	
+	
+													<ng-option *ngFor="let meetingUser of committeeUsersDropDown[i]"
+														[value]="meetingUser.id">
+														{{isArabic?  (meetingUser.name_ar? meetingUser.name_ar : meetingUser.name) : (meetingUser.name? meetingUser.name : meetingUser.name_ar)}}
+													</ng-option>
+												</ng-select>
+											</ng-container>
+
+
+											<div class="error text-danger form-control-feedback"
+												[hidden]="!hasError(participatForm,'meetinguser'+user.id, 'required')">
+												{{'MEETINGS.PARTICIPANTS.VALIDATION.MEETINGPARTICIPANT' | translate}}
+											</div>
+										</div>
+
+
+										<div class="col-lg-3 d-flex align-items-center">
+											<label class="mb-0">
+												<span>
+														<input type="checkbox" [(ngModel)]="user.send_mom"
+														[checked]="user.send_mom" [disabled]="user.pivot?.is_signature_sent"
+														name="{{'sendMom'+i}}"#sendMom="ngModel" (change)="updateCanSign(user)">
+														{{'MEETINGS.PARTICIPANTS.MOM.SEND_MOM' | translate}}
+												</span>
+											</label>
+										</div>
+										<div *ngIf="!user.isGuest" class="col-lg-4 d-flex align-items-center p-lg-0">
+											<label class="mb-0">
+												<span>
+														<input type="checkbox" [(ngModel)]="user.can_sign"
+														[checked]="user.can_sign && (user?.role_code !== rolesCodes.stakeholder)" [disabled]="user.pivot?.is_signature_sent|| !user.send_mom"
+														name="{{'canSign'+i}}"#canSign="ngModel">
+														{{'MEETINGS.PARTICIPANTS.SIGNATURE.SIGN_MOM' | translate}}
+												</span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</h5>
+
+
+						</div>
+						<div class="col-lg-2  d-flex justify-content-end">
+							<span class="w-auto"  *ngIf="showSendSignButton && user.can_sign">
+								<button type="button" class="btn btn-light-grey title-action-btn" (click)="sendSignEmail(user.pivot.user_id)"
+								[hidden]="user.pivot?.is_signature_sent">
+									<i class="fas fa-paper-plane"></i>&nbsp;{{'MEETINGS.PARTICIPANTS.SIGNATURE.SEND_FOR_SIGN' | translate}}
+								</button>
+								<span class="mx-2 mt-1 m-badge m-badge--metal m-badge--wide" *ngIf="user.pivot?.is_signature_sent && user.pivot?.is_signed == null">
+									{{'MEETINGS.PARTICIPANTS.SIGNATURE.SENT'| translate}}
+								</span>
+								<span class="mx-2 mt-1 m-badge m-badge--metal m-badge--wide" *ngIf="user.pivot?.is_signed  != null">
+									{{user.pivot?.is_signed? ('MEETINGS.PARTICIPANTS.SIGNATURE.SIGNED'|translate) : ('MEETINGS.PARTICIPANTS.SIGNATURE.REFUSED'| translate) }}
+								</span>
+							</span>
+						</div>
+					</div>
+				
+			</div>
+		</div>
+		<div class="form-group m-form__group row">
+			<input type="checkbox" id="users" name="users" [(ngModel)]="memberParticipantSelectet" #users="ngModel"
+				hidden required>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(participatForm,'users', 'required')">
+				{{'MEETINGS.PARTICIPANTS.VALIDATION.MEETINGPARTICIPANTS' | translate}}</div>
+		</div>
+		<div class="m-form__actions m-form__actions--solid">
+			<div class="row">
+				<div class="col-lg-12 m--align-left">
+					<button type="submit" class="btn btn-primary" [disabled]="submitted" >
+						{{'BUTTON.SAVE' | translate}}
+						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+					</button>
+					<button type="button" class="btn btn-primary" (click)="saveMeetingVersion(participatForm)" [disabled]="submitted"
+					*ngIf="canEditMeeting && meetingStatusId != meetingStatuses.DRAFT">
+						{{'MEETINGS.INFO.ADD.PREVIEW_MEETING' | translate}}
+						<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+					</button>
+					<button type="reset" (click)="redirect()" [hidden]="hideAddCancel"
+						class="btn btn-secondary">{{'BUTTON.CANCEL' | translate}}</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div>

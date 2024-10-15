@@ -1,0 +1,318 @@
+input[type="email"] {
+	direction: ltr;
+}
+
+#m_login ::-webkit-input-placeholder {
+	color: #999 !important;
+}
+
+#m_login :-moz-placeholder {
+	/* Firefox 18- */
+	color: #999 !important;
+}
+
+#m_login ::-moz-placeholder {
+	/* Firefox 19+ */
+	color: #999 !important;
+}
+
+#m_login :-ms-input-placeholder {
+	color: #999 !important;
+}
+
+.mjlsi--signup .m-form label {
+	color: #172b4d;
+	display: inline-block;
+	margin-bottom: 8px;
+	line-height: 18px;
+	font-weight: 500;
+	font-size: 14px;
+}
+
+.mat-form-field-infix {
+	padding: 0 !important;
+	border-top: 0 !important;
+}
+
+.m-form.m-form--fit .m-form__content, .m-form.m-form--fit .m-form__heading, .m-form.m-form--fit .m-form__group {
+	padding: 15px 0px;
+}
+
+.m-form .form-control-label, .m-form label {
+	font-weight: 400;
+}
+
+.m-form .m-form__actions {
+	border-radius: 0 0 15px 15px;
+	border-top: 0px solid #ebedf2;
+	padding: 5px 0 0;
+	margin: 15px 0 5px;
+}
+
+.m-form .m-portlet .m-portlet__head {
+	height: 3.1rem;
+}
+
+.m-form .m-portlet.m-portlet--full-height {
+	height: auto;
+}
+
+.m-form .m-portlet.m-portlet--rounded-force {
+	border: 1px solid #cac6a1;
+	background: rgba(247, 247, 241, 0.5);
+	/* margin-bottom: 0; */
+	margin-bottom: 0;
+	border-radius: 8px;
+}
+
+.m-form .m-portlet.m-portlet--rounded-force .m-portlet__body {
+	padding: 15px;
+}
+
+.modal-content .mat-table__wrapper .mat-table {
+	min-width: unset;
+}
+
+ngb-datepicker {
+	max-width: 191px;
+}
+
+/* TimePicker */
+
+ngb-timepicker .btn.btn-link {
+	position: absolute;
+	height: 19px;
+	line-height: 20px;
+	color: #333;
+	padding: 0;
+	margin: 0 1px;
+}
+
+ngb-timepicker .chevron[_ngcontent-c5]::before {
+	border-width: 0.2em 0.2em 0 0;
+}
+
+.input-group>.input-group-append:not(:last-child)>.btn,
+.input-group>.input-group-append .btn.calendar {
+	color: #333;
+	background-color: #ebedf2;
+	border-color: #ebedf2;
+}
+
+.ngb-tp-input-container .btn:first-child {
+	top: -10%;
+}
+
+.ngb-tp-input-container .btn:last-child {
+	bottom: -4%;
+}
+
+/*  Date Range */
+
+ngx-mat-drp .mat-form-field-label-wrapper {
+	display: none;
+}
+
+ngx-mat-drp .mat-form-field-wrapper {
+	padding-bottom: 0;
+}
+
+ngx-mat-drp .mat-form-field-flex {
+	color: #333;
+	cursor: default;
+	display: flex;
+	outline: 0;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	background: #fff;
+	border: 1px solid #ccc!important;
+	border-radius: 4px;
+	padding: 0;
+	margin: 0;
+	height: 34px;
+}
+
+ngx-mat-drp .mat-form-field-underline {
+	display: none;
+}
+
+/* ----------- search on map ----------*/
+
+.ngx-mat-drp-date-display[_ngcontent-c4] {
+	min-width: 100%;
+}
+
+.m-map-form input {
+	width: 97%;
+	margin: 8px;
+	min-height: 46px;
+	border-radius: 5px;
+	padding: 0 15px;
+	border: 2px solid #ebedf2;
+	background: #fdfdfd;
+	line-height: 46px;
+}
+
+.m-map-form .m-input-icon>.m-input-icon__icon {
+	top: 2px;
+	left: 7px;
+}
+
+.pac-container.pac-logo {
+	z-index: 999999;
+}
+
+/* ----------- search on map ----------*/
+
+.ngb-tp-input-container {
+	position: relative;
+}
+
+
+.form-control[readonly] {
+    background-color: white;
+}
+
+.clear-input{ 
+	position: absolute;
+    cursor: pointer;
+    padding: 10px;
+    right: 28px;
+    top: 3px;
+    z-index: 1;
+}
+
+
+/* Files Pages Start */
+
+
+.dz-filename span {
+	margin-top: 20px;
+}
+.dz-filename span:hover {
+	margin-top: 20px;
+}
+.modal-dropzone > .dropzone.dz-wrapper .dz-preview .dz-filename span:hover {
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 20px !important;
+    text-overflow: ellipsis;
+}
+ /* overwrite the checkbox background */
+ .custom-checkbox.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+	background-color: #34BFA3 !important;
+  }
+  .custom-checkbox .mat-checkbox-ripple .mat-ripple-element {
+	display: none !important;
+  }
+
+  .ngSelect-noArrow .ng-arrow-wrapper {
+	display: none;
+  }
+/* The container */
+.customCheckbox {
+	display: block;
+	position: relative;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+  }
+  
+  /* Hide the browser's default checkbox */
+  .customCheckbox input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+  }
+  
+  /* Create a custom checkbox */
+  .checkmark {
+	position: absolute;
+	top: 4px;
+	left: 0;
+	height: 22px;
+	width: 22px;
+	border-radius: 4px;
+	background-color: #eee;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .customCheckbox:hover input ~ .checkmark {
+	background-color: #ccc;
+  }
+  
+  /* When the checkbox is checked, add a blue background */
+  .customCheckbox input:checked ~ .checkmark {
+	background-color: #34BFA3;
+  }
+  
+  /* Create the checkmark/indicator (hidden when not checked) */
+  .checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+  }
+  
+  /* Show the checkmark when checked */
+  .customCheckbox input:checked ~ .checkmark:after {
+	display: block;
+  }
+  
+  /* Style the checkmark/indicator */
+.customCheckbox .checkmark:after {
+	left: 8px;
+	top: 3px;
+	width: 6px;
+	height: 12px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.custom-ngSelect .ng-placeholder::before{
+	content: "\e904";
+	font-family: 'icomoon' !important;
+    speak: never;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+	margin-right: 10px;
+}
+.custom-ngSelect .ng-placeholder {
+	display: flex;
+	align-items: center;
+}
+
+
+
+/* //  MATERIAL  */
+.mat-mdc-form-field{
+	width: 100%;
+}
+.mat-mdc-text-field-wrapper {
+	padding: 0!important;
+}
+
+.mat-mdc-radio-button .mdc-radio {
+    padding: 0!important;
+}
+.mdc-radio__background {
+	position: unset!important;
+}
+
+
+.visually-hidden {
+	display: none!important;
+}

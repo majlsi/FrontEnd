@@ -1,0 +1,71 @@
+
+  <div class="progress">
+    <div class="progress-bar bg-success" role="progressbar"  [ngStyle]="{'width':dashboardTasks.tasks_statistics.percentage_of_done_tasks+'%'}" [attr.aria-valuenow]="dashboardTasks.tasks_statistics.percentage_of_done_tasks" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+  <h5 class="m--font-bolder my-1">{{dashboardTasks.tasks_statistics.percentage_of_done_tasks|number}}%</h5>
+  <div class="row mt-2">
+    <div class="col-6">
+      <div class="border-card">
+        <i class="la la-plus-circle m--font-info-dark"></i>
+        <h5 class="mt-2"><span class="num">{{dashboardTasks.tasks_statistics.new_tasks}}</span><span class="mx-1">{{'DASHBOARD.TASKNEW'|translate}}</span></h5>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="border-card">
+        <i class="la la-check-circle m--font-success"></i>
+        <h5 class="mt-2"><span class="num">{{dashboardTasks.tasks_statistics.done_tasks}}</span><span class="mx-1">{{'DASHBOARD.TASKDONE'|translate}} </span></h5>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="border-card">
+        <i class="la la-exclamation-circle m--font-danger"></i>
+        <h5 class="mt-2"><span class="num">{{dashboardTasks.tasks_statistics.delayed_tasks}}</span><span class="mx-1">{{'DASHBOARD.TASKDELAYED'|translate}} </span></h5>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="border-card">
+        <i class="la la-clock-o m--font-primary"></i>
+        <h5 class="mt-2"><span class="num">{{dashboardTasks.tasks_statistics.progress_tasks}}</span><span class="mx-1">{{'DASHBOARD.TASKINPROGRESS'|translate}} </span></h5>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end" *ngIf="dashboardTasks.tasks.length && listFlag">
+    <div class="mt-1 m--font-bolder" [routerLink]="['/tasks-management/member-dashboard']" ><a class="m--font-info">{{'DASHBOARD.SHOW_ALL'|translate}} <i
+           class="align-middle la" [ngClass]="{'la-arrow-left ':isArabic,'la-arrow-right ': !isArabic}"></i></a></div>
+  </div>
+  <div class="bg-white--content m--border-radius-15 enz--relative mt-2" *ngFor="let task of dashboardTasks.tasks">
+      <div class="d-flex align-items-center justify-content-between  py-2 px-3 mw-100">
+        <div class="mw-90">
+            <div class="d-flex align-items-center mw-100">
+              <h5 class="m-0 text-truncate mw-60">{{task.serial_number}}</h5><span class="mx-2 m-badge m-badge--wide " [ngClass]="{'m-badge--success': task.task_status_id == taskStatuses.DONE,
+              'm-badge--primary ': task.task_status_id == taskStatuses.INPROGRESS,
+              'm-badge--brand': task.task_status_id == taskStatuses.NEW}"
+              >{{isArabic?task.task_status_name_ar:task.task_status_name_en}}
+              </span>
+            </div>
+          
+          <div class="d-flex align-items-center mt-2">
+            <span class=" font-sm" *ngIf="showAssignee"> <i class="fa fa-user-circle align-middle"></i><span class="mx-1">إيمان محمد</span></span>
+            <span class=" mx-2 font-sm"> <i class="la la-calendar align-text-bottom"></i><span class="mx-1">{{task.start_date|date}}</span></span>
+          </div>
+        </div>
+     
+        <div ngbDropdown class="d-inline-block" *ngIf="(editFlag && task.task_status_id == taskStatuses.NEW)|| viewFlag">
+          <button class="btn btn-secondary m-btn--icon-only px-2" id="dropdownBasic1" ngbDropdownToggle><i
+              class="fa fa-ellipsis-v"></i></button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <li ngbDropdownItem  (click)="edit(task.id)" *ngIf="editFlag && task.task_status_id == taskStatuses.NEW">
+              {{'BUTTON.EDIT' | translate}}
+            </li>
+            <li ngbDropdownItem (click)="view(task.id)" *ngIf="viewFlag">
+              {{'BUTTON.VIEW'| translate}}
+            </li>
+          </div>
+        </div>
+     
+    
+
+
+      </div>
+  </div>
+

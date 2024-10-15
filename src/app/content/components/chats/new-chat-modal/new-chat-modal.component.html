@@ -1,0 +1,225 @@
+<!-------->
+<div *ngIf="showFirstStep">
+	<div class="modal-header p-2 d-flex justify-content-xl-between">
+		<div class="d-flex align-items-center modal-title d-flex" id="modal-basic-title">
+			<h4 class="modal-title" id="modal-basic-title">{{'CONVERSATIONS.START_CONVERSATION' | translate}}</h4>
+		</div>
+		<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	
+	<form novalidate #searchForm="ngForm" (ngSubmit)="search()">
+		<div class="modal-body p-0">
+			<div class="search-box search-box-shadow p-3">
+				<div class="input-group my-0">
+					<input type="text" placeholder="{{'CONVERSATIONS.SEARCH' | translate}}" class="form-control form-filter input-sm" id="searchname"
+						name="searchname" [(ngModel)]="searchName"
+						#searchname="ngModel" (ngModelChange)="search()">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="submit">
+							<i class="la la-search"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+	
+			<div class="form-group m-form__group px-3 pb-3 mt-3 border-bottom-light border-bottom">
+				<a class="btn btn-link text-primary" (click)="openNewChatInfo()">
+					<i class="fa fa-comments"></i>
+					{{'CONVERSATIONS.CREATE_CHAT_GROUP' | translate}}
+				</a>
+			</div>
+	
+			<div class="form-group m-form__group">
+	
+				<input type="checkbox" id="ischecked" name="ischecked" hidden required>
+			</div>
+			<div class="form-group m-form__group scrollable-list" #scrollDown [scrollWindow]="false" infiniteScroll
+			[infiniteScrollThrottle]="50" [infiniteScrollDistance]="2"
+			(scrolled)="onScrollDown()">
+				<div class="mat-table__wrapper">
+					<h5 class=" mt-3 px-3">
+						{{'CONVERSATIONS.USERS_LIST' | translate}}
+					</h5>
+	
+					<table mat-table [dataSource]="usersList" class="new-chat-table">
+						<!-- Name Column -->
+						<ng-container matColumnDef="name">
+							<th mat-header-cell *matHeaderCellDef> {{'CONVERSATIONS.NAME' | translate}} </th>
+							<td mat-cell *matCellDef="let row">
+								<mat-radio-group aria-labelledby="example-radio-group-label"
+									class="d-flex p-0 m-0 w-100 align-items-center justify-content-between example-radio-group"
+									name="chat" #chat="ngModel" [(ngModel)]="selectedId">
+									<mat-radio-button class="d-flex w-100 align-items-center justify-content-between"
+										[value]="row.id" (change)="radioChange($event,'user')">
+										<div class="chat-item-row d-flex w-100 align-items-center justify-content-between">
+											<div class="d-flex align-items-center">
+												<div class=""><!--avatar-icon mr-2-->
+												<img class="chat-icon" [src]="imagesBaseURL+row.profile_image_url" width="50" height="50" class="rounded-circle"
+														alt="chat icon" onerror="this.src='./assets/app/media/img/icons/individual.png';">
+												</div>
+												<span class="px-2">
+													{{isArabic? (row.name_ar? row.name_ar : row.name) : (row.name? row.name : row.name_ar)}}
+												</span>
+	
+											</div>
+	
+											<a class="btn btn-dark text-white">
+												<span>
+													{{'CONVERSATIONS.SELECT' | translate}}
+												</span>
+	
+											</a>
+										</div>
+	
+									</mat-radio-button>
+								</mat-radio-group>
+							</td>
+						</ng-container>
+	
+						<!-- Weight Column -->
+						<!-- <ng-container matColumnDef="members_no">
+							<th mat-header-cell *matHeaderCellDef> Members No </th>
+							<td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+						</ng-container> -->
+	
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+						</tr>
+					</table>
+					<div class="mat-table__message" *ngIf="usersList.length == 0">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+	
+				</div>
+				<div class="mat-table__wrapper">
+					<h5 class=" mt-3 px-3">
+						{{'CONVERSATIONS.COMMITTEES_LIST' | translate}}
+					</h5>
+	
+					<table mat-table [dataSource]="committeesList" class="new-chat-table">
+						<!-- Name Column -->
+						<ng-container matColumnDef="name">
+							<th mat-header-cell *matHeaderCellDef> {{'CONVERSATIONS.NAME' | translate}} </th>
+							<td mat-cell *matCellDef="let row">
+								<mat-radio-group aria-labelledby="example-radio-group-label"
+									class="d-flex p-0 m-0 w-100 align-items-center justify-content-between example-radio-group"
+									name="chat" #chat="ngModel" [(ngModel)]="selectedId">
+									<mat-radio-button class="d-flex w-100 align-items-center justify-content-between"
+										[value]="row.id" (change)="radioChange($event,'committee')">
+										<div class="chat-item-row d-flex w-100 align-items-center justify-content-between">
+											<div class="d-flex align-items-center">
+												<div class="avatar-icon mr-2">
+													<img src="./assets/app/media/img/icons/committee-icon-transparent.png"
+														alt="committee icon">
+												</div>
+	
+												{{isArabic? (row.committee_name_ar? row.committee_name_ar : row.committee_name_en) : (row.committee_name_en? row.committee_name_en : row.committee_name_ar)}}
+											</div>
+	
+											<a class="btn btn-dark text-white">
+												<span>
+													{{'CONVERSATIONS.SELECT' | translate}}
+												</span>
+	
+											</a>
+										</div>
+	
+									</mat-radio-button>
+								</mat-radio-group>
+							</td>
+						</ng-container>
+	
+						<!-- Weight Column -->
+						<!-- <ng-container matColumnDef="members_no">
+							<th mat-header-cell *matHeaderCellDef> Members No </th>
+							<td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+						</ng-container> -->
+	
+						<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)">
+						</tr>
+					</table>
+					<div class="mat-table__message" *ngIf="committeesList.length == 0">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+				</div>
+				<div class="mat-table__wrapper">
+					<h5 class=" mt-3 px-3">
+						{{'CONVERSATIONS.MEETINGS_LIST' | translate}}
+					</h5>
+					<table mat-table [dataSource]="meetingsList" class="new-chat-table">
+	
+						<!-- Name Column -->
+						<ng-container matColumnDef="name">
+	
+							<th mat-header-cell *matHeaderCellDef> {{'CONVERSATIONS.NAME' | translate}} </th>
+							<td mat-cell *matCellDef="let row">
+								<mat-radio-group aria-labelledby="example-radio-group-label"
+									class="d-flex p-0 m-0 w-100 align-items-center justify-content-between example-radio-group"
+									name="chat" #chat="ngModel" [(ngModel)]="selectedId">
+									<mat-radio-button
+										class="d-flex w-100 align-items-center justify-content-between example-radio-button"
+										[value]="row.id" (change)="radioChange($event,'meeting')">
+										<div class="chat-item-row d-flex w-100 align-items-center justify-content-between">
+											<div class="d-flex align-items-center">
+												<div class="avatar-icon mr-2">
+													<img src="./assets/app/media/img/icons/meeting-icon-transparent.png"
+														alt="committee icon">
+												</div>
+												{{isArabic? (row.meeting_title_ar? row.meeting_title_ar : row.meeting_title_en) : (row.meeting_title_en? row.meeting_title_en : row.meeting_title_ar)}}
+											</div>
+											<a class="btn btn-dark text-white">
+												<span>
+													{{'CONVERSATIONS.SELECT' | translate}}
+												</span>
+											</a>
+										</div>
+									</mat-radio-button>
+								</mat-radio-group>
+							</td>
+						</ng-container>
+	
+						<!-- Weight Column -->
+						<!-- <ng-container matColumnDef="members_no">
+							<th mat-header-cell *matHeaderCellDef> Members No </th>
+							<td mat-cell *matCellDef="let element"> {{element.weight}} </td>
+						</ng-container> -->
+	
+						<tr mat-header-row *matHeaderRowDef="displayedMeetingColumns"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedMeetingColumns;" (click)="selection.toggle(row)">
+						</tr>
+					</table>
+					<div class="mat-table__message" *ngIf="meetingsList.length == 0">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+	
+				</div>
+			</div>
+	
+		</div>
+		<p *ngIf="error.length > 0" class="error text-danger form-control-feedback">{{error}}</p>
+		<div class="modal-footer pt-4 d-flex justify-content-between">
+			<button type="button" class="btn btn-light mr-3" (click)="close();activeModal.dismiss('Cross click')">
+				{{'BUTTON.CANCEL' | translate}}
+			</button>
+			<button type="button" class="btn btn-primary" (click)="openChat()" [disabled]="submitted">
+				{{'CONVERSATIONS.CONVENSATION_STARTED' | translate}}
+				<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+			</button>
+		</div>
+	
+	</form>
+</div>
+<!-------->
+
+
+<!------>
+<div *ngIf="showSecondStep">
+	<m-edit-chat-info-modal (selectChatUsers)="selectChatUsers($event)"></m-edit-chat-info-modal>
+</div>
+<!------>
+
+
+
+
+<!------->
+<div *ngIf="showThirdStep">
+<m-group-chat-members-modal [isArabic]="isArabic" [chatGroup]="chatGroup" (getCreatedChat)="getCreatedChat($event)"></m-group-chat-members-modal>
+</div>
+<!------->

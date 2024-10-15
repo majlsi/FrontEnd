@@ -1,0 +1,415 @@
+<m-portlet [options]="{ headLarge: false }">
+    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+    <ng-container mPortletHeadTitle>
+        <h3 class="m-portlet__head-text">
+            {{ "REQUEST.ADD.REQUESTDETAILS" | translate }}
+        </h3>
+    </ng-container>
+    <ng-container mPortletHeadTools>
+        <div>
+            <button type="reset" (click)="redirect()" class="btn btn-secondary">
+                <span class="px-2">{{ "BUTTON.BACK" | translate }}</span>
+                <i class="fa fa-arrow-left"></i>
+            </button>
+        </div>
+    </ng-container>
+    <!-- end::Header -->
+    <!-- start::Body (attribute: mPortletBody) -->
+    <ng-container mPortletBody>
+        <!-- ! add commitee form-->
+        <div class="bg-white--content m--padding-15">
+            <div [hidden]="error.length == 0" *ngFor="let item of error"
+                class="m-alert m-alert--outline m-alert--outline-2x alert fade show alert-danger" role="alert">
+                <span *ngFor="let field of item">
+                    {{ isArabic ? field?.message_ar : field?.message ?
+                    field?.message : field?.message_ar }}
+                </span>
+            </div>
+            <form class="m-form m-form--fit m-form--label-align-right" novalidate #requestForm="ngForm"
+                *ngIf="committee.id != null" (ngSubmit)="save(requestForm)">
+                <div *ngIf="customSetting">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-6">
+                            <label>{{ "COMMITTEES.ADD.DECISION_NUMBER" | translate }}</label>
+                            <input [readonly]="true" type="text"
+                                placeholder="{{ 'COMMITTEES.ADD.DECISIONNUMBER' | translate }}" class="form-control"
+                                id="decisionNumber" name="decisionNumber" [(ngModel)]="committee.decision_number"
+                                #decisionNumber="ngModel" pattern="^\d+(\.\d+)?$" required />
+                        </div>
+                        <div class="col-lg-6">
+                            <label>{{ "COMMITTEES.ADD.DECISION_DATE" | translate }}</label>
+                            <div class="input-group">
+                                <input class="form-control form-control-solid" placeholder="yyyy-mm-dd"
+                                    name="decisionDate" [(ngModel)]="decisionDateModel" ngbDatepicker
+                                    #decisionDate="ngbDatepicker" [readonly]="true" (ngModelChange)="validateDates()" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEENAMEAR" | translate }}</label>
+                        <input [readonly]="true" type="text"
+                            placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_NAME_AR' | translate }}" class="form-control"
+                            id="committeenameAR" name="committeenameAR" [(ngModel)]="committee.committee_name_ar"
+                            #committeenameAR="ngModel" required />
+                    </div>
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEENAME" | translate }}</label>
+                        <input [readonly]="true" type="text"
+                            placeholder="{{ 'COMMITTEES.ADD.COMMITTEENAME' | translate }}" class="form-control"
+                            id="committeename" name="committeename" [(ngModel)]="committee.committee_name_en"
+                            #committeename="ngModel" />
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEEHEAD" | translate }}</label>
+                        <input type="text" class="form-control" id="committeehead"
+                            name="committeehead" #committeehead="ngModel" readonly
+                            [(ngModel)]="isArabic ? committee.committee_head.name_ar:committee.committee_head.name" />
+                    </div>
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEEORGANISER" | translate }}</label>
+                        <input type="text" class="form-control" id="committeeOrganiser"
+                            name="committeeOrganiser"
+                            [(ngModel)]="isArabic ? committee.committee_organiser.name_ar:committee.committee_organiser.name"
+                            #committeeOrganiser="ngModel" readonly />
+                    </div>
+                </div>
+                <div class="form-group m-form__group row" *ngIf="!customSetting">
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.START_DATE" | translate }}</label>
+                        <div class="input-group">
+                            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate"
+                                [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true"
+                                (ngModelChange)="setEndDateEqualFrom()" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</label>
+                        <div class="input-group">
+                            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate"
+                                [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true"
+                                (ngModelChange)="validateDates()" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group m-form__group row">
+                    <div class="col-lg-6" *ngIf="!removeCommitteeCode">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEE_CODE" | translate }}</label>
+                        <input [readonly]="true" type="text"
+                            placeholder="{{ 'COMMITTEES.ADD.COMMITTEECODE' | translate }}" class="form-control"
+                            id="committeeCode" name="committeeCode" [(ngModel)]="committee.committee_code"
+                            #committeeCode="ngModel" readonly />
+                    </div>
+                    <div class="col-lg-6" *ngIf="customSetting">
+                        <label>{{ "COMMITTEES.ADD.COMMITTEETYPE" | translate }}</label>
+                        <ng-select [readonly]="true" id="committeeType"
+                            placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_TYPE' | translate }}" name="committeeType"
+                            [searchable]="true" [(ngModel)]="committee.committee_type" [multiple]="false"
+                            [items]="committeeTypes" [bindLabel]="committeeTypesBindLabel"
+                            (ngModelChange)="onCommitteeTypeSelection()" readonly>
+                            <ng-template ng-label-tmp let-item="item">
+                                {{ isArabic ? (item.committee_type_name_ar ? item.committee_type_name_ar :
+                                item.committee_type_name_en)
+                                : item.committee_type_name_en ? item.committee_type_name_en :
+                                item.committee_type_name_ar }}
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                <span [title]="item.name" class="ng-option-label">{{ isArabic ?
+                                    (item.committee_type_name_ar ?
+                                    item.committee_type_name_ar : item.committee_type_name_en) :
+                                    item.committee_type_name_en ?
+                                    item.committee_type_name_ar : item.committee_type_name_ar }}</span>
+                            </ng-template>
+                        </ng-select>
+                    </div>
+                </div>
+                <div class="form-group m-form__group row"
+                    *ngIf="customSetting && (showDatesFields || committee.committee_type_id == committeeTypeEnum.temporary)">
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.START_DATE" | translate }}</label>
+                        <div class="input-group">
+                            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="startDate"
+                                [(ngModel)]="startDateModel" ngbDatepicker #startDate="ngbDatepicker" [readonly]="true"
+                                (ngModelChange)="setEndDateEqualFrom()" />
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <label>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</label>
+                        <div class="input-group">
+                            <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="endDate"
+                                [(ngModel)]="expiredDateModel" ngbDatepicker #endDate="ngbDatepicker" [readonly]="true"
+                                (ngModelChange)="validateDates()" />
+
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="customSetting">
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-6">
+                            <label>{{ "COMMITTEES.ADD.DECISIONRESPONSIBLE" | translate }}</label>
+                            <input readonly type="text" #decisionResponsibleUser="ngModel"
+                                placeholder="{{ 'COMMITTEES.ADD.DECISION_RESPONSIBLE' | translate }}"
+                                class="form-control" id="decisionResponsibleUser" name="decisionResponsibleUser"
+                                [(ngModel)]="isArabic?committee.committee_responsible.name_ar:committee.committee_responsible.name" />
+                        </div>
+
+                        <div class="col-lg-6">
+                            <label>{{ "COMMITTEES.ADD.COMMITTEEREASON" | translate }}</label>
+                            <input readonly type="text"
+                                placeholder="{{ 'COMMITTEES.ADD.COMMITTEE_REASON' | translate }}" class="form-control"
+                                id="committeeReason" name="committeeReason" [(ngModel)]="committee.committee_reason"
+                                #committeeReason="ngModel" />
+                        </div>
+                    </div>
+                    <div class="form-group m-form__group row">
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-baseline justify-content-between">
+                                <label>{{ "COMMITTEES.ADD.DECISION_DOCUMENT" | translate }} &nbsp;<span
+                                        class="MandatoryAsterisk"></span> </label>
+                                <div class="text-right">
+                                    <a (click)="downloadDecisionDocument()" class="m-widget4__icon col-md-12"
+                                        style="margin-right: 0" *ngIf="committee.decision_document_url">
+                                        {{ "COMMITTEES.ADD.DOWNLOAD_DECISION_DOCUMENT" | translate }}
+                                        <i class="la la-download"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="input-group mr-3">
+                                <label
+                                    class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+                                    for="thefile2">
+                                    <input disabled [attr.disabled]="true" type="file" class="d-none" id="thefile2"
+                                        accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt"
+                                        #attachmentDecision="ngModel" name="attachmentDecision"
+                                        (ngModel)="(attachmentDecisionUrl)" />
+									<span id="fileName2" *ngIf="!attachmentDecisionUrl">
+                                        {{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}
+                                    </span>
+                                    <span id="fileName2" *ngIf="attachmentDecisionUrl">
+                                        {{ attachmentDecisionUrl}}
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group m-form__group row">
+                    <div class="col">
+                        <label class="col-form-label">{{ "COMMITTEES.ADD.GOVERNANCE_REGULATION" | translate }}
+                            &nbsp;<span class="MandatoryAsterisk"></span> </label>
+                    </div>
+                    <div class="col ml-auto text-right">
+                        <a (click)="downloadFile()" class="m-widget4__icon col-md-12" style="margin-right: 0"
+                            *ngIf="committee.governance_regulation_url">
+                            {{ "COMMITTEES.ADD.DOWNLOAD_GOVERNANCE_REGULATION" | translate }}
+                            <i class="la la-download"></i>
+                        </a>
+                    </div>
+                    <div class="input-group mr-3 ml-3">
+                        <label
+                            class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+                            for="thefile">
+                            <input disabled [attr.disabled]="true" type="file" class="d-none" id="thefile"
+                                accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt"
+                                #governanceRegulation="ngModel" name="governanceRegulation"
+                                (ngModel)="(attachmentUrl)" />
+                            <span id="fileName" *ngIf="attachmentUrl">{{ attachmentUrl }}</span>
+                            <span id="fileName" *ngIf="!attachmentUrl">
+                                {{ "REVIEWS_ROOM.ADD.NO_CHOSEN_FILE" | translate }}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <br />
+                <!--------------------------------------
+                        COMMITTEE MEMBERS
+                -------------------------------------->
+
+                <m-portlet [options]="{ headLarge: false }">
+                    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+                    <ng-container mPortletHeadTitle>
+                        <div class="m-portlet__head-title">
+                            <h3 class="m-portlet__head-text">
+                                {{ "COMMITTEES.ADD.MEMBERSLIST" | translate }}
+                            </h3>
+                        </div>
+                    </ng-container>
+                    <ng-container mPortletHeadTools>
+                        <m-add-member [isFreezed]="true" (AddMemberEmiter)="addMember($event)" [committee]="committee"
+                            [member_users]="committee.member_users" [committee_head]="committee.committee_head"
+                            [committee_organiser]="committee.committee_organiser"> </m-add-member>
+                    </ng-container>
+                    <!-- end::Header -->
+
+                    <!-- start::Body (attribute: mPortletBody) new setting -->
+                    <ng-container mPortletBody>
+                        <div class="bg-white--content" [hidden]="usersCommitteeCombinedArray == 0">
+                            <div class="">
+                                <table mat-table
+                                    class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table"
+                                    [dataSource]="addUserFeatureSetting ? usersCommitteeCombinedArray : committee.member_users"
+                                    matSort matSortActive="id" matSortDirection="desc" matSortDisableClear>
+                                    <ng-container matColumnDef="name">
+                                        <th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.USERNAME" | translate
+                                            }}</th>
+                                        <td *matCellDef="let user" class="mat-column-vinCode">
+                                            {{ isArabic ? (user.name_ar ? user.name_ar : user.name) : user.name ?
+                                            user.name :
+                                            user.name_ar }}
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="email">
+                                        <th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.EMAIL" | translate }}
+                                        </th>
+                                        <td *matCellDef="let user">{{ user.email }}</td>
+                                    </ng-container>
+                                    <ng-container *ngIf="addUserFeatureSetting" matColumnDef="status">
+                                        <th *matHeaderCellDef mat-sort-header>{{ "COMMITTEES.ADD.STATUS" | translate }}
+                                        </th>
+                                        <td *matCellDef="let user">{{ user.source == "userRequest" ?
+                                            ("COMMITTEES.ADD.STATUSPENDING" |
+                                            translate) : "" }}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="committee_user_start_date">
+                                        <th *matHeaderCellDef>{{ "COMMITTEES.ADD.START_DATE" | translate }}</th>
+                                        <td *matCellDef="let user">{{ user.committee_user_start_date ?
+                                            (user.committee_user_start_date |
+                                            date : "MMMM d, y") : "" }}</td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="committee_user_expired_date">
+                                        <th *matHeaderCellDef>{{ "COMMITTEES.ADD.EXPIRED_DATE" | translate }}</th>
+                                        <td *matCellDef="let user">{{ user.committee_user_expired_date ?
+                                            (user.committee_user_expired_date | date : "MMMM d, y") : "" }}</td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="member_evaluation">
+                                        <th *matHeaderCellDef>{{ "COMMITTEES.ADD.MEMBEREVALUATION" | translate }}</th>
+                                        <td *matCellDef="let user">
+                                            <div class="d-flex justify-content-between">
+                                                {{ isArabic ? (user.evaluation_name_ar ? user.evaluation_name_ar : "-")
+                                                :
+                                                user.evaluation_name_en ? user.evaluation_name_en : "-" }}
+                                            </div>
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row
+                                        *matHeaderRowDef="!addUserFeatureSetting ? displayedColumns : displayedColumnsNewSetting">
+                                    </tr>
+                                    <tr mat-row
+                                        *matRowDef="let row; columns: !addUserFeatureSetting ? displayedColumns : displayedColumnsNewSetting">
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- start: BOTTOM -->
+                            <!-- <div class="form-group m-form__group row">
+                                <input type="checkbox" id="users" name="users" [(ngModel)]="memberUserSelectet"
+                                    #users="ngModel" hidden required />
+                                <div class="error text-danger form-control-feedback"
+                                    [hidden]="!hasError(committeeForm, 'users', 'required')">Member users is Required
+                                </div>
+                            </div> -->
+                        </div>
+                    </ng-container>
+                    <!-- end::Body -->
+                </m-portlet>
+
+                <div class="mt-5">
+                    <m-works-done *ngIf="isEdit &&customSettingWorkDone"></m-works-done>
+                </div>
+                <!---           End Final Output Section   		-->
+                <br />
+                <m-portlet *ngIf="committeeId != null" [options]="{ headLarge: false }">
+                    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+                    <ng-container mPortletHeadTitle>
+                        <div class="m-portlet__head-title">
+                            <h3 class="m-portlet__head-text">
+                                {{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT" | translate }}
+                            </h3>
+                        </div>
+                    </ng-container>
+                    <ng-container mPortletHeadTools></ng-container>
+                    <!-- end::Header -->
+                    <!-- start::Body (attribute: mPortletBody) new setting -->
+                    <ng-container mPortletBody>
+                        <div class="bg-white--content col-4" *ngIf="committee.final_output_url != null"
+                            (click)="downloadFinalOutput()">
+                            <div class="mat-table__wrapper">
+                                <div class="m-widget24 d-flex py-3 w-75">
+                                    <div class="d-flex align-items-center px-3">
+                                        <span class="m--font-brand">
+                                            <img [src]="committee.finalOutput.file_type_icon"
+                                                [alt]="committee.finalOutput.file_type_ext" class="file-icon" />
+                                        </span>
+                                    </div>
+                                    <div class="m-widget24__item d-flex justify-content-center flex-column w-75">
+                                        <h3 class="m-widget24__title font-size-14 m-0 text-truncate color-title-dark font-weight-500"
+                                            placement="top" ngbTooltip="{{ committee.finalOutput.name }}">
+                                            {{ committee.finalOutput.name }}
+                                        </h3>
+                                        <span class="m-widget24__desc font-size-12 m-0">
+                                            {{ formatBytes(committee.finalOutput.size) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- end::Body -->
+                </m-portlet>
+                <!---     End Final Output Section   		-->
+
+                <!---           Recommendations Section   		-->
+                <br />
+                <m-portlet *ngIf="committeeId != null" [options]="{ headLarge: false }">
+                    <!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+                    <ng-container mPortletHeadTitle>
+                        <div class="m-portlet__head-title">
+                            <h3 class="m-portlet__head-text">
+                                {{ "COMMITTEES.RECOMMENDATIONS.SECTION_TITLE" | translate }}
+                            </h3>
+                        </div>
+                    </ng-container>
+                    <ng-container mPortletHeadTools></ng-container>
+                    <!-- end::Header -->
+                    <!-- start::Body (attribute: mPortletBody) new setting -->
+                    <ng-container mPortletBody>
+                        <div class="bg-white--content"
+                            *ngIf="committee.recommendations != null && committee.recommendations.length > 0">
+                            <div class>
+                                <table mat-table
+                                    class="table table-bordered m-table table-striped table-scroll mat-table"
+                                    [dataSource]="committee.recommendations" matSort matSortActive="id"
+                                    matSortDirection="desc" matSortDisableClear>
+                                    <ng-container matColumnDef="recommendation_body">
+                                        <th *matHeaderCellDef>
+                                            {{ "COMMITTEES.RECOMMENDATIONS.SECTION_BODY_COLUMN" | translate }}
+                                        </th>
+                                        <td *matCellDef="let recommend" class="mat-column-vinCode">
+                                            {{ recommend.recommendation_body }}
+                                        </td>
+                                    </ng-container>
+
+                                    <tr mat-header-row *matHeaderRowDef="recommendationDisplayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: recommendationDisplayedColumns"></tr>
+                                </table>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <!-- end::Body -->
+                </m-portlet>
+                <!---     End Recommendations Section   		-->
+            </form>
+        </div>
+
+        <!-- end: BOTTOM -->
+    </ng-container>
+</m-portlet>

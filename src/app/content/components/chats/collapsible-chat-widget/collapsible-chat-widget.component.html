@@ -1,0 +1,90 @@
+<div id="chatBox" class="padding chat-widget"  [ngbCollapse]="!isCollapsed" >
+	<div class="row m-0 p-0 d-flex justify-content-center w-100">
+		<div class="col p-0">
+			<div class="box box-warning direct-chat direct-chat-warning">
+				<!---->
+				<div class="chat-box-heading d-flex justify-content-xl-between">
+					<div class="media d-flex flex-row"><img src="./assets/app/media/img/icons/meeting-icon.png"
+							alt="user" width="50" class="rounded-circle">
+						<div class="media-body pt-1 ml-4">
+							<div class="d-flex flex-column align-items-start justify-content-start mb-1">
+								<h6 class="mb-0">
+									{{isArabic? chatNameAr : (chatNameEn? chatNameEn : chatNameAr)}}
+								</h6>
+								<small class="small">
+									{{membersNumber}} {{'CONVERSATIONS.MEMBER' | translate}}</small>
+							</div>
+						</div>
+					</div>
+
+					<button type="button" id="closeChatBtn" class="btn btn-sm btn-icon-sm m-btn--icon-only  d-lg-block"
+						(click)="closeChatPopup()">
+						<i class="fa fa-times"></i>
+					</button>
+
+				</div>
+				<div #scrollMe class="px-4 py-5 chat-box bg-white" [scrollWindow]="false" infiniteScroll
+					[infiniteScrollDistance]="2" [infiniteScrollThrottle]="50" [infiniteScrollUpDistance]="2"
+					(scrolledUp)="onScrollUp()" [scrollTop]="scrollToBottom && scrollMe.scrollHeight">
+					<!-- Sender Message-->
+					<div *ngFor="let message of chatHistory; let i = index;">
+						<div class="chat-date" *ngIf="compareDate(message.message_time,chatHistory,i)">
+							{{message.message_time | date: 'MMM d, y'}}</div>
+						<div class="media chat-media mb-3" [ngClass]="{'ml-auto': message.is_send_by_current_user}">
+
+							<div width="50 " style="width: 50px;"
+								*ngIf="(i > 0 && message.sender_user_id == chatHistory[i-1].sender_user_id && !message.is_send_by_current_user)">
+							</div>
+							<img *ngIf="!message.is_send_by_current_user && message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+								[src]="environment.imagesBaseURL + message.image_url" alt="user" width="50"
+								class="rounded-circle"
+								onerror="this.src='https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg';">
+							<img *ngIf="!message.is_send_by_current_user && !message.image_url && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+								src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"
+								alt="user" width="50" class="rounded-circle">
+							<div class="media-body"
+								[ngClass]="{'ml-3': !message.is_send_by_current_user, 'current-user-media-body': message.is_send_by_current_user}">
+								<div class="chat-bubble py-2 px-3 mb-2"
+									[ngClass]="{'chat-bubble-default': !message.is_send_by_current_user,'chat-bubble-primary': message.is_send_by_current_user}">
+									<p *ngIf="!message.is_send_by_current_user && ( i == 0 || (message.sender_user_id != chatHistory[i-1].sender_user_id && i > 0))"
+										class="sender-name font-weight-500 mb-0">
+										{{message.username}}
+									</p>
+									<p class="text-small mb-0" [ngClass]="{'m': !message.is_send_by_current_user}">
+										{{message.message_text}}</p>
+								</div>
+								<p class="small  ">{{message.message_time | date: 'h:mm a'}}</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="box-footer">
+					<form name="messageForm" #messageForm="ngForm" (ngSubmit)="sendMessage(messageForm)" novalidate
+						class="bg-light">
+						<div class="input-group">
+							<input type="text" placeholder="{{'CONVERSATIONS.MESSAGE_LABEL' | translate}}"
+								aria-describedby="button-addon2" class="form-control" name="messageText"
+								#messageText="ngModel" [(ngModel)]="message">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-primary" [disabled]="submitMessage">
+									<i class="fa fa-paper-plane"></i>
+								</button>
+							</span>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- START:: FIXED CHAT BUTTON-->
+<button id="chatBtn" type="button" class="d-lg-blo ck d-n one btn btn-primary btn-chat-widget btn-lg-fixed"
+	(click)="toggleCollapse()" [attr.aria-expanded]="!isCollapsed" >
+	<div class="m-0 m-badge m-badge--accent w-10 h-10 pull-left ml-2" *ngIf="markUnread && !isCollapsed"></div>
+	<i class="fas fa-comments"></i>
+	{{isArabic? chatNameAr : (chatNameEn? chatNameEn: chatNameAr)}}
+</button>
+<!-- END:: FIXED CHAT BUTTON-->

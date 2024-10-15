@@ -1,0 +1,106 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="m-widget1 p-0">
+      <div class="m-widget1__item py-2" *ngFor="let item of chartData;let i = index">
+        <div class="row m-row--no-padding align-items-center">
+          <div class="col">
+            <h3 class="m-widget1__title">
+              {{item.name}}
+            </h3>
+          </div>
+          <div class="col m--align-right">
+            <span class="m-widget1__number"
+              [ngClass]="{'m--font-primary': i==0,'m--font-success':i ==1,'m--font-brand':i ==2,'m--font-danger':i == 3,'m--font-info-dark':i ==4}">
+              {{item.value}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="col-md-6 ngx-charts-advanced-pie-chart-col no-legend">
+    <ngx-charts-advanced-pie-chart [view]='viewArr' [results]="chartData"
+      [scheme]="{ domain: [ '#F5851F', '#34BFA3', '#3D5067', '#E64C3C' ,'#0246B3'] }">
+    </ngx-charts-advanced-pie-chart>
+
+    <!-- <img *ngIf="isNoMeetings" src="assets/demo/default/media/img/logo/empty-pie-chart.png" style=" margin-top: 40px;" alt="Logo"> -->
+    <div class="chart-no text-center">
+      <h2 class="m-0">{{total}}</h2>
+      <span class="font-sm">{{'DASHBOARD.TOTALMEETINGS'|translate}}</span>
+    </div>
+
+  </div>
+
+</div>
+<div class="d-flex justify-content-end" *ngIf="dashboardMeetings.meetings.length && listFlag">
+  <div class="mt-1" [routerLink]="['/meeting-dashboard']"><a
+      class="m--font-info m--font-bolder">{{'DASHBOARD.SHOW_ALL'|translate}}<i class="align-middle la"
+        [ngClass]="{'la-arrow-left ':isArabic,'la-arrow-right ': !isArabic}"></i></a>
+  </div>
+</div>
+<div class="bg-white--content m--border-radius-15 enz--relative mt-2 dash-meeting"
+  *ngFor="let meeting of dashboardMeetings.meetings;">
+  <div class="media">
+    <div class="mr-3 media-aside">
+      <div class="align-self-top">
+        <div class="month-header">{{isArabic?meeting.meeting_date_ar.month:meeting.meeting_date_en.month}}</div>
+        <div class=" m--font-boldest color-dark-grey">
+          {{isArabic?meeting.meeting_date_ar.date:meeting.meeting_date_en.date}}</div>
+        <div class="week-day-text"> {{isArabic?meeting.meeting_date_ar.day:meeting.meeting_date_en.day}} </div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-between  media-body py-2 px-3">
+      <div>
+        <div class="d-flex align-items-center">
+          <h5 class="m-0">{{isArabic? (meeting.meeting_title_ar? meeting.meeting_title_ar : meeting.meeting_title_en) :
+            (meeting.meeting_title_en? meeting.meeting_title_en : meeting.meeting_title_ar)}}</h5>
+          <span class="mx-2 m-badge m-badge--wide " [ngClass]="{'m-badge--success': meeting.meeting_status_id == meetingStatuses.STARTED ,
+											'm-badge--warning': meeting.meeting_status_id == meetingStatuses.DRAFT,
+											'm-badge--danger' : meeting.meeting_status_id == meetingStatuses.CANCELED,
+											'm-badge--accent': (meeting.meeting_status_id == meetingStatuses.PUBLISHED || meeting.meeting_status_id == meetingStatuses.AGENDAPUBLISHED),
+											'm-badge--brand': meeting.meeting_status_id == meetingStatuses.ENDED
+											}">{{isArabic?meeting.meeting_status_name_ar:meeting.meeting_status_name_en}}</span>
+        </div>
+
+        <div class="d-flex align-items-center mt-2">
+          <span class=" font-sm"> <i
+              class="la la-clock-o align-middle"></i><span>{{meeting.meeting_schedule_time_from_ar + ' - ' +
+              meeting.meeting_schedule_time_to_ar}}
+              ({{isArabic?meeting.time_zone.description_ar:meeting.time_zone.description_en}})</span></span>
+          <span class=" mx-2 font-sm mx-3"> <i class="la la-map-marker align-middle"></i><span>
+              {{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en) :
+              (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
+
+
+            </span></span>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        <button type="button" *ngIf="meeting.current_presentation_id"   [routerLink]="['/meetings/' + meeting.id +
+          '/meeting_agenda/' + meeting.meeting_agenda_id +
+          '/attachments/' + meeting.current_presentation_id]"
+          class="btn m-widget4__icon btn-white-primary-text m-btn m-btn--icon m-btn--icon-only m-btn--outline-2x"
+          matTooltip="{{'PRESENTATION.JOIN_PRESENTATION' | translate}}">
+          <!-- <img src="./assets/app/media/img/icons/microsoft_teams.png" alt="" width="20"> -->
+          <i class="fa fa-play"></i>
+        </button>
+
+        <div ngbDropdown class="d-inline-block" *ngIf="editFlag||((meeting.meeting_status_id != meetingStatuses.DRAFT) && viewFlag)">
+          <button class="btn btn-secondary m-btn--icon-only px-2" id="dropdownBasic1" ngbDropdownToggle><i
+              class="fa fa-ellipsis-v"></i></button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <li ngbDropdownItem  (click)="edit(meeting.id)" *ngIf="editFlag">
+              {{'BUTTON.EDIT' | translate}}
+            </li>
+            <li ngbDropdownItem (click)="view(meeting.id)" *ngIf="(meeting.meeting_status_id != meetingStatuses.DRAFT) && viewFlag">
+              {{'BUTTON.VIEW'| translate}}
+            </li>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

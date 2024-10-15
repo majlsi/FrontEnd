@@ -1,0 +1,858 @@
+<m-portlet [options]="{headLarge: false}">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text mt-4">
+				{{isArabic? (meeting.meeting_title_ar? meeting.meeting_title_ar : meeting.meeting_title_en) :
+				(meeting.meeting_title_en? meeting.meeting_title_en :
+				meeting.meeting_title_ar)}} - {{isArabic? meeting.committee_name_ar : meeting.committee_name_en }}
+
+			</h3>
+
+			<div class="m-portlet__head-text mt-2 mb-2">
+				<span class="d-block"
+					style="font-size: smaller;color: #6f727d;margin:0 10px;">{{meeting.meeting_code}}</span>
+				<span class="mx-2 mt-0 mb-3 m-badge m-badge--wide bigger" [ngClass]="{'m-badge--success': meeting.meeting_status_id == meetingStatuses.STARTED ,
+							'm-badge--warning': meeting.meeting_status_id == meetingStatuses.DRAFT,
+							'm-badge--danger' : meeting.meeting_status_id == meetingStatuses.CANCELED,
+							'm-badge--accent': (meeting.meeting_status_id == meetingStatuses.PUBLISHED || meeting.meeting_status_id == meetingStatuses.AGENDAPUBLISHED),
+							'm-badge--metal': meeting.meeting_status_id == meetingStatuses.ENDED
+							}">
+					{{isArabic? meeting.meeting_status_name_ar : (meeting.meeting_status_name_en?
+					meeting.meeting_status_name_en : meeting.meeting_status_name_ar)}}
+				</span>
+
+				<span class="m-alert__text text-right align-top mx-5" [hidden]="!meeting.can_change_meeting_status">
+					<span *ngIf="meeting.meeting_status_id == meetingStatuses.PUBLISHED">
+						<button type="submit" class="btn btn-light-grey" (click)="publishAgendaMeeting()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.PUBLISHED || submitted">
+							{{'MEETINGS.INFO.STATUS.PUBLISHAGENDAITEM' | translate}}
+							<i class='fa fa-spinner fa-spin' *ngIf="changeStatusLoad"></i>
+						</button>
+					</span>
+
+					<span *ngIf="meeting.meeting_status_id == meetingStatuses.AGENDAPUBLISHED">
+						<button type="submit" class="btn btn-light-grey" (click)="startMeeting()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.AGENDAPUBLISHED || submitted">
+							{{'MEETINGS.INFO.STATUS.STARTMEETING' | translate}}
+							<i class='fa fa-spinner fa-spin' *ngIf="changeStatusLoad"></i>
+						</button>
+					</span>
+
+					<span *ngIf="meeting.meeting_status_id == meetingStatuses.STARTED">
+						<button type="submit" class="btn btn-light-grey" (click)="endMeeting()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.STARTED || submitted">
+							{{'MEETINGS.INFO.STATUS.ENDMEETING' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+						</button>
+					</span>
+
+					<span *ngIf="meeting.meeting_status_id == meetingStatuses.ENDED && meetingRecommendationsFeature">
+						<button type="submit" class="btn btn-light-grey" (click)="sendRecommend()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.ENDED || submitted">
+							{{'MEETINGS.INFO.STATUS.RECOMMENDATION_SEND' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+						</button>
+					</span>
+
+					<span *ngIf="(meeting.meeting_status_id == meetingStatuses.RECOMMENDATION_SEND && meetingRecommendationsFeature) || meeting.meeting_status_id == meetingStatuses.ENDED">
+						<button type="submit" [hidden]="meeting.is_signature_sent" class="btn btn-light-grey"
+							(click)="sendEmail()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.RECOMMENDATION_SEND && meeting.meeting_status_id != meetingStatuses.ENDED || submitted">
+							{{'MEETINGS.INFO.STATUS.SENDEMAIL' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+						</button>
+
+						<button type="submit" class="btn btn-primary" (click)="viewMom()"
+							[hidden]="meeting.is_signature_sent"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.RECOMMENDATION_SEND && meeting.meeting_status_id != meetingStatuses.ENDED || submitted">
+							{{'MEETINGS.INFO.STATUS.VIEWMOMBEFORESEND' | translate}}
+							<i class='fa fa-spinner fa-spin ' *ngIf="changeStatusLoad"></i>
+						</button>
+
+						<button type="submit" class="btn btn-light-grey" (click)="sendSignEmail()"
+							[disabled]="meeting.meeting_status_id != meetingStatuses.RECOMMENDATION_SEND && meeting.meeting_status_id != meetingStatuses.ENDED || submitted"
+							[hidden]="!meeting.is_mom_sent || meeting.is_signature_sent">
+							<i class="fas fa-file-signature"
+								*ngIf="changeStatusLoad"></i>&nbsp;{{'MEETINGS.PARTICIPANTS.SIGNATURE.SEND_SIGNATURE_ALL'
+							| translate}}
+						</button>
+
+
+					</span>
+				</span>
+			</div>
+
+		</div>
+
+
+	</ng-container>
+
+	<ng-container mPortletHeadTools>
+		<div class="" data-code-html="true" data-code-js="false" data-code-preview="true">
+			<div class="m-demo__pr eview py-3">
+				<div *ngIf="meeting.can_attend && (meeting.meeting_status_id != meetingStatuses.ENDED)"
+					aria-label="Button group with nested dropdown " class="btn-group w-100" role="group">
+					<label class="m-radio-btn-group m-radio"
+						*ngFor="let status of meetingAttendanceStatuses; let i = index">
+						<input type="radio" (click)="changeAttendStatus(status.id)"
+							[disabled]="meeting.meeting_status_id == meetingStatuses.DRAFT || meeting.meeting_status_id == meetingStatuses.ENDED || meeting.meeting_status_id == meetingStatuses.CANCELED"
+							[value]='status.id' name="{{'attend_status'+i}}"
+							[(ngModel)]="meeting.participant_meeting_attendance_status_id">
+						<span class="m-btn btn btn-secondary">
+							<i class="la" [ngClass]="status.icon_class_name"></i>
+							{{isArabic? status.meeting_attendance_action_name_ar :
+							status.meeting_attendance_action_name_en}}
+						</span>
+					</label>
+				</div>
+
+				<span class="mx-2 mt-1 m-badge m-badge--metal m-badge--wide"
+					*ngIf="meeting.can_attend && (meeting.meeting_status_id == meetingStatuses.ENDED)">
+					{{meeting.participant_meeting_attendance_status_id? (isArabic?
+					meeting.participant_meeting_attendance_status_name_ar :
+					meeting.participant_meeting_attendance_status_name_en) :
+					('VIEW_MEETING.NO_ATTENDANCE_ACTION'|translate)}}
+				</span>
+			</div>
+		</div>
+	</ng-container>
+	<!-- end::Header -->
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+		<!-- start::invitation widget -->
+		<div class="bg-white--content m--border-radius-15 enz--relative">
+			<div class="media my-3">
+
+				<div class="mr-3 mt-3 media-aside">
+					<div class="align-self-top">
+						<div class="month-header">{{isArabic? meeting.meeting_month_ar :meeting.meeting_month}}</div>
+						<div class="grey-lg-text"> {{meeting.meeting_day}} </div>
+						<div class="week-day-text"> {{isArabic? meeting.meeting_day_name_ar : meeting.meeting_day_name}}
+						</div>
+					</div>
+				</div>
+				<div class="media-body pl-4">
+					<div class="d-flex justify-content-between pr-3 flex-wrap align-items-center m-0 mt-3">
+						<h3 class="col-12 col-lg-7 p-0 m-0 title-border-top-sm">
+							{{isArabic? (meeting.meeting_title_ar? meeting.meeting_title_ar : meeting.meeting_title_en)
+							: (meeting.meeting_title_en? meeting.meeting_title_en :
+							meeting.meeting_title_ar)}} - {{isArabic? meeting.committee_name_ar :
+							meeting.committee_name_en }}
+						</h3>
+						<div class="my-sm-4">
+							<button class="btn btn-light-grey title-action-btn mx-2" (click)="sign()"
+								*ngIf="meeting.can_sign">
+								<i class="fa fa-pen-nib"></i>
+								{{'VIEW_MEETING.SIGN_MOM' | translate}}
+							</button>
+							<button (click)="downloadMom()" class="btn btn-primary m-widget4__icon pull-left"
+								*ngIf="meeting.is_mom_sent && HasAccessToRight(rightEnum.canShowMom)">
+								<i class="fa fa-download"></i>
+								{{'VIEW_MEETING.DOWNLOAD_MOM' | translate}}
+							</button>
+
+						</div>
+					</div>
+					<p class="mt-0 mb-2">
+						{{meeting.meeting_schedule_from | date: 'EE, MMMM d, y, h:mm a'}} -
+						{{meeting.meeting_schedule_to| date: 'EE, MMMM d, y, h:mm a'}}
+						({{isArabic? meeting.time_zone?.description_ar : (meeting.time_zone?.description_en?
+						meeting.time_zone?.description_en : meeting.time_zone?.description_ar)}})
+					</p>
+					<p>
+						<span>
+							{{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en)
+							: (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
+						</span>
+						<a class="mt-0 mb-2 m-link map-link-sm" *ngIf="meeting.location_lat && meeting.location_long"
+							[href]="'https://www.google.com/maps/search/?api=1&query=' + meeting.location_lat + ',' + meeting.location_long"
+							target='_blank'>
+							<i class="fa fa-map-marker-alt"></i> {{'VIEW_MEETING.SHOW_ON_MAP'|translate}}
+						</a>
+					</p>
+					<p
+						*ngIf="meeting.meeting_status_id == meetingStatuses.STARTED && meeting.is_online_meeting_enable && meeting.online_meeting_type_id == onlineMeetingAppsEnum.zoom">
+						<img src="./assets/app/media/img/icons/zoom.png" alt="" width="20">
+						<a class="mt-0 mb-2 m-link map-link-sm" [href]="meeting.online_meeting_join_url"
+							target='_blank'>&nbsp; {{'MEETINGS.INFO.STATUS.JOIN_ZOOM_MEETING' | translate}}</a>
+					</p>
+					<p
+						*ngIf="meeting.meeting_status_id == meetingStatuses.STARTED && meeting.is_online_meeting_enable && meeting.online_meeting_type_id == onlineMeetingAppsEnum.microsoftTeams">
+						<img src="./assets/app/media/img/icons/microsoft_teams.png" alt="" width="20">
+						<a class="mt-0 mb-2 m-link map-link-sm" [href]="meeting.online_meeting_join_url"
+							target='_blank'>&nbsp; {{'MEETINGS.INFO.STATUS.JOIN_MICROSOFT_TEAMS_MEETING' |
+							translate}}</a>
+					</p>
+
+				</div>
+			</div>
+
+			<div [ngClass]="{ hideChildren : ele.class !== 'showChildren' }" #ele>
+				<div class="show-more-abs" (click)="ele.class = ele.class == 'showChildren' ? '' :  'showChildren'"
+					title="Second Group">
+					<span *ngIf="ele.class == 'showChildren'">{{'VIEW_MEETING.HIDE_MORE' | translate}}</span>
+					<span *ngIf="ele.class != 'showChildren'">{{'VIEW_MEETING.SHOW_MORE' | translate}}</span>
+				</div>
+				<p class="more mt-0" style="color: #aeaeae;">
+					{{isArabic? (meeting.meeting_description_ar? meeting.meeting_description_ar :
+					meeting.meeting_description_en) : (meeting.meeting_description_en? meeting.meeting_description_en :
+					meeting.meeting_description_ar)}}
+				</p>
+				<p class=" more mt-0" style="color: #aeaeae;">
+					{{isArabic? (meeting.meeting_note_ar? meeting.meeting_note_ar : meeting.meeting_note_en) :
+					(meeting.meeting_note_en? meeting.meeting_note_en :
+					meeting.meeting_note_ar)}}
+				</p>
+			</div>
+			<!-- end::invitation widget -->
+		</div>
+
+		<div class="card mt-4" *ngIf="HasAccessToRight(rightEnum.organizationsSection)">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.ORGANIZATIONS' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<ng-container mPortletHeadTools>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<div class="m-widget4">
+						<!--begin::Widget 14 Item-->
+						<div class="m-widget4__item d-flex" *ngFor="let organiser of meeting.meeting_organisers">
+							<div class="m-widget4__img m-widget4__img--pic">
+								<img *ngIf="organiser.image == null"
+									[src]="imagesBaseURL+organiser.organization.logo_image.image_url" alt="">
+								<img *ngIf="organiser.image != null" [src]="imagesBaseURL+organiser.image.image_url"
+									alt="">
+							</div>
+							<div class="m-widget4__info m-widget__member-name">
+								<span class="m-widget4__sub" *ngIf="organiser.user_title_ar || organiser.user_title_en">
+									{{isArabic? organiser.user_title_ar : organiser.user_title_en?
+									organiser.user_title_en : organiser.user_title_ar}}/
+								</span>
+
+								<span class="m-widget4__title">
+									{{isArabic? (organiser.name_ar? organiser.name_ar : organiser.name) :
+									(organiser.name? organiser.name : organiser.name_ar)}}
+								</span>
+								<i *ngIf="organiser.nickname_ar || organiser.nickname_en">
+									({{isArabic? organiser.nickname_ar : organiser.nickname_en? organiser.nickname_en :
+									organiser.nickname_ar}})
+
+								</i>
+
+								<br>
+								<span class="m-widget19_ _time">
+									{{isArabic? organiser.job_title_ar : organiser.job_title_en? organiser.job_title_en
+									: organiser.job_title_ar}}
+								</span>
+
+
+							</div>
+
+
+						</div>
+						<!--end::Widget 14 Item-->
+					</div>
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+
+		<div class="card mt-4" *ngIf="HasAccessToRight(rightEnum.participantsSection)">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.PARTICIPANTS' | translate}}
+						</h3>
+					</div>
+
+
+
+				</ng-container>
+				<ng-container mPortletHeadTools>
+					<m-participants-attendance [meetingId]="meetingId"
+						[canEditMeeting]="meeting.meeting_status_id != meetingStatuses.DRAFT && meeting.meeting_status_id != meetingStatuses.ENDED && meeting.meeting_status_id != meetingStatuses.CANCELED && meeting.can_change_attendance"
+						(tackAttendanceEmiter)="getMeeting()"></m-participants-attendance>
+				</ng-container>
+				<ng-container mPortletHeadTools>
+					<button [hidden]="!meeting.can_view_meeting_statistic" class="btn btn-lg btn-primary"
+						(click)="openParticipantsStatistics()">{{'VIEW_MEETING.MEETING_STATISTICS.ATTENDANCE_STATISTICS'
+						| translate}}</button>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<div class="m-widget4">
+						<!--begin::Widget 14 Item-->
+						<div class="m-widget4__item d-flex" *ngFor="let participant of participants">
+							<div class="m-widget4__img m-widget4__img--pic">
+								<img *ngIf="participant.image == null"
+									[src]="imagesBaseURL+participant.organization.logo_image.image_url" alt="">
+								<img *ngIf="participant.image != null" [src]="imagesBaseURL+participant.image.image_url"
+									alt="">
+							</div>
+							<div class="m-widget4__info m-widget__member-name">
+								<span class="m-widget4__sub"
+									*ngIf="participant.user_title_ar || participant.user_title_en">
+									{{isArabic? participant.user_title_ar : participant.user_title_en?
+									participant.user_title_en : participant.user_title_ar}}/
+								</span>
+
+								<span class="m-widget4__title">
+									{{!participant.isGuest ? (isArabic? (participant.name_ar??participant.name) :
+									(participant.name??participant.name_ar)) : (participant.full_name??participant.email)}}
+								</span>
+								<i *ngIf="participant.nickname_ar || participant.nickname_en">
+									({{isArabic? participant.nickname_ar : participant.nickname_en?
+									participant.nickname_en : participant.nickname_ar}})
+
+								</i>
+								<br>
+								<span class="m-widget19_ _time" *ngIf="!participant.isGuest">
+									{{isArabic? participant.job_title_ar : participant.job_title_en?
+									participant.job_title_en : participant.job_title_ar}}
+								</span>
+
+								<span class="m-widget19_ _time" *ngIf="participant.isGuest">
+									{{'MEETINGS.PARTICIPANTS.ADD.GUEST' | translate}}
+								</span>
+
+							</div>
+
+
+
+							<div class="m-widget4__ext" *ngIf="participant.meeting_attendance_status_id">
+								<span class="m-badge m-badge--wide" [ngClass]="participant.color_class_name">
+									{{isArabic? participant.meeting_attendance_status_name_ar :
+									participant.meeting_attendance_status_name_en}}
+								</span>
+							</div>
+							<div class="m-widget4__ext" *ngIf="!participant.meeting_attendance_status_id">
+								<span class="m-badge m-badge--wide" class="mt-1 m-badge m-badge--metal m-badge--wide">
+									{{'VIEW_MEETING.NO_ATTENDANCE_RESPONSE' | translate}}
+								</span>
+							</div>
+						</div>
+						<!--end::Widget 14 Item-->
+					</div>
+
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+
+		<div class="bg-white--content m--border-radius-15"
+			*ngIf="(!meeting.is_attachment_hidden) && HasAccessToRight(rightEnum.attachmentsSection)">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.ATTACHMENTS' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<ng-container mPortletHeadTools>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<!--begin::m-widget4-->
+					<div class="m-widget4 attachment-widget-row">
+						<div class="m-widget4__item" *ngFor="let attachment of meeting.meeting_attachments">
+							<div class="m-widget4__img m-widget4__img--icon">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'doc'"
+									src="./assets/app/media/img/files/doc.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'image'"
+									src="./assets/app/media/img/files/jpg.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'pdf'"
+									src="./assets/app/media/img/files/pdf.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'ppt'"
+									src="./assets/app/media/img/files/ppt.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'xls'"
+									src="./assets/app/media/img/files/xls.svg" alt="">
+								<img *ngIf="checkFileType(attachment.attachment_url) == 'video'"
+									src="./assets/app/media/img/files/mp4.svg" alt="mp4">
+							</div>
+							<div class="m-widget4__info">
+								<span class="m-widget4__text">
+									<a target="_blank" rel="noopener noreferrer"
+										href="{{imagesBaseURL+attachment.attachment_url}}">
+										{{attachment.attachment_name}}
+									</a>
+
+								</span>
+							</div>
+							<div class="m-widget4__ext">
+								<a (click)="downloadFile(imagesBaseURL+attachment.attachment_url,attachment.attachment_name)"
+									class="m-widget4__icon">
+									<i class="la la-download"></i>
+								</a>
+
+
+							</div>
+						</div>
+					</div>
+					<!--end::Widget 4-->
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+
+
+
+		<div class="bg-white--content m--border-radius-15"
+			*ngIf="(!meeting.is_agenda_hidden) && HasAccessToRight(rightEnum.agendasSection)">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.AGENDAS' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<ng-container mPortletHeadTools>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<!--begin::m-widget19-->
+					<div *ngFor="let agenda of meeting.meeting_agendas;let indx = index">
+						<div class="m-widget19 m-widget-agenda" *ngIf="agenda.can_access == true">
+							<div class="m-widget19__content">
+								<div class="m-widget19__header mb-4">
+									<div class="m-widget19__info p-0">
+										<h3 class="m-widget19__userna me">
+											{{isArabic? (agenda.agenda_title_ar? agenda.agenda_title_ar :
+											agenda.agenda_title_en) : agenda.agenda_title_en? agenda.agenda_title_en :
+											agenda.agenda_title_ar}}
+										</h3><br>
+										<div class="d-flex mt-2">
+											<span class="m-widget5__author">{{'VIEW_MEETING.PURPOSE' |
+												translate}}</span>
+											<span class="m-widget19_ _time px-2">
+												{{isArabic? agenda.agenda_purpose.purpose_name_ar :
+												agenda.agenda_purpose.purpose_name_en?
+												agenda.agenda_purpose.purpose_name_en :
+												agenda.agenda_purpose.purpose_name_ar}}
+											</span>
+										</div>
+									</div>
+									<div class="m-widget19__stats m-widget-agenda__countdown"
+										*ngIf="meeting.show_timer && agenda.extraTime > 0">
+										<div id="del-countdown">
+											<div id="clock" class="m-widget19__number m--font-brand">
+												<cd-timer class="hand d-flex m-countdown-danger"
+													[startTime]="agenda.extraTime" maxTimeUnit="minute"
+													(onStart)="viewExtra($event , agenda.is_presented_now)"
+													format="user">
+													[minutes] </cd-timer>
+												<!-- <p>{{cd.left}}</p> -->
+											</div>
+
+											<div id="units" class="m-widget19__comment">
+												<span class="m-countdown-danger">Min</span>
+											</div>
+										</div>
+
+									</div>
+									<span style="margin-top: 13px;
+										display: block;
+										font-size: 18px;
+										font-weight: 600;" *ngIf="meeting.show_timer && agenda.extraTime > 0"> + </span>
+									<div class="m-widget19__stats m-widget-agenda__countdown"
+										*ngIf="meeting.show_timer">
+										<div id="del-countdown">
+											<div id="clock" class="m-widget19__number m--font-brand">
+												<countdown class="d-flex"
+													[ngClass]="{'m-countdown-danger':isLessMinute[indx] === true,'m-countdown-success':isMore[indx] === true,'m-countdown-warning':isthreeMinute[indx] === true }"
+													#cd *ngIf="loaded" (event)="handleEvent($event,indx)"
+													[config]="{leftTime: agenda.timer ,  clock: ['m', 1000000000, (agenda.timer/60).toFixed(0).toString().length, 's', 60, 2, 'u', 10, 1], demand: !agenda.is_presented_now ,notify:[60,180]}">
+													$!m!
+												</countdown>
+
+												<!-- <p>{{cd.left}}</p> -->
+											</div>
+
+											<div id="units" class="m-widget19__comment">
+												<span
+													[ngClass]="{'m-countdown-danger':isLessMinute[indx] === true,'m-countdown-success':isMore[indx] === true,'m-countdown-warning':isthreeMinute[indx] === true }">Min</span>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="m-widget19__body mb-4">
+									<h5 class="m-widget5__author"> {{'VIEW_MEETING.DESCRIPTION' | translate}}</h5>
+									<span class="desc">
+										{{isArabic? (agenda.agenda_description_ar? agenda.agenda_description_ar :
+										agenda.agenda_description_en) : agenda.agenda_description_en?
+										agenda.agenda_description_en : agenda.agenda_description_ar}}
+									</span>
+
+								</div>
+
+								<div class="m-widget19__body mb-3">
+									<span class="title">
+										<span class="m-widget5__author"
+											*ngIf="agenda.presenters_agenda.length === 1">{{'VIEW_MEETING.PRESENTER' |
+											translate}}
+										</span>
+
+										<span class="m-widget5__author" *ngIf="agenda.presenters_agenda.length > 1">
+											{{'VIEW_MEETING.PRESENTERS' | translate}} </span>
+									</span>
+									<div class="m-widget4 d-flex flex-wrap">
+										<div class="m-widget4__item m-widget--has-bg"
+											*ngFor="let person of agenda.presenters_agenda; let j = index;">
+											<div class="m-widget4__img m-widget4__img--logo">
+												<img src="{{imagesBaseURL+person.image_url}}" alt="">
+											</div>
+											<div class="m-widget4__info m-widget__member-name">
+												<span class="m-widget4__sub"
+													*ngIf="person.user_title_ar || person.user_title_en">
+													{{isArabic? person.user_title_ar : person.user_title_en?
+													person.user_title_en : person.user_title_ar}}/
+												</span>
+												<span class="m-widget4__title">
+													{{isArabic? (person.name_ar? person.name_ar : person.name) :
+													(person.name? person.name : person.name_ar)}}
+												</span>
+												<i *ngIf="person.nickname_ar || person.nickname_en">
+													({{isArabic? person.nickname_ar : person.nickname_en?
+													person.nickname_en
+													: person.nickname_ar}})
+
+												</i>
+												<br>
+												<span class="m-widget19_ _time">
+													{{isArabic? person.job_title_ar : person.job_title_en?
+													person.job_title_en : person.job_title_ar}}
+												</span>
+
+
+											</div>
+										</div>
+
+									</div>
+
+								</div>
+
+
+								<!--------------- Start Attachments ----------------->
+								<div class="m-widget19__body  mt-4" *ngIf="agenda.agenda_attachments.length > 0">
+									<h5 class="m-widget5__author"> {{'VIEW_MEETING.ATTACHMENTS' | translate}}:</h5>
+
+									<div class="m-widget4  m-widget--has-bg">
+										<div class="m-widget4__item"
+											*ngFor="let agendaAttachment of agenda.agenda_attachments">
+											<div class="m-widget4__img m-widget4__img--icon">
+												<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'doc'"
+													src="./assets/app/media/img/files/doc.svg" alt="">
+												<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'image'"
+													src="./assets/app/media/img/files/jpg.svg" alt="">
+												<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'pdf'"
+													src="./assets/app/media/img/files/pdf.svg" alt="">
+												<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'ppt'"
+													src="./assets/app/media/img/files/ppt.svg" alt="">
+												<img *ngIf="checkFileType(agendaAttachment.attachment_url) == 'xls'"
+													src="./assets/app/media/img/files/xls.svg" alt="">
+											</div>
+											<div class="m-widget4__info">
+												<span class="m-widget4__text">
+
+													<a (click)="downloadFile(imagesBaseURL+agendaAttachment.attachment_url ,agendaAttachment.attachment_name)"
+														class="m-widget4__icon">
+														{{agendaAttachment.attachment_name}}
+													</a>
+												</span>
+											</div>
+											<div *ngIf="HasAccessToRight(rightEnum.presenting)"
+												class="m-widget4__ext d-flex">
+												<button (click)="presentAttachment(agenda.id,agendaAttachment.id)"
+													*ngIf="checkFileType(agendaAttachment.attachment_url) != 'video' && meeting.is_started && !agendaAttachment.presenter_id"
+													[disabled]="!agendaAttachment.can_present || agendaAttachment.presenter_id"
+													class="btn m-widget4__icon btn-white-primary-text">
+													<i id="spinner_{{agendaAttachment.id}}"
+														class='fa fa-spinner fa-spin' style="display: none;"></i>
+													<i id="{{agendaAttachment.id}}"
+														*ngIf="!agendaAttachment.presenter_id" class="fa fa-play"></i>
+													<i id="played_{{agendaAttachment.id}}"
+														*ngIf="agendaAttachment.presenter_id"
+														class="fa fa-pause-circle"></i>
+												</button>
+												<button (click)="joinPresentation(agenda.id,agendaAttachment.id)"
+													*ngIf="agendaAttachment.presenter_id && meeting.is_started"
+													class="btn m-widget4__icon btn-white-primary-text">
+													{{'PRESENTATION.JOIN_PRESENTATION' | translate}}
+												</button>
+												<button (click)=" endPresentAttachment(agenda.id,agendaAttachment.id)"
+													*ngIf="checkFileType(agendaAttachment.attachment_url) != 'video' && meeting.is_started"
+													[disabled]="!agendaAttachment.can_end"
+													class="btn m-widget4__icon btn-white-primary-text">
+													<i id="spinner_{{agendaAttachment.id}}"
+														class='fa fa-spinner fa-spin' style="display: none;"></i>
+													<i id="{{agendaAttachment.id}}" class="fa fa-stop-circle"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<!--------------- End Attachments ----------------->
+
+							</div>
+						</div>
+					</div>
+					<!--end::Widget 19 -->
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+
+		<!-- START:: Votes -->
+		<div class="card mt-4" *ngIf="HasAccessToRight(rightEnum.votersResultsSection)">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.VOTERS_RESULTS' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<div class="m-widget4">
+						<div class="meeting-info-accrodions vote-container">
+							<div *ngFor="let agenda of meeting.meetingAgendas">
+								<div *ngIf="agenda.can_access == true">
+									<ngb-accordion #acc="ngbAccordion" id="ngb-panel-0" [activeIds]="panelActiveIds"
+										(panelChange)="panelChanges($event)"
+										*ngFor="let vote of agenda?.agenda_votes; let y = index">
+										<ngb-panel id="ngb-panel-votes-{{vote.id}}">
+											<ng-template ngbPanelTitle>
+												<div class="text-overflow-hidden">
+													<span class="accordion-title-lg ml-2">{{isArabic? (vote.vote_subject_ar?
+														vote.vote_subject_ar :
+														vote.vote_subject_en) : vote.vote_subject_en? vote.vote_subject_en :
+														vote.vote_subject_ar}}</span>
+												</div>
+												<div>
+													<i class="fa fa-chevron-down"></i>
+												</div>
+	
+											</ng-template>
+	
+											<ng-template ngbPanelContent>
+												<div class="vote-items__cont mb-3">
+													<div class="vote-item vote-item__title px-0">
+														<div class="decision-status">
+															<span class="mx-0 mt-1 mb-3 m-badge m-badge--wide bigger"
+																[ngClass]="{'m-badge--success': vote.vote_result_status_id == voteResultStatusesEnum.approved,
+																				'm-badge--danger' : vote.vote_result_status_id == voteResultStatusesEnum.rejected,
+																				'm-badge--accent': vote.vote_result_status_id == voteResultStatusesEnum.balanced,
+																				'm-badge--metal': vote.vote_result_status_id == voteResultStatusesEnum.noVotesYet,
+																				'm-badge--warning': vote.vote_result_status_id == voteResultStatusesEnum.inProgress}">
+																{{isArabic? vote.vote_result_status_name_ar :
+																(vote.vote_result_status_name_en?
+																vote.vote_result_status_name_en :
+																vote.vote_result_status_name_ar)}}
+															</span>
+														</div>
+														<h6 class="">
+															{{isArabic? (vote.vote_subject_ar? vote.vote_subject_ar :
+															vote.vote_subject_en) :
+															vote.vote_subject_en? vote.vote_subject_en :
+															vote.vote_subject_ar}}
+														</h6>
+														<div class="row w-100" role="group"
+															*ngIf="meeting.can_attend && vote.is_voted_now && meeting.meeting_status_id == meetingStatuses.STARTED && HasAccessToRight(rightEnum.canVote)">
+															<div class="col-12 col-md-4"
+																*ngFor="let voteStatus of voteStatuses; let x = index">
+																<label class="m-vote-btn-group w-100">
+																	<!-- <input *ngIf="vote.vote_results.length  == 0" type="radio" class=""
+																		(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
+																		[value]='voteStatus.id' type="radio"
+																		name="{{'vote'+voteStatus.id+y}}"> -->
+	
+																	<input *ngIf="vote.vote_results.length > 0" type="radio"
+																		class=""
+																		(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
+																		[value]='voteStatus.id' type="radio"
+																		name="{{'vote'+voteStatus.id+y}}"
+																		[(ngModel)]="vote.vote_results[0].vote_status_id">
+	
+																	<div
+																		class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
+																		<h5>{{isArabic? voteStatus.vote_status_name_ar :
+																			voteStatus.vote_status_name_en}}
+																		</h5>
+																		<h5 *ngIf="voteStatus.id == voteStatusEnum.YES && (!vote.is_secret || meeting.can_add_vote)"
+																			class="m--font-boldest">
+																			{{vote.yes_votes}}</h5>
+																		<h5 *ngIf="voteStatus.id == voteStatusEnum.NO && (!vote.is_secret || meeting.can_add_vote)"
+																			class="m--font-boldest">
+																			{{vote.no_votes}}</h5>
+																		<h5 *ngIf="voteStatus.id == voteStatusEnum.MAYATTEND && (!vote.is_secret || meeting.can_add_vote)"
+																			class="m--font-boldest">{{vote.abstained_votes}}
+																		</h5>
+																	</div>
+																	<span></span>
+	
+																</label>
+															</div>
+														</div>
+														<m-vote-results [meetingId]="meetingId" [voteId]="vote.id"
+															*ngIf="(!vote.is_secret || meeting.can_add_vote) && (HasAccessToRight(rightEnum.canShowVoteResults))">
+														</m-vote-results>
+														<div class="d-flex justify-content-between my-3"
+															*ngIf="meeting.can_start_vote && meeting.meeting_status_id == meetingStatuses.STARTED && HasAccessToRight(rightEnum.canVote)">
+															<button *ngIf="!vote.is_voted_now"
+																class="btn btn-primary m-0 py-2 px-5"
+																(click)="startVote(vote.id)">{{'BUTTON.STARTVOTE'|translate}}</button>
+															<button *ngIf="vote.is_voted_now"
+																class="btn btn-primary m-0 py-2 px-5"
+																(click)="endVote(vote.id)">{{'BUTTON.ENDVOTE'|translate}}</button>
+														</div>
+	
+													</div>
+	
+												</div>
+											</ng-template>
+										</ngb-panel>
+									</ngb-accordion>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+		<!-- END:: Votes -->
+
+		<!-- START:: Approvals  -->
+		<div *ngIf="meeting.approvals != null && meeting.approvals.length > 0" class="bg-white--content m--border-radius-15">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'VIEW_MEETING.APPROVALS' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<!--begin::m-widget4-->
+					<div class="m-widget4 attachment-widget-row">
+						<div class="card w-100 p-3 mt-2 mb-3" *ngFor="let approval of meeting.approvals">
+							<div class="d-flex">
+								<h3 class="m-portlet__head-text py-1 flex-grow-1 font-size-20 font-weight-600 text-dark">
+									<i class="fas fa-check-circle font-size-20 mr-2 text-blue"></i>
+									{{approval.approval_title}}
+								</h3>
+							</div>
+							<div class="d-flex flex-column pt-2">
+								<div class="d-flex flex-wrap align-content-start">
+									<div class="d-inline bg-light py-2 px-4 font-weight-500 mr-3"
+										*ngFor="let item of approval?.members">
+										{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name
+										:item.name_ar)}}
+									</div>
+								</div>
+							</div>
+							<div *ngIf="CanSignApproval(approval.members)" class="mt-3">
+								<button [disable]="signBtnLoading" (click)="goToDigitalSignature(approval.id)"
+								class="btn btn-lg btn-primary px-4">
+									{{'VIEW_MEETING.SIGN.SIGN' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--end::Widget 4-->
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+		<!-- END:: Approvals -->
+
+		<!-- START:: Recommendations  -->
+		<div *ngIf="meeting.can_view_recommendation"
+			class="bg-white--content m--border-radius-15">
+			<m-portlet [options]="{headLarge: false}" class="mb-0">
+				<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+				<ng-container mPortletHeadTitle>
+					<div class="m-portlet__head-title py-3">
+						<h3 class="m-portlet__head-text py-1">
+							{{'MEETINGS.GENERAL.RECOMMENDATION' | translate}}
+						</h3>
+					</div>
+				</ng-container>
+				<!-- end::Header -->
+				<!-- start::Body (attribute: mPortletBody) -->
+				<ng-container mPortletBody>
+					<!--begin::m-widget4-->
+					<div *ngIf="meeting.meetingRecommendations != null && meeting.meetingRecommendations.length > 0">
+						<div class="m-widget19 m-widget-agenda mt-3" *ngFor="let recommend of meeting.meetingRecommendations">
+							<div class="d-flex">
+								<h3 class="m-widget19__userna me">
+									{{recommend.recommendation_text}}
+								</h3>
+							</div>
+							<div class="m-widget19__body mb-4">
+								<h5 class="m-widget5__author"> {{'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEPARTY' | translate}}:</h5>
+								<span class="desc">
+									{{recommend.responsible_party}}
+								</span>
+							</div>
+							<div class="m-widget19__body mb-4">
+								<h5 class="m-widget5__author"> {{'MEETINGS.RECOMMENDATION.ADD.RESPONSIBLEUSER' | translate}}:</h5>
+								<span class="desc">
+									{{recommend.responsible_user}}
+								</span>
+							</div>
+							<div class="m-widget19__body mb-4">
+								<h5 class="m-widget5__author"> {{'MEETINGS.RECOMMENDATION.ADD.RECOMMENDATIONDATE' | translate}}:</h5>
+								<span class="desc">
+									{{recommend.recommendation_date | date: 'EE, MMMM d, y, h:mm a'}}
+								</span>
+							</div>
+						</div>
+					</div>
+					<div *ngIf="meeting.meetingRecommendations == null || meeting.meetingRecommendations.length == 0"
+						class="d-flex justify-content-between pr-3 flex-wrap align-items-center m-0 mt-3">
+						<h3>{{ 'MEETINGS.RECOMMENDATION.VALIDATION.NO_RECOMMENDATION' | translate }}</h3>
+					</div>
+					<!--end::Widget 4-->
+				</ng-container>
+				<!-- end::Body -->
+			</m-portlet>
+		</div>
+		<!-- END:: Recommendations -->
+
+		<!-- START:: FIXED CHAT WIDGET -->
+		<div class="d-none d-lg-flex">
+			<m-fixed-chat-router-button [meetingId]="meetingId" [isArabic]="isArabic"></m-fixed-chat-router-button>
+		</div>
+		<!-- END:: FIXED CHAT WIDGET -->
+
+		<!-- end: BOTTOM -->
+	</ng-container>
+	<!-- end::Body -->
+</m-portlet>

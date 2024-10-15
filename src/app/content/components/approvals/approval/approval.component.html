@@ -1,0 +1,120 @@
+<form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed px-4" novalidate
+	#approveDocForm="ngForm" (ngSubmit)="save(approveDocForm)" mScrollInvalid [form]="approveDocForm">
+
+
+
+	<div class="form-group m-form__group row pt-2">
+		<div class="col-lg-12 mb-3">
+			<label>{{'APPROVAL.ADD.APPROVAL_TITLE' | translate}}
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<input type="text" class="form-control form-control-solid" id="doc_subject" name="subject"
+				placeholder="{{'APPROVAL.ADD.APPROVAL_TITLE' | translate}}" #subject="ngModel"
+				[(ngModel)]="approval.approval_title" required />
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(approveDocForm,'subject', 'required')">
+				{{'APPROVAL.VALIDATION.SUBJECT' | translate}}
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group m-form__group row">
+		<div class="col-lg-12 mb-3">
+			<label>{{'APPROVAL.ADD.UPLOAD_FILE' | translate}}
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="input-group ">
+				<label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+					[ngClass]="{'not-allowed': approval.status_id && approvalStatuses.new != approval.status_id}"
+					for="thefile">
+					<input type="file" class="d-none" id="thefile"
+						accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf"
+						(change)="fileChangeEvent($event)" #file="ngModel" name="file" (ngModel)="approvalUrl"
+						[required]="!approvalId"
+						[disabled]="approval.status_id && approvalStatuses.new != approval.status_id" />
+
+					<span id="fileName" *ngIf="!approvalUrl">{{ 'APPROVAL.ADD.NO_CHOSEN_FILE' | translate
+						}}</span>
+					<span id="fileName" *ngIf="approvalUrl">{{approvalUrl}}</span>
+					<span class="btn btn-default px-0 mx-0"
+						[ngClass]="{'not-allowed': approval.status_id && approvalStatuses.new != approval.status_id}">{{'APPROVAL.ADD.BROWSE'
+						| translate}}</span>
+				</label>
+			</div>
+			<span class="form-text text-muted">{{ 'APPROVAL.ADD.UPLOAD_GUIDE' | translate }}</span>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(approveDocForm,'file', 'required')">
+				{{'APPROVAL.VALIDATION.UPLOAD_FILE' | translate}}
+			</div>
+			<div class="error text-danger form-control-feedback" *ngIf="fileTypeError">
+				{{'APPROVAL.VALIDATION.UPLOAD_FILE_TYPE' | translate}}
+			</div>
+			<div class="error text-danger form-control-feedback" *ngIf="approvalSizeError">
+				{{approvalSizeError}}
+			</div>
+		</div>
+	</div>
+
+
+	<div class="form-group m-form__group row">
+		<div *ngIf="!committeeDisable" class="col-12  col-lg-6">
+			<label>{{'APPROVAL.ADD.COMMITTEES' | translate}}
+			</label>
+			<div class="input-group">
+				<ng-select class="bg-light w-100" name="committee" #committee="ngModel" (clear)="getAllCommitteeUsers()"
+					placeholder="{{'APPROVAL.ADD.SELECT_COMMITTEE' | translate}}" [(ngModel)]="approval.committee_id"
+					(change)="getCommitteeUsers(true)">
+					<ng-option *ngFor="let committee of committees" [value]="committee.id" [hidden]="true">
+						{{isArabic? committee.committee_name_ar : (committee.committee_name_en?
+						committee.committee_name_en : committee.committee_name_ar)}}
+					</ng-option>
+				</ng-select>
+			</div>
+			<!--<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(approveDocForm,'committee', 'required')">
+				{{'APPROVAL.VALIDATION.COMMITTEE' | translate}}
+			</div> -->
+		</div>
+
+		<div  [ngClass]="!committeeDisable ? 'col-lg-6': ''"  class="col-12 ">
+			<label>{{'APPROVAL.ADD.APPROVAL_MEMBERS' | translate}}
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="input-group">
+				<ng-select class="bg-light w-100" [disabled]="committeeUsers.length == 0" [multiple]="true"
+					[hideSelected]="true" required name="users" #users="ngModel"
+					placeholder="{{'APPROVAL.ADD.SELECT_ASSIGN_TO' | translate}}" [(ngModel)]="approval.members">
+					<ng-option *ngFor="let item of committeeUsers" [value]="item.id">
+						{{isArabic? (item.name_ar? item.name_ar : item.name) : (item.name? item.name :
+						item.name_ar)}}
+					</ng-option>
+				</ng-select>
+			</div>
+			<div class="error text-danger form-control-feedback"
+				[hidden]="!hasError(approveDocForm,'users', 'required') || !edit">
+				{{'APPROVAL.VALIDATION.ASSIGN_TO' | translate}}
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<div class="m-form__actions m-form__actions--solid">
+		<div class="row pb-4 mb-2">
+			<div class="d-flex justify-content-start">
+
+				<button type="submit" class="btn btn-primary mx-3 pl-2" [disabled]="submitted">
+					{{'BUTTON.SAVE' | translate}} <i class="fa fa-chevron-left ml-1" aria-hidden="true"></i>
+					<i class='fa fa-spinner fa-spin' *ngIf="submitted"></i>
+				</button>
+
+				<button type="reset" (click)="back()" class="btn btn-secondary">
+					{{'BUTTON.CANCEL' | translate}}
+				</button>
+
+			</div>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,46 @@
+#m_login ::-webkit-input-placeholder {
+   color: #999 !important;
+ }
+ #m_login :-moz-placeholder {
+   /* Firefox 18- */
+   color: #999 !important;
+ }
+ #m_login ::-moz-placeholder {
+   /* Firefox 19+ */
+   color: #999 !important;
+ }
+ #m_login :-ms-input-placeholder {
+   color: #999 !important;
+ }
+ .mjlsi--signup .m-form label {
+   color: #172b4d;
+ }
+ .m-form .m-form__actions {
+   border-top: 0px solid #ebedf2;
+ }
+ .m-form .m-portlet.m-portlet--rounded-force {
+   border: 1px solid #cac6a1;
+   background: rgba(247, 247, 241, 0.5);
+ }
+ /* TimePicker */
+
+ ngb-timepicker .btn.btn-link {
+    color: #333;
+}
+.input-group>.input-group-append:not(:last-child)>.btn {
+  color: #333;
+  background-color: #ebedf2;
+  border-color: #ebedf2;
+}
+ngx-mat-drp .mat-form-field-flex {
+  color: #333;
+  background: #fff;
+  border: 1px solid #ccc!important;
+}
+
+
+.m-map-form input{
+  border: 2px solid #ebedf2;
+  background: #fdfdfd;
+}
+/* ----------- search on map ----------*/

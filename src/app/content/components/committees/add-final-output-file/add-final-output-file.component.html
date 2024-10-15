@@ -1,0 +1,74 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{'COMMITTEES.FINAL_OUTPUT.TITLE' | translate}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form name="finalOutputForm" #finalOutputForm="ngForm" (ngSubmit)="save(finalOutputForm);" novalidate>
+        <div class="form-group m-form__group row">
+            <div class="col">
+                <label class="col-form-label">{{ "COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT" | translate }}
+                    &nbsp;<span class="MandatoryAsterisk"></span> </label>
+            </div>
+            <div class="input-group mr-3 ml-3">
+                <label class="uuploadBtnWrap form-control py-2 d-flex justify-content-between align-items-center"
+                    for="finalOutput">
+                    <input type="file" class="d-none" id="finalOutput"
+                        accept=".jpeg, .jpg, .png, .doc, .docx, .odt, .xls, .xlsx, .ppt, .pptx, .pdf,.txt"
+                        (change)="fileChangeEvent($event)" #governanceRegulation="ngModel" name="governanceRegulation"
+                        (ngModel)="attachmentUrl" required />
+                    <span id="finalOutput" *ngIf="!attachmentUrl">
+                        {{ 'REVIEWS_ROOM.ADD.NO_CHOSEN_FILE' | translate }}
+                    </span>
+                    <span id="finalOutput" *ngIf="attachmentUrl">{{attachmentUrl}}</span>
+                    <span class="btn btn-default px-0 mx-0">
+                        {{'REVIEWS_ROOM.ADD.BROWSE' | translate}}
+                    </span>
+                </label>
+            </div>
+            <div class="input-group mr-3 ml-3">
+                <div class="error text-danger form-control-feedback" *ngIf="attachmentTypeError">
+                    {{'AUTH.VALIDATION.FILE_TYPE' | translate :{name: 'COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT' |
+                    translate } }}
+                </div>
+                <div class="error text-danger form-control-feedback" *ngIf="attachmentSizeError">
+                    {{attachmentSizeError}}
+                </div>
+                <div class="error text-danger form-control-feedback"
+                    [hidden]="!hasError(finalOutputForm,'governanceRegulation', 'required')">
+                    {{ 'AUTH.VALIDATION.REQUIRED' | translate:{ name: 'COMMITTEES.FINAL_OUTPUT.FINAL_OUTPUT_DOCUMENT' |
+                    translate
+                    } }}
+                </div>
+            </div>
+            <div class="col-12">
+                <label>{{ "FILES.DATE" | translate }}</label>
+                <div class="input-group">
+                    <input class="form-control form-control-solid" placeholder="yyyy-mm-dd" name="finalOutputDate"
+                        [(ngModel)]="finalOutputDateModel" ngbDatepicker #finalOutputDate="ngbDatepicker" [readonly]="true" />
+                    <div class="input-group-append position-relative">
+                        <span class="clear-input" (click)="clearDate()">
+                            <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                        </span>
+                        <button class="btn btn-outline-secondary calendar" type="button"
+                            (click)="finalOutputDate.toggle();$event.stopPropagation()" (dateSelect)="finalOutputDate.close()"
+                            (document:click)="decideClosure($event, finalOutputDate)">
+                            <i class="fa fa-calendar-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" mat-button type="submit" cdkFocusInitial>
+                {{'BUTTON.SAVE' | translate}}
+                <i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="dismiss()">
+                {{'BUTTON.CANCEL' | translate}}
+            </button>
+        </div>
+    </form>
+</div>

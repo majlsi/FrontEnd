@@ -1,0 +1,192 @@
+<!--Begin::Section-->
+<m-portlet [options]="{ headLarge: false }">
+	<!-- start::Header (attributtes: mPortletHeadTitle|mPortletHeadTools) -->
+	<ng-container mPortletHeadTitle>
+		<div class="m-portlet__head-title">
+			<h3 class="m-portlet__head-text">
+				{{committeeId? (isArabic? committee.committee_name_ar : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)) + ': ': ''}} {{ statisticTypeId ? ("TASKS_STATISTICS.TASKS_STATISTICS_" + statisticTypeId  | translate) : ("TASKS_STATISTICS.TASKS_STATISTICS"  | translate) }}
+			</h3>
+        </div>
+	</ng-container>
+	<ng-container mPortletHeadTools> 
+        <button type="button" *ngIf="!committeeId" class="btn btn-secondary btn-link" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+			<i class="fa fa-filter"></i>
+			{{'BUTTON.SHOWFILTER' | translate}}
+        </button>
+        <button (click)="downloadTasksStatistics()" class="btn btn-primary m-widget4__icon pull-left mb-4">
+            <i class="fa fa-download"></i>
+            {{'TASKS_MANAGEMENT.DOWNLOAD_COMMITTEE_TASKS' | translate}}
+        </button>
+        <a (click)="back()">
+            <span class="px-2">{{'TASKS_MANAGEMENT.DETAILS.BACK_TO_TASKS_LIST'|translate}}</span>
+            <i class="fa fa-arrow-left"></i>
+        </a>
+    </ng-container>
+	<!-- end::Header -->
+
+	<!-- start::Body (attribute: mPortletBody) -->
+	<ng-container mPortletBody>
+        <div class="bg-white--content m--padding-15">
+            <!----START:: Filter ---->
+			<div class="row" id="collapseExample" [ngbCollapse]="!isCollapsed">
+				<div class="m-form col-md-12 mb-4">
+					<form class="" novalidate #taskForm="ngForm" (ngSubmit)="getList()">
+
+						<table class="table table-filter table-bordered table-hover">
+							<thead class="">
+								<tr>
+									<th>{{'MEETINGS.TASK.LIST.SERIAL_NUMBER' | translate}}</th>
+									<th>{{'MEETINGS.TASK.LIST.COMMITTEE' | translate}}</th>
+									<th>{{'USERS.LIST.OPERATIONS' | translate}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>
+										<input type="text" placeholder="{{'MEETINGS.TASK.LIST.SERIAL_NUMBER' | translate}}"
+											class="form-control form-filter input-sm" id="taskCode"
+											name="taskCode" [(ngModel)]="filterObject.SearchObject.serial_number"
+											#taskCode="ngModel">
+									</td>
+									<td>
+										<ng-select class="" [searchable]="true" [(ngModel)]="filterObject.SearchObject.committee_id" name="committeename" #committeename="ngModel"
+											placeholder="{{'COMMITTEES.LIST.COMMITTEENAME' | translate}}">
+                                            <ng-option *ngFor="let committee of committees" [value]="committee.id">
+                                                {{isArabic? committee.committee_name_ar : (committee.committee_name_en? committee.committee_name_en : committee.committee_name_ar)}}
+                                            </ng-option>
+                                        </ng-select>
+									</td>
+									<td>
+										<div class="margin-bottom-5 in-b  serchbtnMar">
+											<button type="submit" class="btn btn-primary m-btn--icon mr-2"> <i class="la la-search"></i>{{'BUTTON.SEARCH' |translate}}</button>
+											<button type="button" class="btn btn-secondary m-btn--icon" (click)=resetSearch()> <i class="la la-close"></i>{{'BUTTON.RESET' |translate}}</button>
+
+										</div>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+			<!----START:: Table ---->
+			<div class="row">
+				<div class="col-12">
+					<div class=" mat-table__wrap per">
+						<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc"
+							matSortDisableClear class="table table-hover m-table  table-scroll clickable mat-table
+							table-grey-header">
+
+							<!-- task_title Column -->
+							<ng-container  [matColumnDef]="isArabic? 'description' : 'description'">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header> {{'MEETINGS.TASK.LIST.DESCRIPTION' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<a  *ngIf="canViewDetails" [routerLink]="['/tasks-management/task-details',element.id]">
+										{{element.description}}
+									</a>
+
+									<a  *ngIf="!canViewDetails">
+										{{element.description}}
+									</a>
+
+								</td>
+							</ng-container>
+
+							<!-- Assignee Column -->
+							<ng-container matColumnDef="assigned_to">
+								<th mat-header-cell *matHeaderCellDef> {{'MEETINGS.TASK.LIST.ASSIGNEE'| translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<div class="m-widget4__info m-widget__member-name">
+										<span class="m-widget4__sub" *ngIf="element.assignee.user_title_ar || element.assignee.user_title_en">
+											{{isArabic? element.assignee.user_title_ar : element.assignee.user_title_en? element.assignee.user_title_en : element.assignee.user_title_ar}}/
+										</span>
+
+										<span class="m-widget4__title">
+											{{isArabic? (element.assignee.name_ar? element.assignee.name_ar : element.assignee.name) : (element.assignee.name? element.assignee.name : element.assignee.name_ar)}}
+										</span>
+										<br>
+										<span class="m-widget19_ _time">
+											{{isArabic? element.assignee.job_title_ar : element.assignee.job_title_en? element.assignee.job_title_en : element.assignee.job_title_ar}}
+										</span>
+									</div>
+
+								</td>
+							</ng-container>
+
+							<!-- task_committe Column -->
+							<ng-container  [matColumnDef]="isArabic? 'committee_name_ar' : 'committee_name_en'">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.TASK.LIST.COMMITTEE' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<a  *ngIf="canViewCommitteeDetails" [routerLink]="['/tasks-management/committee-details',element.committee_id]">
+										{{isArabic? element.committee_name_ar : (element.committee_name_en? element.committee_name_en : element.committee_name_ar)}}
+									</a>
+									<a  *ngIf="!canViewCommitteeDetails">
+										{{isArabic? element.committee_name_ar : (element.committee_name_en? element.committee_name_en : element.committee_name_ar)}}
+									</a>
+									 </td>
+							</ng-container>
+
+							<ng-container matColumnDef="serial_number">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.TASK.LIST.SERIAL_NUMBER' | translate}} </th>
+								<td mat-cell *matCellDef="let element"> {{element.serial_number}} </td>
+							</ng-container>
+
+							<!-- task_from Column -->
+							<ng-container matColumnDef="start_date">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>{{'MEETINGS.TASK.LIST.SCHEDULE' | translate}} </th>
+								<td mat-cell *matCellDef="let element"> {{element.start_date | date: 'MMMM d, y'}} </td>
+							</ng-container>
+
+							<!-- task_status Column -->
+							<ng-container matColumnDef="task_status_id">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header> 	{{'MEETINGS.TASK.LIST.STATUS'| translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<span class="m-badge m-badge--status"
+									[ngClass]="{'m-badge--success': element.task_status_id == taskStatusEnum.DONE,
+												'm-badge--accent': element.task_status_id == taskStatusEnum.INPROGRESS,
+												'm-badge--metal': element.task_status_id == taskStatusEnum.NEW}">
+									{{isArabic? element.task_status_name_ar : (element.task_status_name_en? element.task_status_name_en : element.task_status_name_ar)}}
+									 </span>
+									</td>
+							</ng-container>
+
+							<!-- actions Column -->
+							<ng-container matColumnDef="actions">
+								<th mat-header-cell *matHeaderCellDef> 	{{'GENERAL.ACTIONS' | translate}} </th>
+								<td mat-cell *matCellDef="let element">
+									<button type="button" *ngIf="editFlag && element.task_status_id == taskStatusEnum.NEW"  (click)="edit(element)"
+										class="btn btn-black m-btn m-btn--icon m-btn--outline-2x p-0 text-center"
+										matTooltip="{{'BUTTON.EDIT' | translate}}">
+										<i class="flaticon-edit-1"></i>
+									</button>
+
+									<button type="button" *ngIf="deleteFlag" (click)="delete(element.id)"
+										class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x p-0 text-center"
+										matTooltip="{{'BUTTON.DELETE' | translate}}">
+										<i class="flaticon-delete-2"></i>
+									</button>
+								</td>
+							</ng-container>
+
+							<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+							<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+						</table>
+
+						<div class="mat-table__message" *ngIf="dataSourceLength">
+							{{'GENERAL.NORECORDSFOUND' | translate}}
+						</div>
+					</div>
+				</div>
+
+				<!-- start: BOTTOM -->
+				<div class="mat-table__bottom col-12">
+					<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+					<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+					</mat-paginator>
+				</div>
+			</div>
+            <!----END:: Table ---->
+        </div>
+    </ng-container>
+</m-portlet>

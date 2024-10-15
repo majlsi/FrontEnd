@@ -1,0 +1,134 @@
+<!-- <li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width" m-dropdown-toggle="click" m-dropdown-persistent="true"> -->
+
+<a href="javascript:;" class="m-nav__link m-dropdown__toggle " id="m_topbar_notification_icon" (click)="updateNewNotificationsFlag();">
+	<span class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-medium m-badge--danger"
+		[ngClass]="{'animateBlink':newNotifications== true}" *ngIf="newNotifications== true && newNotificationCount > 0"></span>
+	<span class="m-nav__link-icon" [ngClass]="{'animateShake':newNotifications== true}">
+		<span class="m-nav__link-icon-wrapper enz-notification-icon">
+			<i class="fas fa-bell"></i>
+		</span>
+	</span>
+</a>
+<div class="m-dropdown__wrapper enz-notification-dropdown">
+	<span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
+	<div class="m-dropdown__inner">
+		<div class="m-dropdown__header m--align-center">
+			<span class="m-dropdown__header-title p-0">
+				{{newNotificationCount}} {{'GENERAL.NEW'|translate}}
+			</span>
+		</div>
+		<div class="m-dropdown__body p-0">
+			<div class="m-dropdown__content">
+				<ul class="enz-notifications-list p-0">
+					<!-- Start notification repeate -->
+					<!-- seperator -->
+					<li class="enz-seperator-border-bottom pt-2" *ngIf="notificationList.new_notifications && notificationList.new_notifications.length > 0">
+						<div class="row">
+							<div class="col">
+								<h4 class="enz-notifications-title col-12">{{'NOTIFICATIONS.NEW'|translate}}</h4>
+							</div>
+							<div class="col ml-auto text-right">
+								<a (click)="markAllAsRead()" class="m-widget4__icon col-md-12" style="margin-right: 0;">
+									{{'NOTIFICATIONS.MARK_AS_READ' | translate}}
+								</a>	
+							</div>
+						</div>
+					</li>
+					<!-- seperator -->
+					<li class="enz-notifications-item" [ngClass]="{'enz-notification-new': true}" *ngFor="let notification of notificationList.new_notifications" (click)="openNotification(notification)">
+						<span class="enz-notifications-icon">
+							<i [ngClass]="notification.notification_icon"></i>
+						</span>
+						<div class="px-2">
+							<h6 class="enz-notifications-title m-0">{{isArabic? notification.notification_title_ar : notification.notification_title_en}}</h6>
+							<p class="enz-notifications-text m-0">{{isArabic? notification.notification_body_ar : notification.notification_body_en}}</p>
+							<p class="enz-notifications-date m-0">
+								{{isArabic? notification.time_string_ar : notification.time_string_en}}
+							</p>
+						</div>
+					<!-- </li>
+					<li class="enz-notifications-item" [ngClass]="{'enz-notification-new': true}">
+						<span class="enz-notifications-icon">
+							<i class="fas fa-bell font-awesome-icon"></i>
+						</span>
+						<div>
+							<h6 class="enz-notifications-title">This is a meeting Title</h6>
+							<p class="enz-notifications-text">Annotation has been updated to document "document name"
+								into review room by Ghada</p>
+							<p class="enz-notifications-date">
+								منذ 2 ساعة و 12 دقيقة
+							</p>
+						</div>
+					</li> -->
+					<!-- seperator -->
+					<li class="enz-seperator-border-bottom pt-2" *ngIf="notificationList.old_notifications && notificationList.old_notifications.length > 0">
+						<div>
+							<h4 class="enz-notifications-title col-12">{{'NOTIFICATIONS.EARLIER'|translate}}</h4>
+						</div>
+					</li>
+					<!-- seperator -->
+					<li class="enz-notifications-item " *ngFor="let notification of notificationList.old_notifications" (click)="openNotification(notification)">
+						<span class="enz-notifications-icon">
+							<i [ngClass]="notification.notification_icon"></i>
+						</span>
+						<div>
+							<h6 class="enz-notifications-title">{{isArabic? notification.notification_title_ar : notification.notification_title_en}}</h6>
+							<p class="enz-notifications-text">{{isArabic? notification.notification_body_ar : notification.notification_body_en}}</p>
+							<p class="enz-notifications-date">
+								{{isArabic? notification.time_string_ar : notification.time_string_en}}
+							</p>
+						</div>
+					</li>
+					<!-- <li class="enz-notifications-item ">
+						<span class="enz-notifications-icon">
+							<i class="fa fa-tasks font-awesome-icon"></i>
+						</span>
+						<div>
+							<h6 class="enz-notifications-title">This is a meeting Title</h6>
+							<p class="enz-notifications-text">Annotation has been updated to document "document name"
+								into review room by Ghada</p>
+							<p class="enz-notifications-date">
+								منذ 3 يوم
+							</p>
+						</div>
+					</li> -->
+					<!-- <li class="enz-notifications-item ">
+						<span class="enz-notifications-icon">
+							<i class="fas fa-comment-alt font-awesome-icon"></i>
+						</span>
+						<div>
+							<h6 class="enz-notifications-title">This is a meeting Title</h6>
+							<p class="enz-notifications-text">Annotation has been updated to document "document name"
+								into review room by Ghada</p>
+							<p class="enz-notifications-date">
+								منذ 4 يوم
+							</p>
+						</div>
+					</li> -->
+					<!-- <li class="enz-notifications-item ">
+						<span class="enz-notifications-icon">
+							<i class="fas fas fa-comments font-awesome-icon"></i>
+						</span>
+						<div>
+							<h6 class="enz-notifications-title">This is a meeting Title</h6>
+							<p class="enz-notifications-text">Annotation has been updated to document "document name"
+								into review room by Ghada</p>
+							<p class="enz-notifications-date">
+								منذ 4 يوم
+							</p>
+						</div>
+					</li> -->
+					<!-- End notification repeate -->
+					<!-- see all notifications -->
+					<li class="enz-notifications-item enz-notification-new" (click)="redirectToNotificationList()">
+						<p class="enz-notifications-text enz-primary-color text-center m-0 py-1 w-100">
+							{{'GENERAL.ALL_NOTIFICATIONS'|translate}}
+						</p>
+					</li>
+					<!-- see all notifications -->
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- </li> -->

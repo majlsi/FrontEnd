@@ -1,0 +1,33 @@
+.mat-column-orgIcon {
+    flex: 0 0 50px;
+}
+
+.table.table-striped {
+    tbody {
+        tr:nth-of-type(odd) {
+            background-color: #fbfbf8;
+        }
+        tr:hover {
+            background-color: #efefe9;
+        }
+        td {
+            line-height: 35px;
+        }
+    }
+
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #ebedf2;
+}
+
+
+.table-filter{
+    border: 0 solid #f4f5f8;
+    border-radius: 19px;
+    padding: 10px;
+    margin-bottom: 0;
+    .margin-bottom-5.in-b.serchbtnMar {
+        margin: 5px 0;
+    }
+}

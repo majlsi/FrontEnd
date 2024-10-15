@@ -1,0 +1,139 @@
+<div class="main-portlet">
+	<div class="m-subheader ">
+		<div class="d-flex flex-lg-wrap flex-wrap-reverse  align-items-center justify-content-between">
+			<div class="mr-auto">
+				<h3 class="m-portlet__head-text">{{'TASKS_MANAGEMENT.DETAILS.TASK_DETAILS' | translate}}
+					<span style="font-size: smaller;color: #6f727d;margin:0 10px;">  {{task.serial_number}}</span>
+				</h3>
+			</div>
+			<div class="align-items-center text-left">
+				<a (click)="back()">
+					<span class="px-2">{{'TASKS_MANAGEMENT.DETAILS.BACK_TO_TASKS_LIST'|translate}}</span>
+					<i class="fa fa-arrow-left"></i>
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- end::Header -->
+
+
+	<div class="px-4">
+		<!-- START:: MOM widget -->
+		<div class="bg-white--content m--border-radius-4 enz--relative kt-widget kt-widget--3 bg-white m--padding-15">
+
+			<div class="mb-4">
+				<span class="d-block dimmed-bold-subtitle pt-3">
+					{{'TASKS_MANAGEMENT.DETAILS.CREATED'|translate}} {{task.start_date |date : 'd/M/y'}} {{'TASKS_MANAGEMENT.DETAILS.BY'|translate}} {{isArabic? task?.created_by?.user_title_ar : task?.created_by?.user_title_en? task?.created_by?.user_title_en : task?.created_by?.user_title_ar}} {{isArabic? (task?.created_by?.name_ar? task?.created_by?.name_ar : task?.created_by?.name) : (task?.created_by?.name? task?.created_by?.name : task?.created_by?.name_ar)}}
+				</span>
+				<p>
+					{{task.description}}
+				</p>
+			</div>
+
+
+			<!---- START:: Status ---->
+			<div class="mb-4">
+				<h4>
+					{{'TASKS_MANAGEMENT.DETAILS.STATUS'| translate}}
+				</h4>
+				<div class="d-flex ">
+
+					<ng-select [searchable]="true" [(ngModel)]="task.task_status_id" name="status" #status="ngModel"
+						required [items]="taskStatus" [bindLabel]="bindLabelTaskStatus" bindValue="id"
+						placeholder="{{'TASKS_MANAGEMENT.DETAILS.STATUS' | translate}}"  (change)="setStatusChanged()"
+						class="min-width-160"
+						[ngClass]="{'m-status--done': task.task_status_id == taskStatusEnum.DONE,
+						'm-status--inprogress': task.task_status_id == taskStatusEnum.INPROGRESS,
+						'm-status--new': task.task_status_id == taskStatusEnum.NEW}"
+						 [clearable]="false">
+						<ng-template ng-option-tmp let-item="item">
+							<span [title]="item.task_status_name_ar"
+								class="ng-option-label">{{isArabic? item.task_status_name_ar : item.task_status_name_en}}</span>
+						</ng-template>
+					</ng-select>
+			</div>
+			<div class="m-widget4__item row">
+				<div class="col-lg-6 mt-3">
+					<textarea name="commenttext" class="white-bg py-0 form-control m-input m-input--solid"
+						placeholder="{{'PRESENTATION.ADD_COMMENT'|translate}}"
+						[(ngModel)]="commenText" rows="3" [maxlength]="1000"></textarea>
+					<div class="error text-danger form-control-feedback"
+						*ngIf="commenText.length == 1000">
+						{{'PRESENTATION.VALIDATION.COMMENT_LENGTH'|translate}}</div>
+				</div>
+				<div class="col-lg-12 m--align-left mt-3">
+					<button class="btn btn-primary btn-lg  px-2 pt-2" (click)="changeStatus()" type="submit" [disabled]="submitted">
+						<span>{{'BUTTON.CHANGE_STATUS' | translate}}</span>
+						<i class='fa fa-spinner fa-spin '
+							*ngIf="submitted"></i>
+					</button>
+				</div>
+
+			</div>
+		</div>
+			<!---- END:: Status ---->
+			<!---- START:: ASSIGNEE ---->
+			<div class="mb-4 pt-2">
+				<h4>
+					{{'TASKS_MANAGEMENT.DETAILS.ASSIGNEE'| translate}}
+				</h4>
+				<div class="m-widget4__item d-flex align-items-center">
+					<div class="m-widget4__img m-widget4__img--pic">
+						<img alt="" class="rounded-circle max-width-45" src="{{imagesBaseURL+task.assignee?.image_url}}">
+					</div>
+					<div class="m-widget4__info m-widget__member-name mx-3">
+						<span class="m-widget4__sub" *ngIf="task.assignee?.user_title_ar || task.assignee?.user_title_en">{{isArabic? task.assignee?.user_title_ar : task.assignee?.user_title_en? task.assignee?.user_title_en : task.assignee?.user_title_ar}}/</span>
+						<span class="m-widget4__title"> {{isArabic? (task.assignee?.name_ar? task.assignee?.name_ar : task.assignee?.name) : (task.assignee?.name? task.assignee?.name : task.assignee?.name_ar)}}</span>
+						<br>
+						<span class="m-widget19_ _time"> {{isArabic? task.assignee?.job_title_ar : task.assignee?.job_title_en? task.assignee?.job_title_en : task.assignee?.job_title_ar}} </span>
+					</div>
+				</div>
+			</div>
+			<!---- END:: ASSIGNEE ---->
+
+			<!---- START:: History log ---->
+			<div class="border-top pt-3 mt-4">
+				<h4>
+					{{'TASKS_MANAGEMENT.DETAILS.HISTORY'| translate}}
+				</h4>
+
+				<div  *ngFor="let history of task?.task_status_history_group| keyvalue:originalOrder; let i = index">
+					<div class="date-title bg-grey mt-4">
+					 {{history.key | date: 'MMMM d, y'}}
+					</div>
+
+					<div class="records-row m-widget4">
+						<div *ngFor="let historyRecord of history?.value; let j = index" class="m-widget4__item d-flex ng-star-inserted"><div class="m-widget4__img m-widget4__img--pic">
+						  <img alt="" src="{{imagesBaseURL+historyRecord?.image_url}}" >
+						</div>
+						<div class="m-widget4__info m-widget__member-name">
+							<span class="m-widget4__title" *ngIf="!(i == (objectKeys(task.task_status_history_group).length -1) && j == 0) && historyRecord.is_status_changed">
+								{{'TASKS_MANAGEMENT.DETAILS.STATUSCHANGED'| translate}} {{isArabic? historyRecord?.task_status_name_ar :historyRecord?.task_status_name_en }}
+							 </span>
+							 <span class="m-widget4__title" *ngIf="!historyRecord.is_status_changed">
+								{{'TASKS_MANAGEMENT.DETAILS.ADD_COMMENT'| translate}}
+							 </span>
+							 <span class="m-widget4__title" *ngIf="historyRecord.task_status_id == taskStatusEnum.NEW && i == (objectKeys(task.task_status_history_group).length -1) && j == 0">
+								{{'TASKS_MANAGEMENT.DETAILS.TASKCREATED'| translate}}
+							 </span>
+						  <br>
+						  <span class="m-widget19_ _time">
+							{{isArabic? (historyRecord?.name_ar? historyRecord?.name_ar : historyRecord?.name) : (historyRecord?.name? historyRecord?.name : historyRecord?.name_ar)}}
+						 </span>
+						 <br>
+						 <span class="m-widget4__title" *ngIf="historyRecord.task_comment_text">{{'MEETINGS.TASK.GENERAL.COMMENT' | translate}} :  &nbsp;</span>
+						 <span class="m-widget4__info">
+							{{historyRecord?.task_comment_text}}
+						 </span>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!---- END:: History log ---->
+		</div>
+	</div>
+
+
+</div>
+

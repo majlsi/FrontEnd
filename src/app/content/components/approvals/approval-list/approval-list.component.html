@@ -1,0 +1,72 @@
+<div class="mat-table__wrapper">
+	<table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" matSortDisableClear
+		class="table table-bordered m-table table-hover table-striped table-scroll clickable mat-table">
+		<ng-container matColumnDef="approval_title">
+			<th *matHeaderCellDef mat-sort-header>{{'APPROVAL.LIST.TITLE' | translate}}</th>
+			<td *matCellDef="let approval" (click)="reviewRoom(approval);$event.stopPropagation()">{{approval.approval_title}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="status_id">
+			<th *matHeaderCellDef mat-sort-header>{{'APPROVAL.LIST.STATUS' | translate}}</th>
+			<td *matCellDef="let approval" (click)="reviewRoom(approval);$event.stopPropagation()">
+				<span class="m-badge m-badge--status" [ngClass]="{'m-badge--success': approval.status_id == approvalStatusEnum.completed,
+							'm-badge--accent': approval.status_id == approvalStatusEnum.awaiting,
+							'm-badge--metal': approval.status_id == approvalStatusEnum.new}">
+					{{isArabic? approval.approval_status_name_ar : (approval.approval_status_name_en?
+					approval.approval_status_name_en : approval.approval_status_name_ar)}}
+				</span>
+			</td>
+		</ng-container>
+
+		<ng-container matColumnDef="created_at_formatted">
+			<th *matHeaderCellDef mat-sort-header>{{'APPROVAL.LIST.CREATED_AT' | translate}}
+			</th>
+			<td *matCellDef="let approval" (click)="reviewRoom(approval);$event.stopPropagation()">{{approval.created_at_formatted}}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="updated_at_formatted">
+			<th *matHeaderCellDef mat-sort-header>{{'APPROVAL.LIST.UPDATED_AT' | translate}}</th>
+			<td *matCellDef="let approval" (click)="reviewRoom(approval);$event.stopPropagation()">{{approval.updated_at_formatted}}</td>
+		</ng-container>
+
+		<!-- actions Column -->
+		<ng-container matColumnDef="actions">
+			<th *matHeaderCellDef>
+				{{'GENERAL.ACTIONS' | translate}}
+			</th>
+			<td *matCellDef="let approval" (click)="$event.stopPropagation()">
+				<button type="button" (click)="edit(approval.id)"
+					*ngIf="addFlag && user.id == approval.created_by && approval.status_id == approvalStatusEnum.new"
+					class="btn btn-black m-btn m-btn--icon m-btn--outline-2x"
+					matTooltip="{{'BUTTON.EDIT' | translate}}">
+					<i class="flaticon-edit-1"></i>
+				</button>
+
+				<button type="button" (click)="delete(approval.id)" class="btn btn-danger m-btn m-btn--icon m-btn--outline-2x"
+					matTooltip="{{'BUTTON.DELETE' | translate}}" *ngIf="addFlag && user.id == approval.created_by">
+					<i class="flaticon-delete-2"></i>
+				</button>
+
+
+				<button (click)="downloadApproval(approval.id,approval.approval_title)" type="button"
+					class="btn btn-primary m-btn m-btn--icon m-btn--outline-2x ng-star-inserted"
+					matTooltip="{{'REVIEWS_ROOM.LIST.DOWNLOAD_MODIFIED_DOCUMENT' | translate}}">
+					<i class="fas fa-file-download"></i>
+				</button>
+			</td>
+		</ng-container>
+
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	</table>
+
+	<div class="mat-table__message" *ngIf="dataSourceLength">{{'GENERAL.NORECORDSFOUND' | translate}}</div>
+</div>
+
+<!-- start: BOTTOM -->
+<div class="mat-table__bottom">
+	<mat-spinner [diameter]="20" *ngIf="loading$ |async"></mat-spinner>
+	<mat-paginator [pageSize]="pageSize" [length]="paginatorTotal$" [showFirstLastButtons]="true">
+	</mat-paginator>
+</div>

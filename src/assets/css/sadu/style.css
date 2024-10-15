@@ -1,0 +1,52 @@
+@import "../../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
+
+@import './general/base.css';
+@import './general/forms.css';
+@import './general/modals.css';
+@import './general/buttons.css';
+
+
+@import './presentation/presentation.css';
+
+@import './custom/imageupload.css';
+@import './custom/dropzone.css';
+@import './custom/layout.css';
+@import './custom/meeting-preview.css';
+@import './custom/calendar-icon.css';
+@import './custom/comments.css';
+@import './custom/charts.css';
+@import './custom/widget.css';
+@import './custom/dragula.css';
+@import './custom/responsive.css';
+@import './custom/splash.css';
+@import './custom/chat-media.css';
+@import './custom/decisions.css';
+@import './custom/help-center.css';
+@import './custom/modal.css';
+@import './custom/base.css';
+@import './custom/font.css';
+@import './custom/portlet.css';
+@import './custom/login.css';
+@import './custom/form.css';
+@import './custom/table.css';
+@import './custom/tabs.css';
+@import './custom/theme.css';
+
+
+#pointer{
+
+    border: 15px rgb(255, 199, 0) solid;
+}
+
+
+#add-text{
+    border: 1px black solid;
+}
+
+.highlighted {
+    background-color:#e6e6e6;
+  }
+
+  .enz-spinner{
+    width: 160px;
+  }
