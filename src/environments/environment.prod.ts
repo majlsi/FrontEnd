@@ -10,10 +10,10 @@ export const environment = {
 	presentationUrl: '../reveal/master.html',
 
 
-	apiBaseURL: 'http://10.10.110.30/app/BackEnd/public/api/v1/',
-	imagesBaseURL: 'http://10.10.110.30/app/BackEnd/public/',
-	redisListenURL: 'http://10.10.110.30:6001',
-	signatureFrontUrl: 'http://10.10.110.30/ds/document',
+	apiBaseURL: 'https://ruh-mjls-02.swcc.gov.sa/app/BackEnd/public/api/v1/',
+	imagesBaseURL: 'https://ruh-mjls-02.swcc.gov.sa/app/BackEnd/public/',
+	redisListenURL: 'https://ruh-mjls-02.swcc.gov.sa:6001',
+	signatureFrontUrl: 'https://ruh-mjls-02.swcc.gov.sa/ds/document',
 	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',
 
 	themeName: '',

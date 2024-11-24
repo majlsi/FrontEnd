@@ -6,11 +6,11 @@
 		"ng": "ng",
 		"start": "ng serve",
 		"compress-prod": "del dist3.zip &&  7z a dist3.zip ./dist/",
-		"build": "ng build  && npm run compress-prod",
+		"build": "ng build --base && npm run compress-prod",
 		"test": "ng test",
 		"lint": "ng lint",
 		"e2e": "ng e2e",
-		"build-production": "ng build   --base-href  /dist/ && npm run compress-prod",
+		"build-production": "ng build   --base-href /app/ && npm run compress-prod",
 		"build-test": "ng build  --configuration=test --base-href  /mjlsi/wp-mjlsi/app/"
 	},
 	"private": true,
