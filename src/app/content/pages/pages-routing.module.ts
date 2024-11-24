@@ -24,6 +24,11 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
+				redirectTo: 'dashboard/secertary_dashboard',
+				pathMatch: 'full',
+			},
+			{
+				path: 'my-profile',
 				component: ProfileComponent,
 			},
 			{

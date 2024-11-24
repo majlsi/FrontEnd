@@ -16,9 +16,9 @@ export const environment = {
 	signatureFrontUrl: 'http://81.208.169.170/ds/document',
 	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',
 
-	themeName: '',
-	themeTitleEn: null,
-	themeTitleAr: null,
+	themeName: 'swcc',
+	themeTitleEn: 'swcc',
+	themeTitleAr: 'المؤسسة السعودية للمياه',
 	storageQuota: {
 		min: 1,
 		max: 1024

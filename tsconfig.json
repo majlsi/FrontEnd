@@ -16,5 +16,6 @@
       "DOM"
     ],
     "module": "esnext",
+	  "skipLibCheck": true
   }
 }

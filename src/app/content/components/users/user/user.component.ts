@@ -128,7 +128,7 @@ export class UserComponent implements OnInit {
 		this.submitted = true;
 		this.edit = true;
 
-		if (userForm.valid && this.user.password === this.user.rpassword) { // submit form if valid
+		if (!userForm.valid && this.user.password === this.user.rpassword) { // submit form if valid
 			if (this.userId) { // if edit
 				this._crudService.edit<User>('users', this.user, this.userId).subscribe(
 					data => {

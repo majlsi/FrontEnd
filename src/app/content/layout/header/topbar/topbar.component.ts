@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 export class TopbarComponent implements OnInit, AfterViewInit {
 	@HostBinding('id') id = 'm_header_nav';
 	@HostBinding('class')
-	classes = 'm-stack__item m-stack__item--fluid m-header-head';
+	classes = 'm-stack__item m-stack__item--fluid m-header-head1';
 
 	@Input() searchType: any;
 
