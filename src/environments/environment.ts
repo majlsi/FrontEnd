@@ -12,7 +12,8 @@ export const environment = {
 
 	apiBaseURL: 'https://ruh-mjls-02.swcc.gov.sa/app/BackEnd/public/api/v1/',
 	imagesBaseURL: 'https://ruh-mjls-02.swcc.gov.sa/app/BackEnd/public/',
-	redisListenURL: 'https://ruh-mjls-02.swcc.gov.sa:6001',
+	// redisListenURL: 'https://ruh-mjls-02.swcc.gov.sa:6001',
+	redisListenURL: 'https://ruh-mjls-02.swcc.gov.sa/ws',
 	signatureFrontUrl: 'https://ruh-mjls-02.swcc.gov.sa/ds/document',
 	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',
 

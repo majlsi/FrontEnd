@@ -26,7 +26,7 @@ import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { environment } from '../../../../environments/environment';
 import { LoginNotificationOptionsComponent } from './login-notification-options/login-notification-options.component';
 
-const config: SocketIoConfig = { url: 'http://localhost:6001', options: {} };
+const config: SocketIoConfig = { url: environment.redisListenURL, options: {} };
 @NgModule({
 	imports: [
 		CommonModule,
