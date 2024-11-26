@@ -51,6 +51,7 @@ window.io = window.io || require('socket.io-client');
 window.Echo = window.Echo || new Echo({
 	broadcaster: 'socket.io',
 	host: environment.redisListenURL,
+	path: '/app/socket.io',
 });
 @Component({
 	// tslint:disable-next-line:component-selector
@@ -185,7 +186,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 			} else if (!this.themeName && this.isArabic) {
 				this.titleService.setTitle('مجلسى - للاجتماعات الذكية');
 				this.loadStyle('ar-css.css');
-			} else {				
+			} else {
 				this.titleService.setTitle('Mjlsi - Smart Meetings');
 				this.loadStyle('en-css.css');
 			}
@@ -197,7 +198,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 		const style = this.document.createElement('link');
 		style.id = id;
 		style.rel = 'stylesheet';
-		style.href = `${styleName}`;	
+		style.href = `${styleName}`;
 		head.appendChild(style);
 	}
 	ngAfterViewInit(): void {
@@ -287,7 +288,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 
 	setLanguage() {
 		switch (environment.companyName) {
-			case 'mjlsi': 
+			case 'mjlsi':
 				this.translationService.loadTranslations(enLang, arLang, mjlsiEnLang, mjlsiArLang);
 				break;
 			case 'lijani':
