@@ -17,7 +17,7 @@ export const environment = {
 
 	themeName: 'swcc',
 	themeTitleEn: 'swcc',
-	themeTitleAr: 'المؤسسة العامة لتحلية المياه المالحة',
+	themeTitleAr: 'المؤسسة السعودية للمياه',
 	storageQuota: {
 		min: 1,
 		max: 1024

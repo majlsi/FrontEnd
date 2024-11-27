@@ -17,14 +17,14 @@ export const environment = {
 	signatureFrontUrl: 'https://ruh-mjls-02.swcc.gov.sa/ds/document',
 	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',
 
-	themeName: '',
-	themeTitleEn: null,
-	themeTitleAr: null,
+	themeName: 'swcc',
+	themeTitleEn: 'swcc',
+	themeTitleAr: 'المؤسسة السعودية للمياه',
 	storageQuota: {
 		min: 1,
 		max: 1024
 	},
-	footerOrgName: 'Mjlsi System',
-	companyName: 'mjlsi',
+	footerOrgName: 'SWCC',
+	companyName: 'swcc',
 };
 

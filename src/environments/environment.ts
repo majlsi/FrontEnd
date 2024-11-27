@@ -22,7 +22,7 @@ export const environment = {
 	themeTitleAr: 'المؤسسة السعودية للمياه',
 	storageQuota: {
 		min: 1,
-		max: 1024
+		max: 2048
 	},
 	footerOrgName: 'SWCC',
 	companyName: 'swcc',
