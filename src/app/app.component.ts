@@ -51,7 +51,7 @@ window.io = window.io || require('socket.io-client');
 window.Echo = window.Echo || new Echo({
 	broadcaster: 'socket.io',
 	host: environment.redisListenURL,
-	path: '/app/socket.io',
+	path: '/socket.io',
 });
 @Component({
 	// tslint:disable-next-line:component-selector
