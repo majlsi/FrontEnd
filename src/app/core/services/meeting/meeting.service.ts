@@ -4,7 +4,7 @@ import { RequestService } from '../shared/request.service';
 import { environment } from '../../../../environments/environment';
 import { FilterObject } from '../../models/filter-object';
 import { BaseModel } from '../../models/baseModel';
-import { Observable, ObservableLike } from 'rxjs';
+import { Observable } from 'rxjs';
 
 
 @Injectable()
@@ -351,7 +351,7 @@ export class MeetingService {
 			meetingId + '/check-current-attachment', null, null);
 	}
 
-	previewMom(meetingId: number,langId: number) {
+	previewMom(meetingId: number, langId: number) {
 		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'admin/preview-mom/' +
 			meetingId + '/language/' + langId, null, 'blob');
 	}

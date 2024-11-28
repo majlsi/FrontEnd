@@ -17,7 +17,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, NavigationEnd, ActivatedRoute, ActivationEnd } from '@angular/router';
 import { PageConfigService } from './core/services/page-config.service';
 import { filter } from 'rxjs/operators';
-declare var gtag;
+// declare var gtag;
 import { SplashScreenService } from './core/services/splash-screen.service';
 import { environment } from '../environments/environment';
 import { Title } from '@angular/platform-browser';
@@ -104,9 +104,9 @@ export class AppComponent implements AfterViewInit, OnInit {
 		const navEndEvent$ = router.events.pipe(
 			filter(e => e instanceof NavigationEnd)
 		);
-		navEndEvent$.subscribe((e: NavigationEnd) => {
+	/*	navEndEvent$.subscribe((e: NavigationEnd) => {
 			gtag('config', 'UA-159671967-1', { 'page_path': e.urlAfterRedirects });
-		});
+		});*/
 
 		// subscribe to class update event
 		this.classInitService.onClassesUpdated$.subscribe(classes => {

@@ -5,11 +5,12 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
 import { RoleService } from '../security/roles.service';
+import {TokenStorage} from '../../auth/token-storage.service';
 
 
 @Injectable()
 export class Authorization implements CanActivate, CanActivateChild {
-	constructor(private router: Router, private roleService: RoleService, private userService: UserService) { }
+	constructor(private router: Router, private roleService: RoleService, private userService: UserService, private tokenStorage: TokenStorage) { }
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 		const expectedRole = route.data.right;
@@ -39,6 +40,7 @@ export class Authorization implements CanActivate, CanActivateChild {
 					if (res.canAccess === 1) {
 						return true;
 					} else {
+						this.tokenStorage.clear();
 						this.router.navigate(['/']);
 						return false;
 					}
