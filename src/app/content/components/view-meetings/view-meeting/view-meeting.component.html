@@ -151,6 +151,11 @@
 								<i class="fa fa-download"></i>
 								{{'VIEW_MEETING.DOWNLOAD_MOM' | translate}}
 							</button>
+							<button (click)="sendTarasul()" class="btn btn-primary m-widget4__icon pull-left"
+									*ngIf="meeting.is_mom_sent && HasAccessToRight(rightEnum.canShowMom)">
+								<i class="fa fa-download"></i>
+								{{'VIEW_MEETING.SEND_TARASUL' | translate}}
+							</button>
 
 						</div>
 					</div>
@@ -654,9 +659,9 @@
 												<div>
 													<i class="fa fa-chevron-down"></i>
 												</div>
-	
+
 											</ng-template>
-	
+
 											<ng-template ngbPanelContent>
 												<div class="vote-items__cont mb-3">
 													<div class="vote-item vote-item__title px-0">
@@ -688,14 +693,14 @@
 																		(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
 																		[value]='voteStatus.id' type="radio"
 																		name="{{'vote'+voteStatus.id+y}}"> -->
-	
+
 																	<input *ngIf="vote.vote_results.length > 0" type="radio"
 																		class=""
 																		(click)="changeVoteStatus(vote.vote_results , voteStatus.id ,vote.id,'ngb-panel-votes-'+vote.id)"
 																		[value]='voteStatus.id' type="radio"
 																		name="{{'vote'+voteStatus.id+y}}"
 																		[(ngModel)]="vote.vote_results[0].vote_status_id">
-	
+
 																	<div
 																		class="vote-btn m-badge m-badge--wide d-flex justify-content-between">
 																		<h5>{{isArabic? voteStatus.vote_status_name_ar :
@@ -712,7 +717,7 @@
 																		</h5>
 																	</div>
 																	<span></span>
-	
+
 																</label>
 															</div>
 														</div>
@@ -728,9 +733,9 @@
 																class="btn btn-primary m-0 py-2 px-5"
 																(click)="endVote(vote.id)">{{'BUTTON.ENDVOTE'|translate}}</button>
 														</div>
-	
+
 													</div>
-	
+
 												</div>
 											</ng-template>
 										</ngb-panel>

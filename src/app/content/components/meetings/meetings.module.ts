@@ -55,6 +55,8 @@ import { MeetingApprovalTabComponent } from './meeting-approval-tab/meeting-appr
 import { AddApprovalModalComponent } from './add-approval-modal/add-approval-modal.component';
 import { ApprovalsModule } from '../approvals/approvals.module';
 import { MeetingRecommendationComponent } from './meeting-recommendation/meeting-recommendation.component';
+import {SendToTarasulDialog} from './send-to-tarasul-dialog/send-to-tarasul-dialog';
+import {MatButtonModule} from '@angular/material/button';
 
 @NgModule({
 	imports: [
@@ -85,7 +87,8 @@ import { MeetingRecommendationComponent } from './meeting-recommendation/meeting
 		JoditAngularModule,
 		SharedModule,
 		NgbModalModule,
-		JoyrideModule
+		JoyrideModule,
+		MatButtonModule
 	],
 	declarations: [
 		MeetingComponent,
@@ -104,6 +107,7 @@ import { MeetingRecommendationComponent } from './meeting-recommendation/meeting
 		ParticipantConflictComponent,
 		MeetingLocationComponent,
 		StartMeetingComponent,
+		SendToTarasulDialog,
 		MOMTemplateChangeComponent,
 		ParticipantsAttendanceComponent,
 		AddGuestModalComponent,
@@ -128,6 +132,7 @@ import { MeetingRecommendationComponent } from './meeting-recommendation/meeting
 		ParticipantConflictComponent,
 		MeetingLocationComponent,
 		StartMeetingComponent,
+		SendToTarasulDialog,
 		MOMTemplateChangeComponent,
 		ParticipantsAttendanceComponent,
 		MeetingApprovalTabComponent,

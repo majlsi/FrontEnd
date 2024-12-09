@@ -38,8 +38,6 @@ import { VoteStatuses } from '../../../../core/models/enums/vote-statuses';
 import { Tab } from '../../../../core/models/enums/tabs';
 import { RoleService } from '../../../../core/services/security/roles.service';
 import { Right } from '../../../../core/models/enums/rights';
-import { log } from 'console';
-import { MeetingParticipant } from '../../../../core/models/meeting-participant';
 import { ApprovalService } from '../../../../core/services/approval/approval.service';
 
 import { EnvironmentVariableService } from '../../../../core/services/enviroment-variable/enviroment-variable.service';
@@ -386,6 +384,48 @@ export class ViewMeetingComponent implements OnInit {
 				(this.meeting.meeting_title_ar ? this.meeting.meeting_title_ar + '.pdf' : this.meeting.meeting_title_en + '.pdf') :
 				(this.meeting.meeting_title_en ? this.meeting.meeting_title_en + '.pdf' : this.meeting.meeting_title_ar + '.pdf');
 			link.click();
+		});
+
+	}
+	sendTarasul() {
+
+		async function convertDownloadURLToBase64(downloadURL: string): Promise<string> {
+			const response = await fetch(downloadURL);
+			const blob = await response.blob();
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					resolve(reader.result as string);
+				};
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+		}
+
+		this.modal = this.modalService.open(StartMeetingComponent, { size: 'xl' as 'lg' });
+		this.modal.componentInstance.meetingId = this.meeting.id;
+		this.modal.result.then((result) => {
+			if (result) {
+				this.router.navigate(['meetings/' + this.meeting.id +
+				'/meeting_agenda/' + result.agendaId +
+				'/attachments/' + result.attachmentId]);
+			} else {
+				this.submitted = false;
+				this.changeStatusLoad = false;
+				this.getMeeting();
+			}
+		}, (reason) => {
+
+		});
+
+
+
+		this.meetingService.downloadMomPdf(this.meetingId, this.lang).subscribe(async (response) => {
+			const downloadURL = window.URL.createObjectURL(response);
+
+			const fileBase64 = await convertDownloadURLToBase64(downloadURL);
+
+
 		});
 
 	}
