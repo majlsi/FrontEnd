@@ -1527,6 +1527,7 @@ export const locale = {
 			EXTRA_TIME: 'Extra time',
 			MOM: 'Min of Meeting',
 			DOWNLOAD_MOM: 'Download Min of Meeting',
+			SEND_TARASUL: 'Send To Tarasul',
 			SIGN_MOM: 'Sign Min of Meeting',
 			DELETECOMMENT: {
 				DELETECOMMENT: 'Comment Delete',
