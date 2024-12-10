@@ -40,12 +40,12 @@ declare global {
 
 
 
-window.io = window.io || require('socket.io-client');
+/*window.io = window.io || require('socket.io-client');
 window.Echo = window.Echo || new Echo({
 	broadcaster: 'socket.io',
 	host: environment.redisListenURL,
 	path: '/socket.io',
-});
+});*/
 @Component({
 	selector: 'm-pages',
 	templateUrl: './pages.component.html',

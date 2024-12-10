@@ -300,7 +300,10 @@ export class MeetingService {
 		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'participant/meetings/' +
 			meetingId + '/mom-download/' + lang, null, 'blob');
 	}
-
+	sendTarasul(meetingId: number, lang: string) {
+		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'participant/meetings/' +
+			meetingId + '/send-tarasul/' + lang, null, null);
+	}
 	endPresentationWithOutNotification<T extends BaseModel>(meetingId: number, attachmentId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/meeting-attachments/' + attachmentId + '/end-with-no-notification', null, null);
