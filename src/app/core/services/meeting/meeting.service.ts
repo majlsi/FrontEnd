@@ -1,15 +1,30 @@
+import {Injectable} from '@angular/core';
+import {RequestService} from '../shared/request.service';
+import {environment} from '../../../../environments/environment';
+import {FilterObject} from '../../models/filter-object';
+import {BaseModel} from '../../models/baseModel';
+import {Observable} from 'rxjs';
 
-import { Injectable } from '@angular/core';
-import { RequestService } from '../shared/request.service';
-import { environment } from '../../../../environments/environment';
-import { FilterObject } from '../../models/filter-object';
-import { BaseModel } from '../../models/baseModel';
-import { Observable } from 'rxjs';
+export interface TarasulBodyDto {
+	assignToDeptNo?: string;
+	assignToEmpNo?: string;
+	bayanFlag?: string;
+	cabinetId?: string;
+	confidentialId?: string;
+	dmsUserId?: string;
+	docSourceId?: string;
+	docTypeId?: string;
+	fcntctId?: string;
+	priorityNo?: string;
+	remindDays?: string;
+	subjectId?: string[];
+}
 
 
 @Injectable()
 export class MeetingService {
-	constructor(private _requestService: RequestService) { }
+	constructor(private _requestService: RequestService) {
+	}
 
 	getMeetingOrganisersForMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'admin/meetings/' +
@@ -38,17 +53,17 @@ export class MeetingService {
 
 	publishMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/publish-meeting',
-			{ 'id': meetingId }, null);
+			{'id': meetingId}, null);
 	}
 
 	publishAgenda<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/publish-agenda-meeting',
-			{ 'id': meetingId }, null);
+			{'id': meetingId}, null);
 	}
 
 	startMeeting<T extends BaseModel>(meetingId: number, attachmenId: number = null): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/start-meeting',
-			{ 'id': meetingId, 'attachmentId': attachmenId }, null);
+			{'id': meetingId, 'attachmentId': attachmenId}, null);
 	}
 
 	endMeeting<T extends BaseModel>(meetingId: number, data): Observable<T> {
@@ -58,7 +73,7 @@ export class MeetingService {
 
 	cancelMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/cancel-meeting',
-			{ 'id': meetingId }, null);
+			{'id': meetingId}, null);
 	}
 
 	getAttachmentsForMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
@@ -130,6 +145,7 @@ export class MeetingService {
 		return this._requestService.SendRequest('DELETE', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/moms/attachments/' + attachmentId, null, null);
 	}
+
 	deleteAgendaAttachment<T extends BaseModel>(meetingId: number, agendaId: number, attachmentId: number): Observable<T> {
 		return this._requestService.SendRequest('DELETE', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/meeting-agendas/' + agendaId + '/attachments/' + attachmentId, null, null);
@@ -149,7 +165,7 @@ export class MeetingService {
 
 	redraftMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/undo-cancel-meeting',
-			{ 'id': meetingId }, null);
+			{'id': meetingId}, null);
 	}
 
 	getMeetingProposals<T extends BaseModel>(meetingId: number): Observable<T> {
@@ -207,7 +223,7 @@ export class MeetingService {
 
 	sendEmailAfterEndMeeting<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' + meetingId + '/send-email-after-end-meeting',
-			{ 'id': meetingId }, null);
+			{'id': meetingId}, null);
 	}
 
 	attendMeenting<T extends BaseModel>(meetingId: number): Observable<T> {
@@ -300,10 +316,12 @@ export class MeetingService {
 		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'participant/meetings/' +
 			meetingId + '/mom-download/' + lang, null, 'blob');
 	}
-	sendTarasul(meetingId: number, lang: string) {
-		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'participant/meetings/' +
-			meetingId + '/send-tarasul/' + lang, null, null);
+
+	sendTarasul(meetingId: number, lang: string, body: TarasulBodyDto) {
+		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'participant/meetings/' +
+			meetingId + '/send-tarasul/' + lang, body, null);
 	}
+
 	endPresentationWithOutNotification<T extends BaseModel>(meetingId: number, attachmentId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/meeting-attachments/' + attachmentId + '/end-with-no-notification', null, null);
@@ -326,12 +344,12 @@ export class MeetingService {
 
 	sendSignatureMail<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
-			meetingId + '/send-signature-mail', { meeting_id: meetingId }, null);
+			meetingId + '/send-signature-mail', {meeting_id: meetingId}, null);
 	}
 
 	publishMeetingChanges<T extends BaseModel>(meetingId: number): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
-			meetingId + '/publish-changes', { meeting_id: meetingId }, null);
+			meetingId + '/publish-changes', {meeting_id: meetingId}, null);
 	}
 
 	sendSignatureMailToParticipant<T extends BaseModel>(meetingId: number, data): Observable<T> {
@@ -341,7 +359,7 @@ export class MeetingService {
 
 	loginUserToSignature<T extends BaseModel>(meetingId: number): Observable<any> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'participant/meetings/' +
-			meetingId + '/	signature-user-login', { meeting_id: meetingId }, null);
+			meetingId + '/	signature-user-login', {meeting_id: meetingId}, null);
 	}
 
 	getZoomMeetingStartUrl<T extends BaseModel>(meetingId: number): Observable<T> {
@@ -368,32 +386,33 @@ export class MeetingService {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/change-mom-pdf', data, null);
 	}
+
 	createReviewFilePdf(data) {
-		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/rooms/pdf' , data, 'blob');
+		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/rooms/pdf', data, 'blob');
 	}
 
 
-	getMomTemplate<T extends BaseModel>(meetingId: number,momTemplateId): Observable<T> {
+	getMomTemplate<T extends BaseModel>(meetingId: number, momTemplateId): Observable<T> {
 		return this._requestService.SendRequest('GET', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/mom-templates/' + momTemplateId, null, null);
 	}
 
-	setAttendForMeentingParticipant<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAttendForMeentingParticipant<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participant/attend-attendance-status', data, null);
 	}
 
-	setAbsentForMeentingParticipant<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAbsentForMeentingParticipant<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participant/absent-attendance-status', data, null);
 	}
 
-	setAttendForMeentingParticipants<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAttendForMeentingParticipants<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participants/attend-attendance-status', data, null);
 	}
 
-	setAbsentForMeentingParticipants<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAbsentForMeentingParticipants<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participants/absent-attendance-status', data, null);
 	}
@@ -403,12 +422,12 @@ export class MeetingService {
 			meetingId + '/attendance-percentage', null, null);
 	}
 
-	setAcceptAbsentForMeentingParticipant<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAcceptAbsentForMeentingParticipant<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participant/accept-absent-attendance-status', data, null);
 	}
 
-	setAcceptAbsentForMeentingParticipants<T extends BaseModel>(meetingId: number,data: object): Observable<T> {
+	setAcceptAbsentForMeentingParticipants<T extends BaseModel>(meetingId: number, data: object): Observable<T> {
 		return this._requestService.SendRequest('POST', environment.apiBaseURL + 'admin/meetings/' +
 			meetingId + '/participants/accept-absent-attendance-status', data, null);
 	}

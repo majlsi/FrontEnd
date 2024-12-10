@@ -47,12 +47,12 @@ declare global {
 	interface Window { Echo: any; }
 }
 
-/*window.io = window.io || require('socket.io-client');
+window.io = window.io || require('socket.io-client');
 window.Echo = window.Echo || new Echo({
 	broadcaster: 'socket.io',
 	host: environment.redisListenURL,
 	path: '/socket.io',
-});*/
+});
 @Component({
 	// tslint:disable-next-line:component-selector
 	selector: 'body[m-root]',

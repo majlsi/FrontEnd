@@ -17,6 +17,13 @@ export const environment = {
 	signatureFrontUrl: 'https://ruh-mjls-02.swcc.gov.sa/ds/document',
 	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',
 
+	/*apiBaseURL: 'http://81.208.169.170/app/BackEnd/public/api/v1/',
+	imagesBaseURL: 'http://81.208.169.170/app/BackEnd/public/',
+	redisListenURL: 'http://81.208.169.170:6001',
+	signatureFrontUrl: 'http://81.208.169.170/ds/document',
+	googleMapKey: 'AIzaSyDs_00oRVkEFxaGN0Y--Nu36ga1z-z6xUg',*/
+
+
 	themeName: 'swcc',
 	themeTitleEn: 'swcc',
 	themeTitleAr: 'الهيئة السعودية للمياه',

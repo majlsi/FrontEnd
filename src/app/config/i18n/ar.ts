@@ -1517,6 +1517,7 @@ export const locale = {
 			EXTRA_TIME: 'الوقت الإضافى',
 			MOM: 'محضر الإجتماع',
 			DOWNLOAD_MOM: 'تنزيل محضر الإجتماع',
+			SEND_TARASUL: 'ارسال المحضر الي تراسل',
 			SIGN_MOM: 'توقيع محضر الإجتماع',
 			DELETECOMMENT: {
 				DELETECOMMENT: 'حذف التعليق',

@@ -1,4 +1,4 @@
-export const lookupsPriorityNo =
+export const lookupsPriority =
 	[
 		{
 			CABINETID: '11603',

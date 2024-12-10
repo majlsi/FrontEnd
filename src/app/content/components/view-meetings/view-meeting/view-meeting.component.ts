@@ -1,46 +1,47 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild, QueryList, ElementRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgForm } from '@angular/forms';
-import { forkJoin, Observable } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit, ChangeDetectionStrategy, ViewChild, QueryList, ElementRef} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgForm} from '@angular/forms';
+import {forkJoin, Observable} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 // Services
-import { CrudService } from '../../../../core/services/shared/crud.service';
-import { TranslationService } from '../../../../core/services/translation.service';
-import { MeetingService } from '../../../../core/services/meeting/meeting.service';
-import { UploadService } from './../../../../core/services/shared/upload.service';
-import { UserService } from '../../../../core/services/security/users.service';
+import {CrudService} from '../../../../core/services/shared/crud.service';
+import {TranslationService} from '../../../../core/services/translation.service';
+import {MeetingService, TarasulBodyDto} from '../../../../core/services/meeting/meeting.service';
+import {UploadService} from './../../../../core/services/shared/upload.service';
+import {UserService} from '../../../../core/services/security/users.service';
 
 // Models
-import { Meeting } from './../../../../core/models/meeting';
-import { TextEditor } from '../../../../core/config/text-editor';
-import { MeetingStatuses } from '../../../../core/models/enums/meeting-statuses';
+import {Meeting} from './../../../../core/models/meeting';
+import {TextEditor} from '../../../../core/config/text-editor';
+import {MeetingStatuses} from '../../../../core/models/enums/meeting-statuses';
 
-import { MeetingAttendanceStatus } from '../../../../core/models/meeting-attendance-status';
+import {MeetingAttendanceStatus} from '../../../../core/models/meeting-attendance-status';
 
-import { environment } from '../../../../../environments/environment';
-import { User } from '../../../../core/models/user';
+import {environment} from '../../../../../environments/environment';
+import {User} from '../../../../core/models/user';
 
 
 // Enums
-import { MeetingAttendanceStatuses } from '../../../../core/models/enums/meeting-attendance-statuses';
-import { LayoutUtilsService, MessageType } from '../../../../core/services/layout-utils.service';
-import { NgbNavChangeEvent, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {MeetingAttendanceStatuses} from '../../../../core/models/enums/meeting-attendance-statuses';
+import {LayoutUtilsService, MessageType} from '../../../../core/services/layout-utils.service';
+import {NgbNavChangeEvent, NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
-import { CountdownComponent } from 'ngx-countdown';
+import {CountdownComponent} from 'ngx-countdown';
 
-import { RejectionReasonsComponent } from '../rejection-reasons/rejection-reasons.component';
-import { StartMeetingComponent } from '../../meetings/start-meeting/start-meeting.component';
-import { OnlineMeetingApps } from '../../../../core/models/enums/online-meeting-apps';
-import { ViewMeetingStatisticsComponent } from '../view-meeting-statistics/view-meeting-statistics.component';
-import { VoteResultStatuses } from '../../../../core/models/enums/vote-result-statuses';
-import { VoteStatus } from '../../../../core/models/vote-status';
-import { VoteStatuses } from '../../../../core/models/enums/vote-statuses';
-import { Tab } from '../../../../core/models/enums/tabs';
-import { RoleService } from '../../../../core/services/security/roles.service';
-import { Right } from '../../../../core/models/enums/rights';
-import { ApprovalService } from '../../../../core/services/approval/approval.service';
+import {RejectionReasonsComponent} from '../rejection-reasons/rejection-reasons.component';
+import {StartMeetingComponent} from '../../meetings/start-meeting/start-meeting.component';
+import {OnlineMeetingApps} from '../../../../core/models/enums/online-meeting-apps';
+import {ViewMeetingStatisticsComponent} from '../view-meeting-statistics/view-meeting-statistics.component';
+import {VoteResultStatuses} from '../../../../core/models/enums/vote-result-statuses';
+import {VoteStatus} from '../../../../core/models/vote-status';
+import {VoteStatuses} from '../../../../core/models/enums/vote-statuses';
+import {Tab} from '../../../../core/models/enums/tabs';
+import {RoleService} from '../../../../core/services/security/roles.service';
+import {Right} from '../../../../core/models/enums/rights';
+import {ApprovalService} from '../../../../core/services/approval/approval.service';
 
-import { EnvironmentVariableService } from '../../../../core/services/enviroment-variable/enviroment-variable.service';
+import {EnvironmentVariableService} from '../../../../core/services/enviroment-variable/enviroment-variable.service';
+import {SendToTarasulDialog} from '../../meetings/send-to-tarasul-dialog/send-to-tarasul-dialog';
 
 @Component({
 	selector: 'm-view-meeting',
@@ -48,13 +49,12 @@ import { EnvironmentVariableService } from '../../../../core/services/enviroment
 	changeDetection: ChangeDetectionStrategy.Default
 
 
-
-
 })
 
 
 export class ViewMeetingComponent implements OnInit {
 	[x: string]: any;
+
 	activeIdString: string;
 	submitted: boolean = false;
 	meetingId: number;
@@ -98,30 +98,30 @@ export class ViewMeetingComponent implements OnInit {
 	accessRightsObs: Observable<any[]>;
 	accessRights: Array<any> = new Array<any>();
 
-	@ViewChild('cd', { read: ElementRef }) countdowns: QueryList<CountdownComponent>;
-	modal: any;
+	@ViewChild('cd', {read: ElementRef}) countdowns: QueryList<CountdownComponent>;
+	modal:  NgbModalRef;
 	user: any;
 	activeModal: any;
 	rightEnum = Right;
-	participants: Array<any>
+	participants: Array<any>;
 	signBtnLoading = false;
 
-    meetingRecommendationsFeatureObs: Observable<any>;
+	meetingRecommendationsFeatureObs: Observable<any>;
 	meetingRecommendationsFeature: boolean;
 
 	constructor(private crudService: CrudService, private route: ActivatedRoute,
-		private router: Router,
-		private translate: TranslateService,
-		private _approvalService: ApprovalService,
-		private translationService: TranslationService,
-		private meetingService: MeetingService,
-		private userService: UserService,
-		private uploadService: UploadService,
-		private layoutUtilsService: LayoutUtilsService,
-		private modalService: NgbModal,
-		private _roleService: RoleService,
-		private _crudService: CrudService,
-		private _environmentVariableService: EnvironmentVariableService) {
+				private router: Router,
+				private translate: TranslateService,
+				private _approvalService: ApprovalService,
+				private translationService: TranslationService,
+				private meetingService: MeetingService,
+				private userService: UserService,
+				private uploadService: UploadService,
+				private layoutUtilsService: LayoutUtilsService,
+				private modalService: NgbModal,
+				private _roleService: RoleService,
+				private _crudService: CrudService,
+				private _environmentVariableService: EnvironmentVariableService) {
 	}
 
 	ngOnInit() {
@@ -139,22 +139,22 @@ export class ViewMeetingComponent implements OnInit {
 			if (params['id']) {
 				this.meetingId = +params['id'];
 				forkJoin([this.meetingAttendanceStatusesObs, this.currentUserObs, this.voteStatusesObs,
-				this.accessRightsObs,this.meetingRecommendationsFeatureObs])
+					this.accessRightsObs, this.meetingRecommendationsFeatureObs])
 					.subscribe(data => {
-						this.accessRights = data[3];
-						this.meetingAttendanceStatuses = data[0];
-						this.currentUser = data[1].user;
-						this.voteStatuses = data[2];
-						this.voteStatuses = data[2];
-						this.meetingRecommendationsFeature = data[4].meetingRecommendationsFeature;
-						if (!this.route.snapshot.queryParams.exit) {
-							this.getCurrentPresentingAttachment(this.meetingId);
+							this.accessRights = data[3];
+							this.meetingAttendanceStatuses = data[0];
+							this.currentUser = data[1].user;
+							this.voteStatuses = data[2];
+							this.voteStatuses = data[2];
+							this.meetingRecommendationsFeature = data[4].meetingRecommendationsFeature;
+							if (!this.route.snapshot.queryParams.exit) {
+								this.getCurrentPresentingAttachment(this.meetingId);
+							}
+
+							this.getMeeting(null, null, true);
+						}, error => {
+
 						}
-
-						this.getMeeting(null, null, true);
-					}, error => {
-
-					}
 					);
 			}
 		});
@@ -203,6 +203,7 @@ export class ViewMeetingComponent implements OnInit {
 
 		});
 	}
+
 	showPresentationPopup(title, description, url) {
 
 		const _title: string = title;
@@ -219,6 +220,7 @@ export class ViewMeetingComponent implements OnInit {
 
 		});
 	}
+
 	getCurrentUser() {
 		this.currentUserObs = this.userService.getCurrentUser();
 	}
@@ -238,7 +240,7 @@ export class ViewMeetingComponent implements OnInit {
 	}
 
 	endVote(voteId) {
-		this.meetingService.endVote(this.meetingId, { 'vote_id': voteId }).subscribe(res => {
+		this.meetingService.endVote(this.meetingId, {'vote_id': voteId}).subscribe(res => {
 			this.getMeeting(null, null, true);
 		}, error => {
 
@@ -246,7 +248,7 @@ export class ViewMeetingComponent implements OnInit {
 	}
 
 	startVote(voteId) {
-		this.meetingService.startVote(this.meetingId, { 'vote_id': voteId }).subscribe(res => {
+		this.meetingService.startVote(this.meetingId, {'vote_id': voteId}).subscribe(res => {
 			this.getMeeting(null, null, true);
 		}, error => {
 
@@ -266,6 +268,7 @@ export class ViewMeetingComponent implements OnInit {
 	getVoteStauses() {
 		this.voteStatusesObs = this._crudService.getList('admin/vote-statuses');
 	}
+
 	panelChanges(event) {
 		// this.handleActivePanelEmitter.emit(event);
 	}
@@ -287,10 +290,11 @@ export class ViewMeetingComponent implements OnInit {
 		}
 
 	}
+
 	getMeeting(agendaMeetingId?, agendaIndex?, firstLoaded?) {
 		this.meetingService.getMeetingAllData<Meeting>(this.meetingId).subscribe(res => {
 			this.meeting = res;
-			this.prepareParticipants()
+			this.prepareParticipants();
 			this.clonedMeetingObj = Object.assign({}, this.meeting);
 
 			this.panelActiveIds = [];
@@ -302,9 +306,9 @@ export class ViewMeetingComponent implements OnInit {
 	}
 
 	prepareParticipants() {
-		this.participants = this.meeting.meeting_participants
-		let logoImage = this.participants[0].organization.logo_image.image_url
-		let guests = this.meeting.guests
+		this.participants = this.meeting.meeting_participants;
+		let logoImage = this.participants[0].organization.logo_image.image_url;
+		let guests = this.meeting.guests;
 		if (guests?.length > 0) {
 			let guestsToAdd = guests.map(g => {
 				return {
@@ -313,14 +317,14 @@ export class ViewMeetingComponent implements OnInit {
 					image: {
 						image_url: logoImage
 					}
-				}
-			})
-			this.participants.push(...guestsToAdd)
+				};
+			});
+			this.participants.push(...guestsToAdd);
 			this.participants.sort((a, b) => {
-				let aOrder = a.order ?? a?.pivot?.participant_order
-				let bOrder = b.order ?? b?.pivot?.participant_order
-				return aOrder - bOrder
-			})
+				let aOrder = a.order ?? a?.pivot?.participant_order;
+				let bOrder = b.order ?? b?.pivot?.participant_order;
+				return aOrder - bOrder;
+			});
 		}
 	}
 
@@ -387,11 +391,19 @@ export class ViewMeetingComponent implements OnInit {
 		});
 
 	}
-	sendTarasul() {
-		this.meetingService.sendTarasul(this.meetingId, this.lang).subscribe((response) => {
-			console.log('sent', response);
-		});
 
+	sendTarasul() {
+
+
+		this.modal = this.modalService.open(SendToTarasulDialog, {size: 'xl' as 'lg'});
+		this.modal.componentInstance.meetingId = this.meeting.id;
+		this.modal.componentInstance.lang = this.lang;
+		this.modal.closed.subscribe((result) => {
+
+
+		}, (reason) => {
+			console.log('error', reason);
+		});
 
 	}
 
@@ -428,13 +440,13 @@ export class ViewMeetingComponent implements OnInit {
 	}
 
 	openStartMeetingModel() {
-		this.modal = this.modalService.open(StartMeetingComponent, { size: 'xl' as 'lg' });
+		this.modal = this.modalService.open(StartMeetingComponent, {size: 'xl' as 'lg'});
 		this.modal.componentInstance.meetingId = this.meeting.id;
 		this.modal.result.then((result) => {
 			if (result) {
 				this.router.navigate(['meetings/' + this.meeting.id +
-					'/meeting_agenda/' + result.agendaId +
-					'/attachments/' + result.attachmentId]);
+				'/meeting_agenda/' + result.agendaId +
+				'/attachments/' + result.attachmentId]);
 			} else {
 				this.submitted = false;
 				this.changeStatusLoad = false;
@@ -460,17 +472,16 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			this.meetingService.publishAgenda(this.meeting.id).
-				subscribe(pagedData => {
+			this.meetingService.publishAgenda(this.meeting.id).subscribe(pagedData => {
 					this.submitted = false;
 					this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 					this.changeStatusLoad = false;
 					this.getMeeting();
 				},
-					error => {
-						this.submitted = false;
-						this.changeStatusLoad = false;
-					});
+				error => {
+					this.submitted = false;
+					this.changeStatusLoad = false;
+				});
 		});
 	}
 
@@ -488,29 +499,30 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			const data = { 'id': this.meeting.id };
+			const data = {'id': this.meeting.id};
 			this.sendEndMeetingRequest(this.meeting.id, data);
 		});
 	}
+
 	sendEndMeetingRequest(meetingId, data) {
 		const _successMessage = this.translate.instant('MEETINGS.STATUSACTIONS.END.SUCCESSMESSAGE');
 
-		this.meetingService.endMeeting(meetingId, data).
-			subscribe(pagedData => {
+		this.meetingService.endMeeting(meetingId, data).subscribe(pagedData => {
 				this.submitted = false;
 				this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 				this.changeStatusLoad = false;
 				this.getMeeting();
 			},
-				error => {
-					if (error.is_current_presenation) {
-						const currentPresentationId = error.current_attachment_id;
-						this.showCurrentPresentationPopup(meetingId, currentPresentationId);
-					}
-					this.submitted = false;
-					this.changeStatusLoad = false;
-				});
+			error => {
+				if (error.is_current_presenation) {
+					const currentPresentationId = error.current_attachment_id;
+					this.showCurrentPresentationPopup(meetingId, currentPresentationId);
+				}
+				this.submitted = false;
+				this.changeStatusLoad = false;
+			});
 	}
+
 	showCurrentPresentationPopup(meetingId, currentPresentationId) {
 		const _title: string = this.translate.instant('MEETINGS.STATUSACTIONS.END.TITLE');
 		const _description: string = this.translate.instant('MEETINGS.STATUSACTIONS.END.DESCRIPTION_CURRENT_PRESENTATION');
@@ -523,7 +535,7 @@ export class ViewMeetingComponent implements OnInit {
 				this.changeStatusLoad = false;
 				return;
 			}
-			const data = { 'id': meetingId, 'currentPresentationId': currentPresentationId };
+			const data = {'id': meetingId, 'currentPresentationId': currentPresentationId};
 			this.sendEndMeetingRequest(meetingId, data);
 		});
 	}
@@ -544,18 +556,17 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			this.meetingService.sendEmailAfterEndMeeting(this.meeting.id).
-				subscribe(pagedData => {
+			this.meetingService.sendEmailAfterEndMeeting(this.meeting.id).subscribe(pagedData => {
 					this.submitted = false;
 					this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 					this.changeStatusLoad = false;
 					this.getMeeting();
 				},
-					error => {
-						this.submitted = false;
-						this.changeStatusLoad = false;
-						this.layoutUtilsService.showActionNotification(this.isArabic ? error.error_ar : error.error, MessageType.Delete);
-					});
+				error => {
+					this.submitted = false;
+					this.changeStatusLoad = false;
+					this.layoutUtilsService.showActionNotification(this.isArabic ? error.error_ar : error.error, MessageType.Delete);
+				});
 		});
 	}
 
@@ -575,17 +586,16 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			this.meetingService.cancelMeeting(this.meeting.id).
-				subscribe(pagedData => {
+			this.meetingService.cancelMeeting(this.meeting.id).subscribe(pagedData => {
 					this.submitted = false;
 					this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 					this.changeStatusToCancelLoad = false;
 					this.getMeeting();
 				},
-					error => {
-						this.submitted = false;
-						this.changeStatusToCancelLoad = false;
-					});
+				error => {
+					this.submitted = false;
+					this.changeStatusToCancelLoad = false;
+				});
 		});
 	}
 
@@ -604,17 +614,16 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			this.meetingService.redraftMeeting(this.meeting.id).
-				subscribe(pagedData => {
+			this.meetingService.redraftMeeting(this.meeting.id).subscribe(pagedData => {
 					this.submitted = false;
 					this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 					this.changeStatusLoad = false;
 					this.getMeeting();
 				},
-					error => {
-						this.submitted = false;
-						this.changeStatusLoad = false;
-					});
+				error => {
+					this.submitted = false;
+					this.changeStatusLoad = false;
+				});
 		});
 	}
 
@@ -630,17 +639,16 @@ export class ViewMeetingComponent implements OnInit {
 				this.submitted = false;
 				return;
 			}
-			this.meetingService.sendSignatureMail(this.meetingId).
-				subscribe(pagedData => {
+			this.meetingService.sendSignatureMail(this.meetingId).subscribe(pagedData => {
 					this.submitted = false;
 					this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 					this.changeStatusLoad = false;
 					this.getMeeting();
 				},
-					error => {
-						this.submitted = false;
-						this.changeStatusLoad = false;
-					});
+				error => {
+					this.submitted = false;
+					this.changeStatusLoad = false;
+				});
 		});
 
 	}
@@ -656,11 +664,11 @@ export class ViewMeetingComponent implements OnInit {
 		presentationSpinnerIcon.style.display = 'block';
 
 		this.meetingService.presentMeetingAttachment(this.meetingId, attachmentId).subscribe((res) => {
-			this.getMeeting();
-			const url = 'meetings/' + this.meetingId + '/meeting_agenda/' + agendaId + '/attachments/' + attachmentId;
-			window.open(url, '_self');
-			presentationSpinnerIcon.style.display = 'none';
-		},
+				this.getMeeting();
+				const url = 'meetings/' + this.meetingId + '/meeting_agenda/' + agendaId + '/attachments/' + attachmentId;
+				window.open(url, '_self');
+				presentationSpinnerIcon.style.display = 'none';
+			},
 			error => {
 				if (this.isArabic) {
 					this.layoutUtilsService.showActionNotification(error.error_ar, MessageType.Create);
@@ -719,7 +727,7 @@ export class ViewMeetingComponent implements OnInit {
 			});
 		} else if (statusId === MeetingAttendanceStatuses.ABSENT) {
 			_message = this.translate.instant('VIEW_MEETING.MEETINGATTENDANCESTATUS.ABSENT.ABSENTMESSAGE');
-			const modelRef = this.modalService.open(RejectionReasonsComponent, { size: 'xl' as 'lg' });
+			const modelRef = this.modalService.open(RejectionReasonsComponent, {size: 'xl' as 'lg'});
 			modelRef.result.then((result) => {
 				this.meetingService.absentMeenting(this.meetingId, result).subscribe(() => {
 					this.layoutUtilsService.showActionNotification(_message, MessageType.Create);
@@ -818,7 +826,7 @@ export class ViewMeetingComponent implements OnInit {
 	}
 
 	fireClosePointer(attachmentId) {
-		const data = { key: 'pointer_closed' };
+		const data = {key: 'pointer_closed'};
 
 	}
 
@@ -832,7 +840,8 @@ export class ViewMeetingComponent implements OnInit {
 				res => {
 					// console.log(res);
 				},
-				error => { }
+				error => {
+				}
 			);
 	}
 
@@ -841,7 +850,8 @@ export class ViewMeetingComponent implements OnInit {
 			'.ChangePresenterEvent',
 			data => {
 				this.getMeeting();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -856,7 +866,8 @@ export class ViewMeetingComponent implements OnInit {
 		window.Echo.channel('meetingDataChanged').listen('.MeetingDataChangedEvent',
 			data => {
 				this.getMeeting();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -865,7 +876,7 @@ export class ViewMeetingComponent implements OnInit {
 		if (!currentMember) {
 			return false;
 		}
-		if(currentMember.is_signed != null) {
+		if (currentMember.is_signed != null) {
 			return false;
 		} else {
 			return true;
@@ -893,7 +904,7 @@ export class ViewMeetingComponent implements OnInit {
 		const _waitDesciption: string = this.translate.instant('MEETINGS.STATUSACTIONS.SEND_RECOMMENDATION.WAITDESCRIPTION');
 
 		const dialogRef = this.layoutUtilsService.meeingActions(_title, _description, _waitDesciption,
-			 this.translate.instant('MEETINGS.INFO.STATUS.RECOMMENDATION_SEND'),this.translate.instant('FILES.ADD')
+			this.translate.instant('MEETINGS.INFO.STATUS.RECOMMENDATION_SEND'), this.translate.instant('FILES.ADD')
 		);
 		dialogRef.afterClosed().subscribe(res => {
 			if (!res) {

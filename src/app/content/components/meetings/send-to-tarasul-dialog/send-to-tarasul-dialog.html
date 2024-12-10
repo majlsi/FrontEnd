@@ -1,67 +1,185 @@
-	<div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">ارسل الي تراسل
-		</h4>
-		<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click');close()">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+<div class="modal-header">
+	<h4 class="modal-title" id="modal-basic-title">ارسل الي تراسل
+	</h4>
+	<button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click');close()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
 
-	<form  novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">
-		<div class="modal-body px-6">
-			<b>{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.SELECTATTACHMENT'|translate}}	</b>
-		<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
-			<label for="relatedAgendaItem" class="col-12 col-form-label">
-				{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.AGENDAITEM' | translate}}
+<form novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">
+	<div class="modal-body px-6">
+		<div class="form-group m-form__group row" style="padding: 5px 0 8px;">
+			<label class="col-12 col-form-label">
+				الي قسم
 				&nbsp;<span class="MandatoryAsterisk">*</span>
 			</label>
 			<div class="col-12">
-				<ng-select [items]="agendas" (change)="autoFillAttachments(presenation.agendaId)"
-					placeholder="{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.AGENDAITEM' | translate}}"
-					[bindLabel]="agendabindLabel" bindValue="id" name="agenda"
-					[searchable]="true" [clearable]="false" [(ngModel)]="presenation.agendaId" required
-					>
-					<ng-template ng-label-tmp let-item="item">
-						{{isArabic? (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en) : (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}
-					</ng-template>
-					<ng-template ng-option-tmp let-item="item">
-						<span [title]="item.name"
-							class="ng-option-label">{{isArabic? (item.agenda_title_ar? item.agenda_title_ar : item.agenda_title_en) : (item.agenda_title_en? item.agenda_title_en : item.agenda_title_ar)}}</span>
-					</ng-template>
+				<ng-select [items]="lookups.lookupsAssigtoDept"
+						   placeholder="اختر"
+						   bindLabel="DEPT_DSCR_AR"
+						   bindValue="DEPT_NO"
+						   name="agenda"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.assignToDeptNo" required
+				>
+
 				</ng-select>
 				<div class="error text-danger form-control-feedback"
-					[hidden]="!hasError(startMeetingForm,'agenda', 'required')">
-					{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate}}
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
 				</div>
 			</div>
 		</div>
 
-		<div class="form-group m-form__group row" style="padding: 5px 0 20px;">
-			<label for="subject" class="col-12 col-form-label">
-				{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.ATTACHMENTS' | translate}}
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				الأهمية
 				&nbsp;<span class="MandatoryAsterisk">*</span>
 			</label>
 			<div class="col-12">
-				<ng-select [items]="agendaAttachments"
-				placeholder="{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.ATTACHMENTS' | translate}}"
-				bindLabel="attachment_name" bindValue="id" name="attachments"
-				[searchable]="true" [clearable]="false" [(ngModel)]="presenation.attachmentId" [required]="presenation.agendaId != 0"
+				<ng-select [items]="lookups.lookupsPriority"
+						   placeholder="اختر"
+						   bindLabel="PRIORITY_DESC_AR"
+						   bindValue="PRIORITY_NO"
+						   name="priority"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.priorityNo" required
 				>
-					</ng-select>
-					<div class="error text-danger form-control-feedback"
-					[hidden]="!hasError(startMeetingForm,'attachments', 'required')">
-					{{'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.ATTACHMENTS' | translate}}
-						</div>
 
-					</div>
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
 			</div>
 		</div>
-		<div class="modal-footer">
-			<button mat-button type="submit" cdkFocusInitial  class="btn btn-primary" [disabled]="submitted"
-						>
-						{{'BUTTON.START' | translate}}
-						<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
-					</button>
-			<button type="button" class="btn btn-secondary" mat-button (click)="close();activeModal.dismiss('Cross click')">{{'BUTTON.CANCEL' | translate}}</button>&nbsp;
+
+
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				المكتب
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsCabinet"
+						   placeholder="اختر"
+						   bindLabel="DESCRIPTION_AR"
+						   bindValue="CABINETID"
+						   name="priority"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.cabinetId" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
 		</div>
 
-	</form>
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				السرية
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsConfidential"
+						   placeholder="اختر"
+						   bindLabel="DESCRIPTION_AR"
+						   bindValue="CONFID_ID"
+						   name="priority"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.confidentialId" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				مصدر الوثيقة
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsDocSourceType"
+						   placeholder="اختر"
+						   bindLabel="SOURCE_DESC_AR"
+						   bindValue="DOC_SOURCE_ID"
+						   name="priority"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.docSourceId" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
+		</div>
+
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				نوع الوثيقة
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsDocType"
+						   placeholder="اختر"
+						   bindLabel="DESCRIPTION_AR"
+						   bindValue="TYPE_ID"
+						   name="priority"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.docTypeId" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
+		</div>
+
+
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+			موضوع الوثيقة
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsSubjectType"
+						   placeholder="اختر"
+						   bindLabel="SUBJECT_NAME_AR"
+						   bindValue="SUBJECT_TYPE"
+						   name="lookupsSubjectType"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.subjectId" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
+		</div>
+
+
+
+	</div>
+
+
+	<div class="modal-footer">
+		<button mat-button type="submit" cdkFocusInitial class="btn btn-primary" [disabled]="submitted"
+		>
+			ارسال
+			<i class='fa fa-spinner fa-spin ' *ngIf="submitted"></i>
+		</button>
+		<button type="button" class="btn btn-secondary" mat-button (click)="close();">{{ 'BUTTON.CANCEL' | translate }}</button>&nbsp;
+	</div>
+
+</form>
