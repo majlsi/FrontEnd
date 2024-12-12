@@ -6,6 +6,7 @@ import {BaseModel} from '../../models/baseModel';
 import {Observable} from 'rxjs';
 
 export interface TarasulBodyDto {
+	docRemarks?: string;
 	assignToDeptNo?: string;
 	assignToEmpNo?: string;
 	bayanFlag?: string;

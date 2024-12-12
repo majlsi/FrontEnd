@@ -8,7 +8,27 @@
 
 <form *ngIf="!hasResponse" novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">
 	<div class="modal-body px-6">
+
+
 		<div class="form-group m-form__group row" style="padding: 5px 0 8px;">
+			<label class="col-12 col-form-label">
+				الموضوع
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<input type="text" placeholder="الموضوع"
+					   aria-describedby="button-addon2" class="form-control" name="docRemarks"
+					   [(ngModel)]="tarasulBodyForm.docRemarks">
+
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					يجم الا يكون فارغ
+				</div>
+			</div>
+		</div>
+
+
+		<div class="form-group m-form__group row">
 			<label class="col-12 col-form-label">
 				الي قسم
 				&nbsp;<span class="MandatoryAsterisk">*</span>
@@ -184,7 +204,7 @@
 
 </form>
 
-<div class="flex-column justify-content-center align-items-center" *ngIf="hasResponse">
+<div class="flex flex-column justify-content-center align-items-center" *ngIf="hasResponse">
 	<div>تم الارسال بنجاج</div>
 	<div>:رقم المعاملة</div>
 	<div class="font-weight-bold h3">{{ tarasulResponse.InOutDocNo }}</div>
