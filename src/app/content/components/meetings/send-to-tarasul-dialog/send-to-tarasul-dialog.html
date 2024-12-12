@@ -6,7 +6,7 @@
 	</button>
 </div>
 
-<form novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">
+<form *ngIf="!hasResponse" novalidate #startMeetingForm="ngForm" (ngSubmit)="save(startMeetingForm)">
 	<div class="modal-body px-6">
 		<div class="form-group m-form__group row" style="padding: 5px 0 8px;">
 			<label class="col-12 col-form-label">
@@ -52,7 +52,6 @@
 				</div>
 			</div>
 		</div>
-
 
 
 		<div class="form-group m-form__group row">
@@ -146,28 +145,29 @@
 		</div>
 
 
-		<div class="form-group m-form__group row">
-			<label class="col-12 col-form-label">
-			موضوع الوثيقة
-				&nbsp;<span class="MandatoryAsterisk">*</span>
-			</label>
-			<div class="col-12">
-				<ng-select [items]="lookups.lookupsSubjectType"
-						   placeholder="اختر"
-						   bindLabel="SUBJECT_NAME_AR"
-						   bindValue="SUBJECT_TYPE"
-						   name="lookupsSubjectType"
-						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.subjectId" required
-				>
+		<!--
+				<div class="form-group m-form__group row">
+					<label class="col-12 col-form-label">
+					موضوع الوثيقة
+						&nbsp;<span class="MandatoryAsterisk">*</span>
+					</label>
+					<div class="col-12">
+						<ng-select [items]="lookups.lookupsSubjectType"
+								   placeholder="اختر"
+								   bindLabel="SUBJECT_NAME_AR"
+								   bindValue="SUBJECT_TYPE"
+								   name="lookupsSubjectType"
+								   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.subjectId" required
+						>
 
-				</ng-select>
-				<div class="error text-danger form-control-feedback"
-					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
-					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+						</ng-select>
+						<div class="error text-danger form-control-feedback"
+							 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+							{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
-
+		-->
 
 
 	</div>
@@ -183,3 +183,9 @@
 	</div>
 
 </form>
+
+<div class="flex-column justify-content-center align-items-center" *ngIf="hasResponse">
+	<div>تم الارسال بنجاج</div>
+	<div>:رقم المعاملة</div>
+	<div class="font-weight-bold h3">{{ tarasulResponse.InOutDocNo }}</div>
+</div>

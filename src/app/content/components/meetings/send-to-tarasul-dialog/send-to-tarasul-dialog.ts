@@ -35,6 +35,8 @@ export class SendToTarasulDialog implements OnInit {
 		lookupsDocType?: any;
 		lookupsSubjectType?: any;
 	} = {};
+	hasResponse: boolean = false;
+	tarasulResponse: any = undefined;
 
 
 	constructor(private modalService: NgbModal, private meetingService: MeetingService,
@@ -59,18 +61,28 @@ export class SendToTarasulDialog implements OnInit {
 
 
 	save(startMeetingForm: NgForm) {
-		debugger
 		this.submitted = true;
 		this.edit = true;
 
 		if (startMeetingForm.valid) {
-			this.meetingService.sendTarasul(this.meetingId, this.lang, this.tarasulBodyForm).subscribe((response) => {
-				console.log('sent', response);
-				this.submitted = false;
+			this.tarasulBodyForm.subjectId = ['159'];
+			this.meetingService.sendTarasul(this.meetingId, this.lang, this.tarasulBodyForm).subscribe(
+				{
+					next: (response) => {
+						if (response) {
+							console.log('sent', response);
+							this.submitted = false;
+							this.hasResponse = true;
+							this.tarasulResponse = response;
 
-				this.activeModal.close(this.tarasulBodyForm);
-
-			});
+							this.activeModal.close(this.tarasulBodyForm);
+						}
+					},
+					error: (error) => {
+						console.log('error', error);
+						this.submitted = false;
+					}
+				});
 		} else {
 			this.submitted = false;
 		}
