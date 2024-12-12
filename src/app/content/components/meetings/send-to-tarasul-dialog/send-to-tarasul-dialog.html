@@ -27,6 +27,29 @@
 			</div>
 		</div>
 
+		<div class="form-group m-form__group row">
+			<label class="col-12 col-form-label">
+				من قسم
+				&nbsp;<span class="MandatoryAsterisk">*</span>
+			</label>
+			<div class="col-12">
+				<ng-select [items]="lookups.lookupsAssigtoDept"
+						   placeholder="اختر"
+						   bindLabel="DEPT_DSCR_AR"
+						   bindValue="DEPT_NO"
+						   name="agenda"
+						   [searchable]="true" [clearable]="false" [(ngModel)]="tarasulBodyForm.assignFromDeptNo" required
+				>
+
+				</ng-select>
+				<div class="error text-danger form-control-feedback"
+					 [hidden]="!hasError(startMeetingForm,'agenda', 'required')">
+					{{ 'MEETINGS.STATUSACTIONS.START.PRESENTATION.VALIDATION.AGENDAITEM' | translate }}
+				</div>
+			</div>
+		</div>
+
+
 
 		<div class="form-group m-form__group row">
 			<label class="col-12 col-form-label">

@@ -7,6 +7,7 @@ import {Observable} from 'rxjs';
 
 export interface TarasulBodyDto {
 	docRemarks?: string;
+	assignFromDeptNo?: string;
 	assignToDeptNo?: string;
 	assignToEmpNo?: string;
 	bayanFlag?: string;
