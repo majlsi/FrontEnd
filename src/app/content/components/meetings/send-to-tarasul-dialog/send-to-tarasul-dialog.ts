@@ -75,7 +75,7 @@ export class SendToTarasulDialog implements OnInit {
 							this.hasResponse = true;
 							this.tarasulResponse = response;
 
-							this.activeModal.close(this.tarasulBodyForm);
+
 						}
 					},
 					error: (error) => {
