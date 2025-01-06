@@ -166,15 +166,21 @@
 						meeting.time_zone?.description_en : meeting.time_zone?.description_ar)}})
 					</p>
 					<p>
-						<span>
+						<a *ngIf="meeting?.meeting_venue_ar?.include('http') || meeting?.meeting_venue_en?.include('http') "
+						[href]="isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en)
+							: (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)" target="_blank">
+							{{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en)
+							: (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
+						</a>
+						<span *ngIf="!meeting?.meeting_venue_ar?.include('http') && !meeting?.meeting_venue_en?.include('http') ">
 							{{isArabic? (meeting.meeting_venue_ar? meeting.meeting_venue_ar : meeting.meeting_venue_en)
 							: (meeting.meeting_venue_en? meeting.meeting_venue_en : meeting.meeting_venue_ar)}}
 						</span>
-						<a class="mt-0 mb-2 m-link map-link-sm" *ngIf="meeting.location_lat && meeting.location_long"
+					<!--	<a class="mt-0 mb-2 m-link map-link-sm" *ngIf="meeting.location_lat && meeting.location_long"
 							[href]="'https://www.google.com/maps/search/?api=1&query=' + meeting.location_lat + ',' + meeting.location_long"
 							target='_blank'>
 							<i class="fa fa-map-marker-alt"></i> {{'VIEW_MEETING.SHOW_ON_MAP'|translate}}
-						</a>
+						</a>-->
 					</p>
 					<p
 						*ngIf="meeting.meeting_status_id == meetingStatuses.STARTED && meeting.is_online_meeting_enable && meeting.online_meeting_type_id == onlineMeetingAppsEnum.zoom">
