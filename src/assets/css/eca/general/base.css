@@ -138,7 +138,7 @@
 	padding        : 5px 15px;
 	display        : flex;
 	align-items    : center;
-	justify-content: start;
+	justify-content: flex-start;
 	background     : white;
 	cursor         : pointer;
 	border-bottom  : 1px solid #f0f0f0;

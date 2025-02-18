@@ -1,50 +1,45 @@
-import {
-	Component,
-	HostBinding,
-	Input,
-	AfterViewInit,
-	OnInit,
-	ElementRef,
-	ViewChild,
-	ChangeDetectionStrategy,
-	Inject,
-} from '@angular/core';
-import { LayoutConfigService } from './core/services/layout-config.service';
-import { ClassInitService } from './core/services/class-init.service';
-import { TranslationService } from './core/services/translation.service';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, Inject, Input, OnInit, ViewChild,} from '@angular/core';
+import {LayoutConfigService} from './core/services/layout-config.service';
+import {ClassInitService} from './core/services/class-init.service';
+import {TranslationService} from './core/services/translation.service';
 import * as objectPath from 'object-path';
-import { DomSanitizer } from '@angular/platform-browser';
-import { Router, NavigationEnd, ActivatedRoute, ActivationEnd } from '@angular/router';
-import { PageConfigService } from './core/services/page-config.service';
-import { filter } from 'rxjs/operators';
+import {DomSanitizer, Title} from '@angular/platform-browser';
+import {ActivatedRoute, ActivationEnd, NavigationEnd, Router} from '@angular/router';
+import {PageConfigService} from './core/services/page-config.service';
+import {filter} from 'rxjs/operators';
 // declare var gtag;
-import { SplashScreenService } from './core/services/splash-screen.service';
-import { environment } from '../environments/environment';
-import { Title } from '@angular/platform-browser';
-import { DOCUMENT } from '@angular/common';
+import {SplashScreenService} from './core/services/splash-screen.service';
+import {environment} from '../environments/environment';
+import {DOCUMENT} from '@angular/common';
 // language list
-import { locale as enLang } from './config/i18n/en';
-import { locale as arLang } from './config/i18n/ar';
-import { locale as lijaniArLang } from './config/i18n/agencies/lijani/ar';
-import { locale as lijaniEnLang } from './config/i18n/agencies/lijani/en';
-import { locale as mjlsiArLang } from './config/i18n/agencies/mjlsi/ar';
-import { locale as mjlsiEnLang } from './config/i18n/agencies/mjlsi/en';
-import { locale as SWCCArLang } from './config/i18n/agencies/swcc/ar';
-import { locale as SWCCEnLang } from './config/i18n/agencies/swcc/en';
+import {locale as enLang} from './config/i18n/en';
+import {locale as arLang} from './config/i18n/ar';
+import {locale as lijaniArLang} from './config/i18n/agencies/lijani/ar';
+import {locale as lijaniEnLang} from './config/i18n/agencies/lijani/en';
+import {locale as mjlsiArLang} from './config/i18n/agencies/mjlsi/ar';
+import {locale as mjlsiEnLang} from './config/i18n/agencies/mjlsi/en';
+import {locale as SWCCArLang} from './config/i18n/agencies/swcc/ar';
+import {locale as SWCCEnLang} from './config/i18n/agencies/swcc/en';
 
 // LIST KNOWN ISSUES
 // [Violation] Added non-passive event listener; https://github.com/angular/angular/issues/8866
 import Echo from 'laravel-echo';
-import { ToastrManager } from 'ng6-toastr-notifications';
-import { UserService } from './core/services/security/users.service';
-import { Observable } from 'rxjs';
-import { NotificationService } from './core/services/notification/notification.service';
-import { NotificationModelTypes } from './core/models/enums/notification-model-types';
-import { FileService } from './core/services/files/file.service';
-import { VideoGuideService } from './core/services/video-guide/video-guide.service';
+import {UserService} from './core/services/security/users.service';
+import {Observable} from 'rxjs';
+import {NotificationService} from './core/services/notification/notification.service';
+import {NotificationModelTypes} from './core/models/enums/notification-model-types';
+import {FileService} from './core/services/files/file.service';
+import {VideoGuideService} from './core/services/video-guide/video-guide.service';
+import {ToastrService} from 'ngx-toastr';
+
 declare global {
-	interface Window { io: any; }
-	interface Window { Echo: any; }
+	interface Window {
+		io: any;
+	}
+
+	interface Window {
+		Echo: any;
+	}
 }
 
 window.io = window.io || require('socket.io-client');
@@ -53,6 +48,7 @@ window.Echo = window.Echo || new Echo({
 	host: environment.redisListenURL,
 	path: '/socket.io',
 });
+
 @Component({
 	// tslint:disable-next-line:component-selector
 	selector: 'body[m-root]',
@@ -74,7 +70,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 	@HostBinding('style') style: any;
 	@HostBinding('class') classes: any = '';
 
-	@ViewChild('splashScreen', { read: ElementRef })
+	@ViewChild('splashScreen', {read: ElementRef})
 	splashScreen: ElementRef;
 	isArabic: boolean;
 	userId: number;
@@ -92,7 +88,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 		private pageConfigService: PageConfigService,
 		private splashScreenService: SplashScreenService,
 		private route: ActivatedRoute,
-		public toastr: ToastrManager,
+		public toastr: ToastrService,
 		private _userService: UserService,
 		private notificationService: NotificationService,
 		private fileService: FileService,
@@ -104,9 +100,9 @@ export class AppComponent implements AfterViewInit, OnInit {
 		const navEndEvent$ = router.events.pipe(
 			filter(e => e instanceof NavigationEnd)
 		);
-	/*	navEndEvent$.subscribe((e: NavigationEnd) => {
-			gtag('config', 'UA-159671967-1', { 'page_path': e.urlAfterRedirects });
-		});*/
+		/*	navEndEvent$.subscribe((e: NavigationEnd) => {
+				gtag('config', 'UA-159671967-1', { 'page_path': e.urlAfterRedirects });
+			});*/
 
 		// subscribe to class update event
 		this.classInitService.onClassesUpdated$.subscribe(classes => {
@@ -147,7 +143,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 		this.router.events
 			.pipe(filter(event => event instanceof NavigationEnd))
 			.subscribe(event => {
-				this.layoutConfigService.setModel({ page: objectPath.get(this.pageConfigService.getCurrentPageConfig(), 'config') }, true);
+				this.layoutConfigService.setModel({page: objectPath.get(this.pageConfigService.getCurrentPageConfig(), 'config')}, true);
 
 			});
 		this.router.events.subscribe((event: ActivationEnd) => {
@@ -162,9 +158,13 @@ export class AppComponent implements AfterViewInit, OnInit {
 	ngOnInit(): void {
 		this.listenToSystemNotificationChannel();
 		this.route.queryParams.subscribe(queryParams => {
-			const lang = queryParams.lang ? queryParams.lang : ((queryParams.LanguageId && queryParams.LanguageId == '1') ? 'ar' : ((queryParams.LanguageId && queryParams.LanguageId != '1') ? 'en' : null));
+			const lang = queryParams.lang
+				? queryParams.lang
+				: ((queryParams.LanguageId && queryParams.LanguageId === '1')
+					? 'ar' : ((queryParams.LanguageId && queryParams.LanguageId !== '1') ?
+						'en' : null));
 			const currentLang = localStorage.getItem('language');
-			if (lang && currentLang != lang) {
+			if (lang && currentLang !== lang) {
 				this.translationService.setLanguage(lang);
 				this.translationService.setAppLanguage(lang);
 				this.document.documentElement.lang = lang;
@@ -178,11 +178,11 @@ export class AppComponent implements AfterViewInit, OnInit {
 			if (this.themeName && !this.isArabic) {
 				this.titleService.setTitle(this.themeTitleEn);
 				this.loadStyle('en-css.css');
-				this.loadStyle(`${this.themeName}-en-css.css`, "custom-theme");
+				this.loadStyle(`${this.themeName}-en-css.css`, 'custom-theme');
 			} else if (this.themeName && this.isArabic) {
 				this.titleService.setTitle(this.themeTitleAr);
 				this.loadStyle('ar-css.css');
-				this.loadStyle(`${this.themeName}-ar-css.css`, "custom-theme");
+				this.loadStyle(`${this.themeName}-ar-css.css`, 'custom-theme');
 			} else if (!this.themeName && this.isArabic) {
 				this.titleService.setTitle('مجلسى - للاجتماعات الذكية');
 				this.loadStyle('ar-css.css');
@@ -193,7 +193,8 @@ export class AppComponent implements AfterViewInit, OnInit {
 			// get themeName Configuration
 		});
 	}
-	loadStyle(styleName: string, id: string = "client-theme") {
+
+	loadStyle(styleName: string, id: string = 'client-theme') {
 		const head = this.document.getElementsByTagName('head')[0];
 		const style = this.document.createElement('link');
 		style.id = id;
@@ -201,6 +202,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 		style.href = `${styleName}`;
 		head.appendChild(style);
 	}
+
 	ngAfterViewInit(): void {
 		if (this.splashScreen) {
 			this.splashScreenService.init(this.splashScreen.nativeElement);
@@ -226,11 +228,11 @@ export class AppComponent implements AfterViewInit, OnInit {
 					if (res.user.meeting_guest_id != null) {
 						this.meetingGuestId = res.user.meeting_guest_id;
 						const notificationGuestsIds = data.data.notificationGuestsIds;
-						index = notificationGuestsIds?.findIndex(voterId => voterId == this.meetingGuestId);
+						index = notificationGuestsIds?.findIndex(voterId => voterId === this.meetingGuestId);
 					} else {
 						this.userId = res.user.id;
 						const notificationUsersIds = data.data.notificationUsersIds;
-						index = notificationUsersIds.findIndex(voterId => voterId == this.userId);
+						index = notificationUsersIds.findIndex(voterId => voterId === this.userId);
 					}
 
 					this.notificationService.setNotificationDataChanged(data.data);
@@ -241,7 +243,7 @@ export class AppComponent implements AfterViewInit, OnInit {
 						const title = this.isArabic ? data.data.notificationTitleAr : data.data.notificationTitleEn;
 						const notificationUrl = data.data.notificationUrl;
 						// if not in presentation page or in presentation page and notification is descision
-						if (!this.isPresentation || (this.isPresentation && data.data.notificationModelType == NotificationModelTypes.meetingDecision)) {
+						if (!this.isPresentation || (this.isPresentation && data.data.notificationModelType === NotificationModelTypes.meetingDecision)) {
 							this.renderTostr(data.data, message, title, notificationUrl);
 						}
 					}
@@ -254,7 +256,8 @@ export class AppComponent implements AfterViewInit, OnInit {
 		this.notificationService.getNewNotificationCount().subscribe(res => {
 			// set new notifications number
 			this.notificationService.setCountOfNewNotifications(res.count);
-		}, error => { });
+		}, error => {
+		});
 	}
 
 	markNotificationAsReaded(notification) {
@@ -270,19 +273,18 @@ export class AppComponent implements AfterViewInit, OnInit {
 	}
 
 	renderTostr(notification, message, title, notificationUrl) {
-		const toastr = this.toastr.infoToastr(message, title, {
-			animate: null,
-			toastTimeout: environment.toastTimeout,
-			position: 'bottom-left'
+		const toastr = this.toastr.info(message, title, {
+			timeOut: environment.toastTimeout,
+			// position: 'bottom-left'
 		});
-		notification.toastr_id = toastr.id;
-		this.toastr.onClickToast().subscribe((res) => {
-			if (notification.toastr_id == res.id) {
+		notification.toastr_id = toastr.toastId;
+		toastr.onTap.subscribe((res) => {
+			// if (notification.toastr_id === res.id) {
 				this.markNotificationAsReaded(notification);
 				if (notificationUrl) {
 					this.router.navigate([notificationUrl]);
 				}
-			}
+			// }
 		});
 	}
 

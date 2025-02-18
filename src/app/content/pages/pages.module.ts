@@ -17,7 +17,6 @@ import {LayoutUtilsService} from '../../core/services/layout-utils.service';
 import {AuthModule} from './auth/auth.module';
 import {TranslateModule} from '@ngx-translate/core';
 import {NgSelectModule} from '@ng-select/ng-select';
-import {ToastrModule} from 'ng6-toastr-notifications';
 import {WelcomeSplashPageComponent} from './welcome-splash-page/welcome-splash-page.component';
 import {WelcomeSplashModule} from '../components/welcome-splash/welcome-splash.module';
 import {NotificationsPageModule} from './notifications-page/notifications-page.module';
@@ -29,6 +28,8 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {MeetingPageComponent} from './meeting-page/meeting-page.component';
 import {InvitationPageComponent} from './invitation-page/invitation-page.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {ToastrModule} from 'ngx-toastr';
 
 @NgModule({
 	declarations: [
@@ -58,8 +59,9 @@ import {InvitationPageComponent} from './invitation-page/invitation-page.compone
 		MatProgressSpinnerModule,
 		AuthModule,
 		TranslateModule.forChild(),
+		ToastrModule.forRoot(), // Update this line
 		NgSelectModule,
-		ToastrModule,
+		BrowserAnimationsModule,
 		WelcomeSplashModule,
 		NotificationsPageModule,
 		HelpCenterModule

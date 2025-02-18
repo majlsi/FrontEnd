@@ -339,7 +339,7 @@ export class StakeholderListComponent implements OnInit, AfterViewInit {
 	downloadExcelTemplate() {
 		this._stakeholderService.DownloadBlankExcelTemplate().subscribe(
 			(response: any) => {
-				saveAs(response, "BlankExcelTemplate.csv");
+				saveAs(response, 'BlankExcelTemplate.csv');
 			},
 			(err) => {
 				for (let index = 0; index < err.Errors.length; index++) {

@@ -1,43 +1,35 @@
-import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import {
-	Component,
-	OnInit,
-	HostBinding,
-	Input,
-	ViewChild,
-	ElementRef,
-	AfterViewInit,
-	ChangeDetectionStrategy
-} from '@angular/core';
+import {NavigationEnd, NavigationStart, Router} from '@angular/router';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, OnInit, ViewChild} from '@angular/core';
 import * as objectPath from 'object-path';
-import { LayoutConfigService } from '../../core/services/layout-config.service';
-import { ClassInitService } from '../../core/services/class-init.service';
-import { Subject, of } from 'rxjs';
-import { LayoutRefService } from '../../core/services/layout/layout-ref.service';
-import { trigger, transition, AnimationBuilder, AnimationPlayer, style, animate, state } from '@angular/animations';
-import { TranslationService } from '../../core/services/translation.service';
+import {LayoutConfigService} from '../../core/services/layout-config.service';
+import {ClassInitService} from '../../core/services/class-init.service';
+import {of, Subject} from 'rxjs';
+import {LayoutRefService} from '../../core/services/layout/layout-ref.service';
+import {animate, AnimationBuilder, AnimationPlayer, style, transition, trigger} from '@angular/animations';
+import {TranslationService} from '../../core/services/translation.service';
 import {SplashScreenService} from '../../core/services/splash-screen.service';
-import { environment } from '../../../environments/environment';
-import { ToastrManager } from 'ng6-toastr-notifications';
-import { UserService } from '../../core/services/security/users.service';
+import {environment} from '../../../environments/environment';
+import {UserService} from '../../core/services/security/users.service';
 import {ChatService} from '../../core/services/chat/chat.service';
 import Echo from 'laravel-echo';
-import { TranslateService } from '@ngx-translate/core';
-import { LayoutUtilsService, MessageType } from '../../core/services/layout-utils.service';
-import { MeetingService } from './../../core/services/meeting/meeting.service';
-import { Roles } from '../../core/models/enums/roles';
-import { NotificationService } from '../../core/services/notification/notification.service';
-import { FileService } from '../../core/services/files/file.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { TourModalComponent } from '../components/help-center/tour-modal/tour-modal.component';
-import { VideoGuideService } from '../../core/services/video-guide/video-guide.service';
-import * as $ from 'jquery';
+import {TranslateService} from '@ngx-translate/core';
+import {LayoutUtilsService} from '../../core/services/layout-utils.service';
+import {MeetingService} from './../../core/services/meeting/meeting.service';
+import {FileService} from '../../core/services/files/file.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TourModalComponent} from '../components/help-center/tour-modal/tour-modal.component';
+import {VideoGuideService} from '../../core/services/video-guide/video-guide.service';
+import {ToastrService} from 'ngx-toastr';
 
 declare global {
-	interface Window { io: any; }
-	interface Window { Echo: any; }
-}
+	interface Window {
+		io: any;
+	}
 
+	interface Window {
+		Echo: any;
+	}
+}
 
 
 window.io = window.io || require('socket.io-client');
@@ -46,6 +38,7 @@ window.Echo = window.Echo || new Echo({
 	host: environment.redisListenURL,
 	path: '/socket.io',
 });
+
 @Component({
 	selector: 'm-pages',
 	templateUrl: './pages.component.html',
@@ -57,27 +50,27 @@ window.Echo = window.Echo || new Echo({
 				transition(
 					'void => true', // ---> Entering --->
 					[
-						style({ transform: 'translatex(-100%)' }),
-						animate('300ms ease-in', style({ transform: 'translatex(0%)' }))
+						style({transform: 'translatex(-100%)'}),
+						animate('300ms ease-in', style({transform: 'translatex(0%)'}))
 					]
 				),
 				transition(
 					'true => void', // ---> Leaving --->
 					[
-						animate('300ms ease-in', style({ transform: 'translatex(-100%)' }))
+						animate('300ms ease-in', style({transform: 'translatex(-100%)'}))
 					]
 				),
 				transition(
 					'void => false', // <--- Entering <---
 					[
-						style({ transform: 'translatex(100%)' }),
-						animate('300ms ease-in', style({ transform: 'translatex(0%)' }))
+						style({transform: 'translatex(100%)'}),
+						animate('300ms ease-in', style({transform: 'translatex(0%)'}))
 					]
 				),
 				transition(
 					'false => void', // <--- Leaving <---
 					[
-						animate('300ms ease-in', style({ transform: 'translatex(100%)' }))
+						animate('300ms ease-in', style({transform: 'translatex(100%)'}))
 					]
 				)
 			]
@@ -108,7 +101,6 @@ export class PagesComponent implements OnInit, AfterViewInit {
 	isNotCompleteData: boolean = false;
 
 	constructor(
-		private el: ElementRef,
 		private configService: LayoutConfigService,
 		public classInitService: ClassInitService,
 		private router: Router,
@@ -118,7 +110,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 		private layoutRefService: LayoutRefService,
 		private animationBuilder: AnimationBuilder,
 		private translationService: TranslationService,
-		public toastr: ToastrManager,
+		public toastr: ToastrService, // Update this line
 		private _userService: UserService,
 		private chatService: ChatService,
 		private videoGuideService: VideoGuideService,
@@ -199,122 +191,57 @@ export class PagesComponent implements OnInit, AfterViewInit {
 	animate(element) {
 		this.player = this.animationBuilder
 			.build([
-				style({ opacity: 0, transform: 'translateY(15px)' }),
-				animate('500ms ease', style({ opacity: 1, transform: 'translateY(0)' })),
-				style({ transform: 'none' }),
+				style({opacity: 0, transform: 'translateY(15px)'}),
+				animate('500ms ease', style({opacity: 1, transform: 'translateY(0)'})),
+				style({transform: 'none'}),
 			])
 			.create(element);
 		this.player.play();
 	}
 
-	listenToMeetingStatusesChannel() {
-		window.Echo.channel('notification')
-			.listen('.SendNotificationEvent', (data) => {
-				const meetingMemberIds = data.data.meetingMemberIds;
-				this.findUser(meetingMemberIds, this.userId).subscribe(res => {
-					if (res) {
-						let message;
-						let title;
-						if (this.isArabic) {
-							message = data.data.notificationMessageAr;
-							title = data.data.notificationTitleAr;
-						} else {
-							message = data.data.notificationMessageEn;
-							title = data.data.notificationTitleEn;
+	/*	listenToMeetingStatusesChannel() {
+			window.Echo.channel('notification')
+				.listen('.SendNotificationEvent', (data) => {
+					const meetingMemberIds = data.data.meetingMemberIds;
+					this.findUser(meetingMemberIds, this.userId).subscribe(res => {
+						if (res) {
+							let message;
+							let title;
+							if (this.isArabic) {
+								message = data.data.notificationMessageAr;
+								title = data.data.notificationTitleAr;
+							} else {
+								message = data.data.notificationMessageEn;
+								title = data.data.notificationTitleEn;
+							}
+							const meetingId = +data.data.meetingId;
+
+							this.toastr.infoToastr(message, title, {
+								animate: null,
+								toastTimeout: environment.toastTimeout,
+								position: 'bottom-left'
+							});
+							this.toastr.onClickToast().subscribe(() => {
+								this.router.navigate(['/view-meetings/' + meetingId]);
+							});
+
 						}
-						const meetingId = +data.data.meetingId;
+					}, error => {
 
-						this.toastr.infoToastr(message, title, {
-							animate: null,
-							toastTimeout: environment.toastTimeout,
-							position: 'bottom-left'
-						});
-						this.toastr.onClickToast().subscribe(() => {
-							this.router.navigate(['/view-meetings/' + meetingId]);
-						});
+					});
 
-					}
-				}, error => {
-
+					/!**!/
+				}, (e) => {
+					console.log(e);
 				});
 
-				/**/
-			}, (e) => {
-				console.log(e);
-			});
+		}
 
-	}
-
-	listenToNewTaskChannel() {
-		window.Echo.channel('newTaskNotification')
-			.listen('.NewTaskNotificationEvent', (data) => {
-				const assignedTo = data.data.assignedTo;
-				if (this.userId === assignedTo) {
-					let message;
-					let title;
-					if (this.isArabic) {
-						message = data.data.notificationMessageAr;
-						title = data.data.notificationTitleAr;
-					} else {
-						message = data.data.notificationMessageEn;
-						title = data.data.notificationTitleEn;
-					}
-					const taskId = +data.data.taskId;
-
-					this.toastr.infoToastr(message, title, {
-						animate: null,
-						toastTimeout: environment.toastTimeout,
-						position: 'bottom-left'
-					});
-					this.toastr.onClickToast().subscribe(() => {
-						this.router.navigate(['/tasks-management/task-details/' + taskId]);
-					});
-
-				}
-			}, (e) => {
-				console.log(e);
-			});
-
-	}
-
-	listenToTaskExpiredChannel() {
-		window.Echo.channel('taskExpiredNotification')
-			.listen('.TaskExpiredNotificationEvent', (data) => {
-				const assignedTo = data.data.assignedTo;
-				if (this.userId === assignedTo) {
-					let message;
-					let title;
-					if (this.isArabic) {
-						message = data.data.notificationMessageAr;
-						title = data.data.notificationTitleAr;
-					} else {
-						message = data.data.notificationMessageEn;
-						title = data.data.notificationTitleEn;
-					}
-					const taskId = +data.data.taskId;
-
-					this.toastr.infoToastr(message, title, {
-						animate: null,
-						toastTimeout: environment.toastTimeout,
-						position: 'bottom-left'
-					});
-					this.toastr.onClickToast().subscribe(() => {
-						this.router.navigate(['/tasks-management/task-details/' + taskId]);
-					});
-
-				}
-			}, (e) => {
-				console.log(e);
-			});
-
-	}
-
-	listenToTaskStatusChangedChannel() {
-		window.Echo.channel('taskStatusChangedNotification')
-			.listen('.TaskStatusChangedNotificationEvent', (data) => {
-				const userIds = data.data.userIds;
-				this.findUser(userIds, this.userId).subscribe(res => {
-					if (res) {
+		listenToNewTaskChannel() {
+			window.Echo.channel('newTaskNotification')
+				.listen('.NewTaskNotificationEvent', (data) => {
+					const assignedTo = data.data.assignedTo;
+					if (this.userId === assignedTo) {
 						let message;
 						let title;
 						if (this.isArabic) {
@@ -336,14 +263,79 @@ export class PagesComponent implements OnInit, AfterViewInit {
 						});
 
 					}
-				}, error => {
-
+				}, (e) => {
+					console.log(e);
 				});
-			}, (e) => {
-				console.log(e);
-			});
 
-	}
+		}
+
+		listenToTaskExpiredChannel() {
+			window.Echo.channel('taskExpiredNotification')
+				.listen('.TaskExpiredNotificationEvent', (data) => {
+					const assignedTo = data.data.assignedTo;
+					if (this.userId === assignedTo) {
+						let message;
+						let title;
+						if (this.isArabic) {
+							message = data.data.notificationMessageAr;
+							title = data.data.notificationTitleAr;
+						} else {
+							message = data.data.notificationMessageEn;
+							title = data.data.notificationTitleEn;
+						}
+						const taskId = +data.data.taskId;
+
+						this.toastr.infoToastr(message, title, {
+							animate: null,
+							toastTimeout: environment.toastTimeout,
+							position: 'bottom-left'
+						});
+						this.toastr.onClickToast().subscribe(() => {
+							this.router.navigate(['/tasks-management/task-details/' + taskId]);
+						});
+
+					}
+				}, (e) => {
+					console.log(e);
+				});
+
+		}
+
+		listenToTaskStatusChangedChannel() {
+			window.Echo.channel('taskStatusChangedNotification')
+				.listen('.TaskStatusChangedNotificationEvent', (data) => {
+					const userIds = data.data.userIds;
+					this.findUser(userIds, this.userId).subscribe(res => {
+						if (res) {
+							let message;
+							let title;
+							if (this.isArabic) {
+								message = data.data.notificationMessageAr;
+								title = data.data.notificationTitleAr;
+							} else {
+								message = data.data.notificationMessageEn;
+								title = data.data.notificationTitleEn;
+							}
+							const taskId = +data.data.taskId;
+
+							this.toastr.infoToastr(message, title, {
+								animate: null,
+								toastTimeout: environment.toastTimeout,
+								position: 'bottom-left'
+							});
+							this.toastr.onClickToast().subscribe(() => {
+								this.router.navigate(['/tasks-management/task-details/' + taskId]);
+							});
+
+						}
+					}, error => {
+
+					});
+				}, (e) => {
+					console.log(e);
+				});
+
+		}*/
 
 	listenToJoinToPresentationChannel() {
 		window.Echo.channel('presentAttachmentToParticipants')
@@ -394,7 +386,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 					} else {
 						if (this.user.meeting_guest_id == null && this.userId !== presenterUserId) {
 							this.showPresentationPopup(title, message, url);
-						} else if (this.user.meeting_guest_id != null && this.user.meeting_guest_id != presenterUserId) {
+						} else if (this.user.meeting_guest_id != null && this.user.meeting_guest_id !== presenterUserId) {
 							this.showPresentationPopup(title, message, url);
 						}
 					}
@@ -406,6 +398,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 			});
 
 	}
+
 	listenToEndPresentationChannel() {
 		window.Echo.channel('endPresentation')
 			.listen('.EndPresentationEvent', (data) => {
@@ -494,6 +487,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 			return of(false);
 		}
 	}
+
 	getLanguage() {
 		this.isArabic = this.translationService.isArabic();
 	}
@@ -531,12 +525,11 @@ export class PagesComponent implements OnInit, AfterViewInit {
 							if (!resp) {
 								return;
 							}
-							this.meetingService.takeParticipantAttendance(meetingId).
-								subscribe(pagedData => {
+							this.meetingService.takeParticipantAttendance(meetingId).subscribe(pagedData => {
 
 								},
-									error => {
-									});
+								error => {
+								});
 						});
 					}
 				}, error => {
@@ -565,12 +558,11 @@ export class PagesComponent implements OnInit, AfterViewInit {
 					}
 					const taskId = +data.data.taskId;
 
-					this.toastr.infoToastr(message, title, {
-						animate: null,
-						toastTimeout: environment.toastTimeout,
-						position: 'bottom-left'
+					const toast = this.toastr.info(message, title, {
+						timeOut: environment.toastTimeout,
+						positionClass: 'bottom-left'
 					});
-					this.toastr.onClickToast().subscribe(() => {
+					toast.onTap.subscribe(() => {
 						this.router.navigate(['/tasks-management/task-details/' + taskId]);
 					});
 
@@ -585,11 +577,11 @@ export class PagesComponent implements OnInit, AfterViewInit {
 			.listen('.ChatNotificationEvent', (data) => {
 				const chat_users = data.data.sender_user.chat_users;
 				const chat_guests = data.data.sender_user.chat_guests;
-				let index = chat_users.findIndex(user => user.id == this.userId);
-				if (index == -1) {
-					index = chat_guests.findIndex(user => user == this.meeting_guest_id);
+				let index = chat_users.findIndex(user => user.id === this.userId);
+				if (index === -1) {
+					index = chat_guests.findIndex(user => user === this.meeting_guest_id);
 				}
-				if (index != -1 && this.user.chat_user_id != data.data.sender_user_id && (!data.data.is_chat_updated)) {
+				if (index !== -1 && this.user.chat_user_id !== data.data.sender_user_id && (!data.data.is_chat_updated)) {
 					this.chatService.addNewChatNotificationsIdsArray(data.data.chat_room_id);
 					// let message = data.data.message_text;
 					// let title = this.isArabic? data.data.chat_name_ar: (data.data.chat_name? data.data.chat_name : data.data.chat_name_ar);
@@ -612,7 +604,7 @@ export class PagesComponent implements OnInit, AfterViewInit {
 
 	openTour() {
 		const modalRef = this.modalService.open(TourModalComponent,
-			{ centered: true, windowClass: 'hidden-modal-content tour-modal', size: 'sm', backdropClass: 'noBackdrop' });
+			{centered: true, windowClass: 'hidden-modal-content tour-modal', size: 'sm', backdropClass: 'noBackdrop'});
 		// modalRef.componentInstance.page = this.page;
 
 		setTimeout(() => {
@@ -620,15 +612,15 @@ export class PagesComponent implements OnInit, AfterViewInit {
 		}, 10);
 	}
 
-	startTour(){
+	startTour() {
 		this.videoGuideService.routeUrl.subscribe(res => {
-			let startConversationFullScreenButton = $('#startConversationFullScreen');
-			if(res == this.router.url){
-				let list = this.videoGuideService.getGuideStepsList();
-				if(startConversationFullScreenButton.length && startConversationFullScreenButton.offset().top){
+			const startConversationFullScreenButton = $('#startConversationFullScreen');
+			if (res === this.router.url) {
+				const list = this.videoGuideService.getGuideStepsList();
+				if (startConversationFullScreenButton.length && startConversationFullScreenButton.offset().top) {
 					list[0] = list[0] + 'FullScreen';
 				}
-				if(list && list.length > 0){
+				if (list && list.length > 0) {
 					this.videoGuideService.startGuide(list);
 				}
 			}

@@ -1,248 +1,250 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "default": {
-      "root": "",
-      "sourceRoot": "src",
-      "projectType": "application",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/assets"
-            ],
-            "styles": [
-              "node_modules/material-design-icons/iconfont/material-icons.css",
-              "node_modules/dragula/dist/dragula.css",
-              {
-                "input": "src/styles.scss",
-                "bundleName": "en-css",
-                "inject": false
-              },
-              {
-                "input": "src/styles-ar.scss",
-                "bundleName": "ar-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/eca/style.css",
-                "bundleName": "eca-en-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/eca/style.rtl.css",
-                "bundleName": "eca-ar-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/gaft/style.css",
-                "bundleName": "gaft-en-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/gaft/style.rtl.css",
-                "bundleName": "gaft-ar-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/lcgpa/style.css",
-                "bundleName": "lcgpa-en-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/lcgpa/style.rtl.css",
-                "bundleName": "lcgpa-ar-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/sadu/style.css",
-                "bundleName": "sadu-en-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/sadu/style.rtl.css",
-                "bundleName": "sadu-ar-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/swcc/style.css",
-                "bundleName": "swcc-en-css",
-                "inject": false
-              },
-              {
-                "input": "src/assets/css/swcc/style.rtl.css",
-                "bundleName": "swcc-ar-css",
-                "inject": false
-              }
-            ],
-            "scripts": [
-              "src/assets/vendors/base/vendors.bundle.js",
-              "src/assets/demo/default/base/scripts.bundle.js",
-              "node_modules/pdfjs-dist/build/pdf.worker.min.js"
-            ],
-		 	"baseHref": "/",
-            "aot": false,
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": false,
-            "namedChunks": true
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            },
-            "test": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.test.ts"
-                }
-              ]
-            },
-            "eca": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.eca.ts"
-                }
-              ]
-            },
-            "lcgpa": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.lcgpa.ts"
-                }
-              ]
-            },
-            "gaft": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.gaft.ts"
-                }
-              ]
-            },
-            "stc": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.stc.ts"
-                }
-              ]
-            },
-            "sadu": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.sadu.ts"
-                }
-              ]
-            },
-            "swcc": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.swcc.ts"
-                }
-              ]
-            }
-          },
-          "defaultConfiguration": ""
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "buildTarget": "default:build"
-          },
-          "configurations": {
-            "production": {
-              "buildTarget": "default:build:production"
-            },
-            "test": {
-              "buildTarget": "default:build:test"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "buildTarget": "default:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "./karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-              "src/assets/vendors/base/vendors.bundle.js",
-              "src/assets/demo/default/base/scripts.bundle.js"
-            ],
-            "styles": [
-              "node_modules/material-design-icons/iconfont/material-icons.css",
-              "node_modules/dragula/dist/dragula.css",
-              {
-                "input": "src/styles.scss",
-                "bundleName": "en-css",
-                "inject": false
-              },
-              {
-                "input": "src/styles-ar.scss",
-                "bundleName": "ar-css",
-                "inject": false
-              }
-            ],
-            "assets": [
-              "src/assets"
-            ]
-          }
-        }
-      }
-    },
-    "default-e2e": {
-      "root": "",
-      "sourceRoot": "",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "./protractor.conf.js",
-            "devServerTarget": "default:serve"
-          }
-        }
-      }
-    }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "default",
-      "style": "scss",
-      "project": "default"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "m"
-    }
-  },
-  "cli": {
-    "analytics": false
-  }
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"default": {
+			"root": "",
+			"sourceRoot": "src",
+			"projectType": "application",
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:browser",
+					"options": {
+						"outputPath": "dist",
+						"index": "src/index.html",
+						"main": "src/main.ts",
+						"tsConfig": "src/tsconfig.app.json",
+						"polyfills": "src/polyfills.ts",
+						"assets": [
+							"src/assets"
+						],
+						"styles": [
+							"node_modules/material-design-icons/iconfont/material-icons.css",
+							"node_modules/dragula/dist/dragula.css",
+							{
+								"input": "src/styles.scss",
+								"bundleName": "en-css",
+								"inject": false
+							},
+							{
+								"input": "src/styles-ar.scss",
+								"bundleName": "ar-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/eca/style.css",
+								"bundleName": "eca-en-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/eca/style.rtl.css",
+								"bundleName": "eca-ar-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/gaft/style.css",
+								"bundleName": "gaft-en-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/gaft/style.rtl.css",
+								"bundleName": "gaft-ar-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/lcgpa/style.css",
+								"bundleName": "lcgpa-en-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/lcgpa/style.rtl.css",
+								"bundleName": "lcgpa-ar-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/sadu/style.css",
+								"bundleName": "sadu-en-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/sadu/style.rtl.css",
+								"bundleName": "sadu-ar-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/swcc/style.css",
+								"bundleName": "swcc-en-css",
+								"inject": false
+							},
+							{
+								"input": "src/assets/css/swcc/style.rtl.css",
+								"bundleName": "swcc-ar-css",
+								"inject": false
+							}
+						],
+						"scripts": [
+							"src/assets/vendors/base/vendors.bundle.js",
+							"src/assets/demo/default/base/scripts.bundle.js",
+							"node_modules/pdfjs-dist/build/pdf.worker.mjs"
+						],
+						"baseHref": "/",
+						"aot": false,
+						"vendorChunk": true,
+						"extractLicenses": false,
+						"buildOptimizer": false,
+						"sourceMap": true,
+						"optimization": false,
+						"namedChunks": true
+					},
+					"configurations": {
+						"production": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.prod.ts"
+								}
+							]
+						},
+						"test": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.test.ts"
+								}
+							]
+						},
+						"eca": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.eca.ts"
+								}
+							]
+						},
+						"lcgpa": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.lcgpa.ts"
+								}
+							]
+						},
+						"gaft": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.gaft.ts"
+								}
+							]
+						},
+						"stc": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.stc.ts"
+								}
+							]
+						},
+						"sadu": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.sadu.ts"
+								}
+							]
+						},
+						"swcc": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.swcc.ts"
+								}
+							]
+						}
+					},
+					"defaultConfiguration": ""
+				},
+				"serve": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"options": {
+						"buildTarget": "default:build",
+						"hmr": false,
+						"liveReload": true
+					},
+					"configurations": {
+						"production": {
+							"buildTarget": "default:build:production"
+						},
+						"test": {
+							"buildTarget": "default:build:test"
+						}
+					}
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n",
+					"options": {
+						"buildTarget": "default:build"
+					}
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"main": "src/test.ts",
+						"karmaConfig": "./karma.conf.js",
+						"polyfills": "src/polyfills.ts",
+						"tsConfig": "src/tsconfig.spec.json",
+						"scripts": [
+							"src/assets/vendors/base/vendors.bundle.js",
+							"src/assets/demo/default/base/scripts.bundle.js"
+						],
+						"styles": [
+							"node_modules/material-design-icons/iconfont/material-icons.css",
+							"node_modules/dragula/dist/dragula.css",
+							{
+								"input": "src/styles.scss",
+								"bundleName": "en-css",
+								"inject": false
+							},
+							{
+								"input": "src/styles-ar.scss",
+								"bundleName": "ar-css",
+								"inject": false
+							}
+						],
+						"assets": [
+							"src/assets"
+						]
+					}
+				}
+			}
+		},
+		"default-e2e": {
+			"root": "",
+			"sourceRoot": "",
+			"projectType": "application",
+			"architect": {
+				"e2e": {
+					"builder": "@angular-devkit/build-angular:protractor",
+					"options": {
+						"protractorConfig": "./protractor.conf.js",
+						"devServerTarget": "default:serve"
+					}
+				}
+			}
+		}
+	},
+	"schematics": {
+		"@schematics/angular:component": {
+			"prefix": "default",
+			"style": "scss",
+			"project": "default"
+		},
+		"@schematics/angular:directive": {
+			"prefix": "m"
+		}
+	},
+	"cli": {
+		"analytics": false
+	}
 }

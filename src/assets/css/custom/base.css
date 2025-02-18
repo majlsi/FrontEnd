@@ -802,7 +802,7 @@ m-available-storage {
 	padding: 5px 15px;
     display: flex;
     align-items: center;
-    justify-content: start;
+    justify-content: flex-start;
     background: #fff;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f0;
@@ -903,7 +903,7 @@ box-shadow: none!important;
 	opacity: 0!important;
  }
 
- 
+
 .text-blue{
     color: #36a3f7!important;
 }

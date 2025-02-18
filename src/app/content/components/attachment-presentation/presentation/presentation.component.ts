@@ -1,43 +1,29 @@
-import { MeetingAgenda } from './../../../../core/models/meeting-agenda';
-import {
-	Component,
-	OnInit,
-	ViewChild,
-	ChangeDetectionStrategy,
-	ElementRef,
-	AfterViewInit,
-	HostListener,
-	TemplateRef,
-	OnDestroy,
-	Input
-} from '@angular/core';
+import {MeetingAgenda} from './../../../../core/models/meeting-agenda';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit, TemplateRef, ViewChild} from '@angular/core';
 
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subject, forkJoin, fromEvent, of, Subscription, merge, Observable } from 'rxjs';
-import { AuthNoticeService } from '../../../../core/auth/auth-notice.service';
-import { NgForm } from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {forkJoin, fromEvent, merge, Observable, of, Subscription} from 'rxjs';
+import {AuthNoticeService} from '../../../../core/auth/auth-notice.service';
+import {NgForm} from '@angular/forms';
 
-import { TranslationService } from '../../../../core/services/translation.service';
-import { MeetingService } from '../../../../core/services/meeting/meeting.service';
-import { CrudService } from '../../../../core/services/shared/crud.service';
+import {TranslationService} from '../../../../core/services/translation.service';
+import {MeetingService} from '../../../../core/services/meeting/meeting.service';
+import {CrudService} from '../../../../core/services/shared/crud.service';
 
-import { environment } from '../../../../../environments/environment';
-import { switchMap, takeUntil, pairwise, map } from 'rxjs/operators';
-import { UserService } from '../../../../core/services/security/users.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateService } from '@ngx-translate/core';
-import { LayoutUtilsService, MessageType } from '../../../../core/services/layout-utils.service';
-import { Roles } from '../../../../core/models/enums/roles';
-import { Meeting } from '../../../../core/models/meeting';
-import { HeaderService } from '../../../../core/services/layout/header.service';
-import { VoteStatus } from '../../../../core/models/vote-status';
-import { AgendaVotesCommentsAsideComponent } from './agenda-votes-comments-aside/agenda-votes-comments-aside.component';
-import { Attachment } from '../../../../core/models/attachment';
-import { ChatService } from '../../../../core/services/chat/chat.service';
-import { ToastrManager } from 'ng6-toastr-notifications';
-import { Right } from '../../../../core/models/enums/rights';
-import { RoleService } from '../../../../core/services/security/roles.service';
-import { VoteParticipants } from '../../../../core/models/vote-participants';
+import {environment} from '../../../../../environments/environment';
+import {pairwise, switchMap, takeUntil} from 'rxjs/operators';
+import {UserService} from '../../../../core/services/security/users.service';
+import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TranslateService} from '@ngx-translate/core';
+import {LayoutUtilsService, MessageType} from '../../../../core/services/layout-utils.service';
+import {Meeting} from '../../../../core/models/meeting';
+import {VoteStatus} from '../../../../core/models/vote-status';
+import {AgendaVotesCommentsAsideComponent} from './agenda-votes-comments-aside/agenda-votes-comments-aside.component';
+import {Attachment} from '../../../../core/models/attachment';
+import {ChatService} from '../../../../core/services/chat/chat.service';
+import {Right} from '../../../../core/models/enums/rights';
+import {RoleService} from '../../../../core/services/security/roles.service';
+import {VoteParticipants} from '../../../../core/models/vote-participants';
 
 @Component({
 	selector: 'm-presentation',
@@ -48,7 +34,6 @@ import { VoteParticipants } from '../../../../core/models/vote-participants';
 export class PresentationComponent implements AfterViewInit, OnInit {
 	@ViewChild('myCanvas') canvas: ElementRef;
 	@ViewChild('content') modalContent: TemplateRef<any>;
-	@ViewChild(AgendaVotesCommentsAsideComponent) private voteMenuMenu: AgendaVotesCommentsAsideComponent;
 	themeName = environment.themeName;
 	edit: boolean = false;
 	submitted: boolean = false;
@@ -96,7 +81,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	mouseEvents = ['mousedown', 'mouseup', 'mousemove', 'mouseleave'];
 	touchEvents = ['touchstart', 'touchend', 'touchmove'];
 	mouseDown;
-
 	mouseUp;
 	mouseMove;
 	mouseleave;
@@ -136,17 +120,36 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	accessRights: Array<any> = new Array<any>();
 	accessRightsObs: Observable<any[]>;
 	@Input() vote_participants: Array<any> = [];
+	@ViewChild(AgendaVotesCommentsAsideComponent) private voteMenuMenu: AgendaVotesCommentsAsideComponent;
+
+	constructor(
+		private el: ElementRef,
+		public authNoticeService: AuthNoticeService,
+		private route: ActivatedRoute,
+		private _translationService: TranslationService,
+		private _meetingService: MeetingService,
+		private _userService: UserService,
+		private modalService: NgbModal,
+		private translate: TranslateService,
+		private layoutUtilsService: LayoutUtilsService,
+		private router: Router,
+		private _crudService: CrudService,
+		private _chatService: ChatService,
+		private _roleService: RoleService,
+	) {
+	}
 
 	votesCommentsSidebarToggle() {
 		this.showVotesCommentsSidebar = !this.showVotesCommentsSidebar;
 		if (this.showVotesCommentsSidebar) {
-			let chatClose = this.el.nativeElement.querySelector('#closeChatBtn');
+			const chatClose = this.el.nativeElement.querySelector('#closeChatBtn');
 			chatClose.click();
 		}
 
 	}
+
 	showDetatilsSidebarToggle() {
-		let chatClose = this.el.nativeElement.querySelector('#closeChatBtn');
+		const chatClose = this.el.nativeElement.querySelector('#closeChatBtn');
 		if (chatClose != null) {
 			chatClose.click();
 		}
@@ -160,9 +163,13 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		// 	  }
 
 	}
+
 	toggle() {
 		this.show = !this.show;
 	}
+
+	/* End Swipe Event */
+
 	/* Start Swipe Event */
 	onSwipe(evt) {
 		const x = Math.abs(evt.deltaX) > 40 ? evt.deltaX > 0 ? 'right' : 'left' : '';
@@ -177,7 +184,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			}
 		}
 	}
-	/* End Swipe Event */
 
 	@HostListener('mousewheel', ['$event']) onMousewheel(e) {
 		if (this.isPointer) {
@@ -212,7 +218,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		}
 	}
 
-
 	@HostListener('window:resize', ['$event'])
 	onResize(event) {
 		// this.winWidth = event.target.innerWidth;
@@ -239,23 +244,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	reloadPresentation() {
 		window.location.reload();
 	}
-	constructor(
-		private el: ElementRef,
-		public authNoticeService: AuthNoticeService,
-		private route: ActivatedRoute,
-		private _translationService: TranslationService,
-		private _meetingService: MeetingService,
-		private _userService: UserService,
-		private modalService: NgbModal,
-		private translate: TranslateService,
-		private layoutUtilsService: LayoutUtilsService,
-		private router: Router,
-		private _crudService: CrudService,
-		private _chatService: ChatService,
-		private _roleService: RoleService,
-		public toastr: ToastrManager
-	) { }
-
 
 	ngAfterViewInit() {
 		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -267,6 +255,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		this.cx.strokeStyle = '#000';
 		// 	this.setCanvasSize();
 	}
+
 	// setCanvasSize() {
 	// 	const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
 	// 	if (this.isPortrait) {
@@ -287,6 +276,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			this.drawingSubscription.unsubscribe();
 		}
 	}
+
 	showPointer() {
 		const pointer = document.getElementById('pointer');
 		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
@@ -363,12 +353,14 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			this.isFreeHand = false;
 		}
 	}
+
 	clearAll() {
 		this.unSubscripeEvents();
 		this.isClearAll = true;
 		this.clearAllDrawingsOfCanvas();
 		this.fireClearAll();
 	}
+
 	freeHand() {
 		this.unSubscripeEvents();
 		this.isFreeHand = true;
@@ -398,6 +390,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		const drawingData = this.getSlideData();
 		drawingData.points = [];
 	}
+
 	showEraser() {
 		this.unSubscripeEvents();
 		this.isEraser = true;
@@ -468,6 +461,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			}
 		);
 	}
+
 	ngOnInit(): void {
 		this.route.params.subscribe(params => {
 			this.meetingId = +params['meeting_id'];
@@ -501,6 +495,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 				this.loadPresentation();
 			});
 	}
+
 	prepareParticipants() {
 		if (this.meetingData.guests.length > 0) {
 			this.vote_participants = this.meetingData.guests.map(g => {
@@ -532,6 +527,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			});
 		}
 	}
+
 	loadPresentation(newAttachmentId = null, newAgendaLoad = true) {
 		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
 		this.currentSlide = 0;
@@ -607,7 +603,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 					this.isLoaded = true;
 					this.checkForAttachmentPresenter();
 				},
-				error => { }
+				error => {
+				}
 			);
 		});
 
@@ -681,7 +678,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 							isExist = true;
 						}
 					},
-					error => { }
+					error => {
+					}
 				);
 
 				if (!isExist) {
@@ -691,7 +689,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 								isExist = true;
 							}
 						},
-						error => { }
+						error => {
+						}
 					);
 				}
 
@@ -716,7 +715,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 					this.checkForAttachmentPresenter();
 				}
 			},
-			e => { }
+			e => {
+			}
 		);
 	}
 
@@ -725,7 +725,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			'.MeetingDataChangedEvent',
 			data => {
 				this.getMeetingData();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -734,7 +735,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			'.StartVoteEvent',
 			data => {
 				this.getMeetingData();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -743,7 +745,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			'.EndVoteEvent',
 			data => {
 				this.getMeetingData();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -752,7 +755,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			'.ChangeVoteEvent',
 			data => {
 				this.getMeetingData();
-			}, e => { }
+			}, e => {
+			}
 		);
 	}
 
@@ -829,102 +833,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		this.attachmentObs = this._meetingService.getAttachment(attachmentId);
 	}
 
-	private captureEvents(canvasEl: HTMLCanvasElement) {
-		// this will capture all mousedown events from the canvas element
-		this.drawingSubscription = this.mouseDown
-			.pipe(
-				switchMap(e => {
-					// after a mouse down, we'll record all mouse moves
-					return this.mouseMove.pipe(
-						// we'll stop (and unsubscribe) once the user releases the mouse
-						// this will trigger a 'mouseup' event
-						takeUntil(this.mouseUp),
-						// we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
-						takeUntil(this.mouseleave),
-						// pairwise lets us get the previous value to draw a line from
-						// the previous point to the current point
-						pairwise()
-					);
-				})
-			)
-			.subscribe((res: [any, any]) => {
-				const rect = canvasEl.getBoundingClientRect();
-				let prevPos;
-				let currentPos;
-
-				if (this.mouseEvents.includes(res[0].type)) {
-					prevPos = {
-						x: res[0].clientX - rect.left,
-						y: res[0].clientY - rect.top
-					};
-					currentPos = {
-						x: res[1].clientX - rect.left,
-						y: res[1].clientY - rect.top
-					};
-				} else if (this.touchEvents.includes(res[0].type)) {
-					prevPos = {
-						x: res[0].changedTouches[0].clientX - rect.left,
-						y: res[0].changedTouches[0].clientY - rect.top
-					};
-					currentPos = {
-						x: res[1].changedTouches[0].clientX - rect.left,
-						y: res[1].changedTouches[0].clientY - rect.top
-					};
-				}
-				this.fireDrawNotesChanges(prevPos, currentPos, rect);
-
-				// this method we'll implement soon to do the actual drawing
-				this.drawOnCanvas(prevPos, currentPos, rect);
-			});
-	}
-
-	private drawOnCanvas(
-		prevPos: { x: number; y: number },
-		currentPos: { x: number; y: number },
-		drawRect,
-		isSocket = false
-	) {
-		if (!this.cx) {
-			return;
-		}
-		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-		const rect = canvasEl.getBoundingClientRect();
-
-		const newPrevPos = { x: 0, y: 0 };
-		const newCurrentPos = { x: 0, y: 0 };
-		newPrevPos.x = (prevPos.x * rect.width) / drawRect.width;
-		newPrevPos.y = (prevPos.y * rect.height) / drawRect.height;
-
-		newCurrentPos.x = (currentPos.x * rect.width) / drawRect.width;
-		newCurrentPos.y = (currentPos.y * rect.height) / drawRect.height;
-
-		if (isSocket === true) {
-			this.checkBoundries(newCurrentPos.x, newCurrentPos.y);
-		}
-
-		this.cx.beginPath();
-		if (prevPos) {
-			this.cx.moveTo(newPrevPos.x, newPrevPos.y); // from
-			this.cx.lineTo(newCurrentPos.x, newCurrentPos.y);
-			this.cx.stroke();
-			const drawingData = this.getSlideData();
-			drawingData.points.push({
-				type: 'draw',
-				order: this.order++,
-				currentPos: currentPos,
-				prevPos: prevPos,
-				drawRect: drawRect
-			});
-		}
-	}
-
-	private getSlideData() {
-		return this.presentationNotes.data.filter(
-			presentationNoteData =>
-				presentationNoteData.slide_num === this.currentSlide
-		)[0];
-	}
-
 	endPresentation() {
 		const _title: string = this.translate.instant('PRESENTATION.END.ENDPRESENTATION');
 		const _description: string = this.translate.instant('PRESENTATION.END.DESCRIPTION');
@@ -949,6 +857,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 
 
 	}
+
 	getCurrentUser() {
 		this._userService.getCurrentUser().subscribe(
 			res => {
@@ -957,7 +866,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 				this.isVoteEnabled = this.user.organization.is_vote_enabled;
 				this.listenToJoinToSlideNotesChannel();
 			},
-			error => { }
+			error => {
+			}
 		);
 	}
 
@@ -966,13 +876,14 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			res => {
 				this.isOrganiser = res;
 			},
-			error => { }
+			error => {
+			}
 		);
 	}
 
 	open(content) {
 		this.textNotes = '';
-		this.modalService.open(content, { size: 'xl' as 'lg' }).result.then(
+		this.modalService.open(content, {size: 'xl' as 'lg'}).result.then(
 			result => {
 				this.closeResult = `Closed with: ${result}`;
 			},
@@ -980,16 +891,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 				this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
 			}
 		);
-	}
-
-	private getDismissReason(reason: any): string {
-		if (reason === ModalDismissReasons.ESC) {
-			return 'by pressing ESC';
-		} else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-			return 'by clicking on a backdrop';
-		} else {
-			return `with: ${reason}`;
-		}
 	}
 
 	save(memberForm: NgForm) {
@@ -1033,8 +934,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 		this.edit = false;
 	}
 
-
-
 	scaleToFit(src) {
 		const image = new Image();
 		image.src = this.imagesBaseURL + src;
@@ -1069,10 +968,12 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	getLanguage() {
 		this.isArabic = this._translationService.isArabic();
 	}
+
 	nextSlide() {
 		this.scaleToFit(this.presentationSlides[this.currentSlide]);
 		this.fireSlideChange(this.currentSlide);
 	}
+
 	prevSlide() {
 		this.scaleToFit(this.presentationSlides[this.currentSlide - 2]);
 		this.fireSlideChange(this.currentSlide);
@@ -1126,7 +1027,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	}
 
 	backToMeeting() {
-		this.router.navigate(['/view-meetings', this.meetingId], { queryParams: { exit: true } });
+		this.router.navigate(['/view-meetings', this.meetingId], {queryParams: {exit: true}});
 	}
 
 	listenToJoinToPresentationChannel() {
@@ -1184,7 +1085,6 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 
 	}
 
-
 	listenToJoinToSlideNotesChannel() {
 		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
 		window.Echo.channel('slideNotes').listen(
@@ -1202,7 +1102,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 									isExist = true;
 								}
 							},
-							error => { }
+							error => {
+							}
 						);
 
 						if (!isExist) {
@@ -1212,7 +1113,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 										isExist = true;
 									}
 								},
-								error => { }
+								error => {
+								}
 							);
 						}
 
@@ -1393,7 +1295,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	}
 
 	fireSlideChange(slideNum) {
-		const data = { key: 'slide_changed', slide_num: slideNum };
+		const data = {key: 'slide_changed', slide_num: slideNum};
 		this.publishEvent(data);
 	}
 
@@ -1452,11 +1354,9 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	}
 
 	fireClosePointer() {
-		const data = { key: 'pointer_closed' };
+		const data = {key: 'pointer_closed'};
 		this.publishEvent(data);
 	}
-
-
 
 	publishEvent(data) {
 		data.attachmentId = this.attachment.id;
@@ -1471,7 +1371,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 					res => {
 
 					},
-					error => { }
+					error => {
+					}
 				);
 		}
 	}
@@ -1515,8 +1416,8 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			if (!res) {
 				return;
 			}
-			//this.fireClosePointer();
-			const data = { 'id': this.meetingId };
+			// this.fireClosePointer();
+			const data = {'id': this.meetingId};
 			this.sendEndMeetingRequest(this.meetingId, data);
 		});
 	}
@@ -1524,8 +1425,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	sendEndMeetingRequest(meetingId, data) {
 		const _successMessage = this.translate.instant('MEETINGS.STATUSACTIONS.END.SUCCESSMESSAGE');
 		this.endMeetingSubmitted = true;
-		this._meetingService.endMeeting(meetingId, data).
-			subscribe(pagedData => {
+		this._meetingService.endMeeting(meetingId, data).subscribe(pagedData => {
 				this.layoutUtilsService.showActionNotification(_successMessage, MessageType.Delete);
 				this.endMeetingSubmitted = false;
 				const userAgent = window.navigator.userAgent.toLowerCase();
@@ -1534,13 +1434,13 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 					this.router.navigate(['/view-meetings', this.meetingId]);
 				}
 			},
-				error => {
-					if (error.is_current_presenation) {
-						this.endMeetingSubmitted = false;
-						const currentPresentationId = error.current_attachment_id;
-						this.showCurrentPresentationPopup(meetingId, currentPresentationId);
-					}
-				});
+			error => {
+				if (error.is_current_presenation) {
+					this.endMeetingSubmitted = false;
+					const currentPresentationId = error.current_attachment_id;
+					this.showCurrentPresentationPopup(meetingId, currentPresentationId);
+				}
+			});
 	}
 
 	showCurrentPresentationPopup(meetingId, currentPresentationId) {
@@ -1554,7 +1454,7 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 			if (!res) {
 				return;
 			}
-			const data = { 'id': meetingId, 'currentPresentationId': currentPresentationId };
+			const data = {'id': meetingId, 'currentPresentationId': currentPresentationId};
 			this.sendEndMeetingRequest(meetingId, data);
 		});
 	}
@@ -1562,20 +1462,10 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 	getMeetingPresentationAttachment() {
 		this.currentAttachmentObs = this._meetingService.getMeetingPresentationAttachment(this.meetingId);
 	}
-	// closeChat(){
-	// 	let chatPoup = this.el.nativeElement.querySelector('#chatBoxCon');
-	// 	let toggle = this.el.nativeElement.querySelector('#chatBtn');
-	// 	console.log(chatPoup.classList +'classes');
-	// 	if (!chatPoup.classList.contains('hidden')) {
-	// 		debugger;
-	// 		console.log(chatPoup.classList+'classes added');
-	// 		toggle.click();
-	// 		  }
-	// }
 
 	checkUnreadMessages() {
 		if (this.meetingData) {
-			let index = this.newMsgChatRoomIds.findIndex(chatRoomId => chatRoomId == this.meetingData.chat_room_id);
+			const index = this.newMsgChatRoomIds.findIndex(chatRoomId => chatRoomId == this.meetingData.chat_room_id);
 			if (index > -1) {
 				this.markUnread = true;
 			}
@@ -1593,6 +1483,123 @@ export class PresentationComponent implements AfterViewInit, OnInit {
 
 	getAccessRights() {
 		this.accessRightsObs = this._roleService.getAllRoleAccessRights();
+	}
+
+	// closeChat(){
+	// 	let chatPoup = this.el.nativeElement.querySelector('#chatBoxCon');
+	// 	let toggle = this.el.nativeElement.querySelector('#chatBtn');
+	// 	console.log(chatPoup.classList +'classes');
+	// 	if (!chatPoup.classList.contains('hidden')) {
+	// 		debugger;
+	// 		console.log(chatPoup.classList+'classes added');
+	// 		toggle.click();
+	// 		  }
+	// }
+
+	private captureEvents(canvasEl: HTMLCanvasElement) {
+		// this will capture all mousedown events from the canvas element
+		this.drawingSubscription = this.mouseDown
+			.pipe(
+				switchMap(e => {
+					// after a mouse down, we'll record all mouse moves
+					return this.mouseMove.pipe(
+						// we'll stop (and unsubscribe) once the user releases the mouse
+						// this will trigger a 'mouseup' event
+						takeUntil(this.mouseUp),
+						// we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
+						takeUntil(this.mouseleave),
+						// pairwise lets us get the previous value to draw a line from
+						// the previous point to the current point
+						pairwise()
+					);
+				})
+			)
+			.subscribe((res: [any, any]) => {
+				const rect = canvasEl.getBoundingClientRect();
+				let prevPos;
+				let currentPos;
+
+				if (this.mouseEvents.includes(res[0].type)) {
+					prevPos = {
+						x: res[0].clientX - rect.left,
+						y: res[0].clientY - rect.top
+					};
+					currentPos = {
+						x: res[1].clientX - rect.left,
+						y: res[1].clientY - rect.top
+					};
+				} else if (this.touchEvents.includes(res[0].type)) {
+					prevPos = {
+						x: res[0].changedTouches[0].clientX - rect.left,
+						y: res[0].changedTouches[0].clientY - rect.top
+					};
+					currentPos = {
+						x: res[1].changedTouches[0].clientX - rect.left,
+						y: res[1].changedTouches[0].clientY - rect.top
+					};
+				}
+				this.fireDrawNotesChanges(prevPos, currentPos, rect);
+
+				// this method we'll implement soon to do the actual drawing
+				this.drawOnCanvas(prevPos, currentPos, rect);
+			});
+	}
+
+	private drawOnCanvas(
+		prevPos: { x: number; y: number },
+		currentPos: { x: number; y: number },
+		drawRect,
+		isSocket = false
+	) {
+		if (!this.cx) {
+			return;
+		}
+		const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+		const rect = canvasEl.getBoundingClientRect();
+
+		const newPrevPos = {x: 0, y: 0};
+		const newCurrentPos = {x: 0, y: 0};
+		newPrevPos.x = (prevPos.x * rect.width) / drawRect.width;
+		newPrevPos.y = (prevPos.y * rect.height) / drawRect.height;
+
+		newCurrentPos.x = (currentPos.x * rect.width) / drawRect.width;
+		newCurrentPos.y = (currentPos.y * rect.height) / drawRect.height;
+
+		if (isSocket === true) {
+			this.checkBoundries(newCurrentPos.x, newCurrentPos.y);
+		}
+
+		this.cx.beginPath();
+		if (prevPos) {
+			this.cx.moveTo(newPrevPos.x, newPrevPos.y); // from
+			this.cx.lineTo(newCurrentPos.x, newCurrentPos.y);
+			this.cx.stroke();
+			const drawingData = this.getSlideData();
+			drawingData.points.push({
+				type: 'draw',
+				order: this.order++,
+				currentPos: currentPos,
+				prevPos: prevPos,
+				drawRect: drawRect
+			});
+		}
+	}
+
+	private getSlideData() {
+		return this.presentationNotes.data.filter(
+			presentationNoteData =>
+				presentationNoteData.slide_num === this.currentSlide
+		)[0];
+	}
+
+	private getDismissReason(reason: any): string {
+		if (reason === ModalDismissReasons.ESC) {
+			return 'by pressing ESC';
+		} else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+			return 'by clicking on a backdrop';
+		} else {
+			return `with: ${reason}`;
+		}
 	}
 
 }
