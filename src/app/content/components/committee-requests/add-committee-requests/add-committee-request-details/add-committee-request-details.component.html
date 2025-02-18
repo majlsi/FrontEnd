@@ -52,7 +52,7 @@
 					</div>
 					<div class="col-lg-6">
 						<label>{{ "COMMITTEES.ADD.COMMITTEETYPE" | translate }}</label>
-						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeType" name="committeeType" [(ngModel)]="isArabic ? request.request_body.committee_type_name_ar : request.request_body.committee_type_name_en" #committeeType="ngModel" />
+						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeType" name="committeeType" [ngModel]="isArabic ? request.request_body.committee_type_name_ar : request.request_body.committee_type_name_en" (ngModelChange)="isArabic ? request.request_body.committee_type_name_ar : request.request_body.committee_type_name_en = $event" #committeeType="ngModel" />
 					</div>
 				</div>
 
@@ -101,7 +101,7 @@
 				<div class="form-group m-form__group row">
 					<div class="col-lg-6">
 						<label>{{ "COMMITTEES.ADD.COMMITTEESTATUS" | translate }}</label>
-						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeStatus" name="committeeStatus" [(ngModel)]="isArabic ? request.request_body.committee_status_name_ar : request.request_body.committee_status_name_en" [ngbTypeahead]="search" [inputFormatter]="formatter" #instance="ngbTypeahead" [resultTemplate]="rt" />
+						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeStatus" name="committeeStatus" [ngModel]="isArabic ? request.request_body.committee_status_name_ar : request.request_body.committee_status_name_en" (ngModelChange)="isArabic ? request.request_body.committee_status_name_ar : request.request_body.committee_status_name_en = $event" [ngbTypeahead]="search" [inputFormatter]="formatter" #instance="ngbTypeahead" [resultTemplate]="rt" />
 					</div>
 
 					<div class="col-lg-6">
@@ -112,7 +112,7 @@
 				<div class="form-group m-form__group row">
 					<div class="col-lg-6">
 						<label>{{ "COMMITTEES.ADD.COMMITTEETYPE" | translate }}</label>
-						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeNature" name="committeeNature" [(ngModel)]="isArabic ? request.request_body.committee_nature_name_ar : request.request_body.committee_nature_name_en" #committeeType="ngModel" />
+						<input [readonly]="true" type="text" class="form-control bg-secondary" id="committeeNature" name="committeeNature" [ngModel]="isArabic ? request.request_body.committee_nature_name_ar : request.request_body.committee_nature_name_en" (ngModelChange)="isArabic ? request.request_body.committee_nature_name_ar : request.request_body.committee_nature_name_en = $event" #committeeType="ngModel" />
 					</div>
 				</div>
 				<div class="form-group m-form__group row">

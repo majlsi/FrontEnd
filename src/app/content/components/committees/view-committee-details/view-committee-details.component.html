@@ -68,13 +68,13 @@
                         <label>{{ "COMMITTEES.ADD.COMMITTEEHEAD" | translate }}</label>
                         <input type="text" class="form-control" id="committeehead"
                             name="committeehead" #committeehead="ngModel" readonly
-                            [(ngModel)]="isArabic ? committee.committee_head.name_ar:committee.committee_head.name" />
+                            [ngModel]="isArabic ? committee.committee_head.name_ar:committee.committee_head.name" (ngModelChange)="isArabic ? committee.committee_head.name_ar : committee.committee_head.name = $event" />
                     </div>
                     <div class="col-lg-6">
                         <label>{{ "COMMITTEES.ADD.COMMITTEEORGANISER" | translate }}</label>
                         <input type="text" class="form-control" id="committeeOrganiser"
                             name="committeeOrganiser"
-                            [(ngModel)]="isArabic ? committee.committee_organiser.name_ar:committee.committee_organiser.name"
+                            [ngModel]="isArabic ? committee.committee_organiser.name_ar:committee.committee_organiser.name" (ngModelChange)="isArabic ? committee.committee_organiser.name_ar : committee.committee_organiser.name = $event"
                             #committeeOrganiser="ngModel" readonly />
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                             <input readonly type="text" #decisionResponsibleUser="ngModel"
                                 placeholder="{{ 'COMMITTEES.ADD.DECISION_RESPONSIBLE' | translate }}"
                                 class="form-control" id="decisionResponsibleUser" name="decisionResponsibleUser"
-                                [(ngModel)]="isArabic?committee.committee_responsible.name_ar:committee.committee_responsible.name" />
+                                [ngModel]="isArabic?committee.committee_responsible.name_ar:committee.committee_responsible.name" (ngModelChange)="isArabic ? committee.committee_responsible.name_ar : committee.committee_responsible.name = $event" />
                         </div>
 
                         <div class="col-lg-6">

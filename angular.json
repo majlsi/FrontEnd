@@ -168,21 +168,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "default:build"
+            "buildTarget": "default:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "default:build:production"
+              "buildTarget": "default:build:production"
             },
             "test": {
-              "browserTarget": "default:build:test"
+              "buildTarget": "default:build:test"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "default:build"
+            "buildTarget": "default:build"
           }
         },
         "test": {
