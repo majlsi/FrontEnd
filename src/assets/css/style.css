@@ -17,7 +17,7 @@
 @import "./custom/table.css";
 @import "./custom/tabs.css";
 @import "../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
-/* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+/* @import "@ng-select/ng-select/themes/default.theme.css"; */
 
 @import "./custom/imageupload.css";
 @import "./custom/dropzone.css";
@@ -37,7 +37,7 @@
 @import './custom/modal.css';
 /* @import "./custom/table.scss";
 // @import "./custom/layout.scss";
-@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "@ng-select/ng-select/themes/default.theme.css";
 @import "./custom/imageupload"; */
 
 /* @import 'custom.css'; */

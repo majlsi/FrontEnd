@@ -9,13 +9,19 @@
 			"projectType": "application",
 			"architect": {
 				"build": {
-					"builder": "@angular-devkit/build-angular:browser",
+					"builder": "@angular-devkit/build-angular:application",
+
+          "defaultConfiguration": "production",
+
 					"options": {
-						"outputPath": "dist",
-						"index": "src/index.html",
-						"main": "src/main.ts",
+						"outputPath": {
+              "base": "dist"
+            },
+            "index": "src/index.html",
 						"tsConfig": "src/tsconfig.app.json",
-						"polyfills": "src/polyfills.ts",
+						"polyfills": [
+              "src/polyfills.ts"
+            ],
 						"assets": [
 							"src/assets"
 						],
@@ -89,13 +95,12 @@
 							"node_modules/pdfjs-dist/build/pdf.worker.mjs"
 						],
 						"baseHref": "/",
-						"aot": false,
-						"vendorChunk": true,
-						"extractLicenses": false,
-						"buildOptimizer": false,
+            "aot": false,
+            "extractLicenses": false,
 						"sourceMap": true,
 						"optimization": false,
-						"namedChunks": true
+            "namedChunks": true,
+            "browser": "src/main.ts"
 					},
 					"configurations": {
 						"production": {
@@ -104,7 +109,12 @@
 									"replace": "src/environments/environment.ts",
 									"with": "src/environments/environment.prod.ts"
 								}
-							]
+              ],
+              "optimization": true,
+              "extractLicenses": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true
 						},
 						"test": {
 							"fileReplacements": [
@@ -162,8 +172,7 @@
 								}
 							]
 						}
-					},
-					"defaultConfiguration": ""
+          }
 				},
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",

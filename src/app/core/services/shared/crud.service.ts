@@ -5,7 +5,7 @@ import {FilterObject} from '../../models/filter-object';
 import {BaseModel} from '../../models/baseModel';
 import {Observable, switchMap} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable()

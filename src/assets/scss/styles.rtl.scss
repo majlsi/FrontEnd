@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-//@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+//@import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 @import "./theme";
 @import "./mixins";
@@ -19,7 +19,7 @@
 @import "./custom/table.scss";
 @import "../vendors/base/fonts/mjlsi-fonticon/font/flaticon.css";
 @import "./custom/layout.rtl.scss";
-@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "@ng-select/ng-select/themes/default.theme.css";
 @import "./custom/imageupload";
 .mat-table__wrapper {
 	width: 100%;
