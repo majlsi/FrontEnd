@@ -194,7 +194,7 @@
 							}}
 						</a>
 						<span *ngIf="!(meeting?.meeting_venue_ar || '').includes('http') && !(meeting?.meeting_venue_en || '').includes('http')">
-   {{
+   							{{
 								isArabic
 									? (meeting?.meeting_venue_ar ? meeting.meeting_venue_ar : meeting?.meeting_venue_en)
 									: (meeting?.meeting_venue_en ? meeting.meeting_venue_en : meeting?.meeting_venue_ar)
